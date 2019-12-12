@@ -1,0 +1,11 @@
+bin/
+obj/
+Assets/
+*.suo
+*.log
+*.user
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
