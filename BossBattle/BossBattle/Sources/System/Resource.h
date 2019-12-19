@@ -8,6 +8,7 @@
 #include<d3dcompiler.h>
 #include <tchar.h>
 #include<iostream>
+#include<vector>
 
 #pragma comment( lib, "d3d11.lib" )
 #pragma comment(lib, "d3dcompiler.lib")

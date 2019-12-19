@@ -19,6 +19,18 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{71eb16aa-9f11-470d-a0ac-2b962a2286e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Objects">
+      <UniqueIdentifier>{39eae8e9-4d10-40d4-b49f-a76774cfeab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Objects\Model">
+      <UniqueIdentifier>{d93ab9ce-b774-4f3b-8f72-2d7f227eac1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects">
+      <UniqueIdentifier>{7b218495-b040-417e-af70-298215efc2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects\Model">
+      <UniqueIdentifier>{a0ba9d8c-6fac-403e-ab43-6e307db8746b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\System\DeviceManager.cpp">
@@ -27,6 +39,15 @@
     <ClCompile Include="Sources\System\Main.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Model\BaseModel.cpp">
+      <Filter>ソース ファイル\Objects\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Model\FbxModel.cpp">
+      <Filter>ソース ファイル\Objects\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Model\PolygonModel.cpp">
+      <Filter>ソース ファイル\Objects\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -34,6 +55,15 @@
     </ClInclude>
     <ClInclude Include="Sources\System\Resource.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Model\BaseModel.h">
+      <Filter>ヘッダー ファイル\Objects\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Model\FbxModel.h">
+      <Filter>ヘッダー ファイル\Objects\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Model\PolygonModel.h">
+      <Filter>ヘッダー ファイル\Objects\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

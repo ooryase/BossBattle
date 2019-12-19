@@ -5,6 +5,7 @@ Assets/
 *.log
 *.user
 *.Vc.db
+*.VC.opendb
 
 # Build results
 
