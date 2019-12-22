@@ -31,6 +31,48 @@
     <Filter Include="ヘッダー ファイル\Objects\Model">
       <UniqueIdentifier>{a0ba9d8c-6fac-403e-ab43-6e307db8746b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Shader">
+      <UniqueIdentifier>{861c3030-62df-4c99-9dee-b6cef1dc8480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Shader">
+      <UniqueIdentifier>{419984f0-1d3c-48f4-b115-795508362eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes">
+      <UniqueIdentifier>{8968d01c-fa15-45d0-aa4d-a6f91042232d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes">
+      <UniqueIdentifier>{b09cb240-a18e-4ff7-98fe-1fc8582434fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes\Title">
+      <UniqueIdentifier>{eccde0cc-3f10-4493-b26c-a14c2ee86e77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes\Select">
+      <UniqueIdentifier>{69a69ae4-1974-4cf5-ada7-27d25e3919f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes\Battle">
+      <UniqueIdentifier>{d613b07c-754c-4b37-8944-8fcad37f8f32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes\Clear">
+      <UniqueIdentifier>{2b318bb8-27b5-4cd7-9989-43c2c7d4c2d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes\Title">
+      <UniqueIdentifier>{ff6a3275-abe4-490d-b773-517d4d824e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes\Select">
+      <UniqueIdentifier>{24dd00e3-abb3-4e6d-8122-63c9929119ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes\Battle">
+      <UniqueIdentifier>{7b2cd87a-79db-492b-a236-8b4f03d3e7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes\Clear">
+      <UniqueIdentifier>{aae1dc80-f0ef-4a6d-9697-036d4ad1dfd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scenes\Battle\Player">
+      <UniqueIdentifier>{d97fd8c2-f8a7-4698-a417-0fcb6a4cee2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scenes\Battle\Player">
+      <UniqueIdentifier>{fe77bd27-7172-41b3-a0f2-c0324c6b894e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\System\DeviceManager.cpp">
@@ -48,6 +90,18 @@
     <ClCompile Include="Sources\Objects\Model\PolygonModel.cpp">
       <Filter>ソース ファイル\Objects\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Shader\ObjectShader.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Scenes\SceneController.cpp">
+      <Filter>ソース ファイル\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Scenes\BaseScene.cpp">
+      <Filter>ソース ファイル\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\System\InputController.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -64,6 +118,18 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Model\PolygonModel.h">
       <Filter>ヘッダー ファイル\Objects\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shader\ObjectShader.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Scenes\SceneController.h">
+      <Filter>ヘッダー ファイル\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Scenes\BaseScene.h">
+      <Filter>ヘッダー ファイル\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\System\InputController.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

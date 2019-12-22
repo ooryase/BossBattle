@@ -1,5 +1,6 @@
 #include"Resource.h"
 #include"DeviceManager.h"
+#include"InputController.h"
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -37,6 +38,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		return S_FALSE;
 	}
 
+	InputController::getInstance().Init(hInstance, WHandle);
+
 	// ウインドウ表示
 	ShowWindow(WHandle, SW_SHOWNORMAL);
 	UpdateWindow(WHandle);
@@ -52,6 +55,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		}
 		else
 		{
+			InputController::getInstance().Update();
+
+			if (InputController::getInstance().IsPressKey(DIK_A))
+			{
+				std::cout << "iketaaaa" << std::endl;
+			}
+
+
+
+
+
 			deviceManager->RenderBegin();
 
 			deviceManager->RenderEnd();
@@ -60,6 +74,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 
 
 	UnregisterClass(WndClassName, hInstance);
+
+	InputController::getInstance().Release();
+	deviceManager.release();
 
 	return (int)msg.wParam;
 

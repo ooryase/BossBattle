@@ -22,14 +22,22 @@
     <ClCompile Include="Sources\Objects\Model\BaseModel.cpp" />
     <ClCompile Include="Sources\Objects\Model\FbxModel.cpp" />
     <ClCompile Include="Sources\Objects\Model\PolygonModel.cpp" />
+    <ClCompile Include="Sources\Scenes\BaseScene.cpp" />
+    <ClCompile Include="Sources\Scenes\SceneController.cpp" />
+    <ClCompile Include="Sources\Shader\ObjectShader.cpp" />
     <ClCompile Include="Sources\System\DeviceManager.cpp" />
+    <ClCompile Include="Sources\System\InputController.cpp" />
     <ClCompile Include="Sources\System\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Objects\Model\BaseModel.h" />
     <ClInclude Include="Sources\Objects\Model\FbxModel.h" />
     <ClInclude Include="Sources\Objects\Model\PolygonModel.h" />
+    <ClInclude Include="Sources\Scenes\BaseScene.h" />
+    <ClInclude Include="Sources\Scenes\SceneController.h" />
+    <ClInclude Include="Sources\Shader\ObjectShader.h" />
     <ClInclude Include="Sources\System\DeviceManager.h" />
+    <ClInclude Include="Sources\System\InputController.h" />
     <ClInclude Include="Sources\System\Resource.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
