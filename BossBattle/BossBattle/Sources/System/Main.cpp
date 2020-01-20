@@ -1,6 +1,8 @@
 #include"Resource.h"
 #include"DeviceManager.h"
 #include"InputController.h"
+#include"../Scenes/SceneController.h"
+
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -39,10 +41,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 	}
 
 	InputController::getInstance().Init(hInstance, WHandle);
+	auto sceneController = std::make_unique<SceneController>(deviceManager->GetDevice());
 
 	// ウインドウ表示
 	ShowWindow(WHandle, SW_SHOWNORMAL);
 	UpdateWindow(WHandle);
+
+	
 
 	// メッセージループの実行
 	MSG msg = { 0 };
@@ -57,18 +62,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		{
 			InputController::getInstance().Update();
 
-			if (InputController::getInstance().IsPressKey(DIK_A))
-			{
-				std::cout << "iketaaaa" << std::endl;
-			}
-
-
-
-
-
+			sceneController->Update();
 			deviceManager->RenderBegin();
-
+			sceneController->Draw(deviceManager->GetDeviceContext());
 			deviceManager->RenderEnd();
+			sceneController->EndUpdate(deviceManager->GetDevice());
 		}
 	}
 

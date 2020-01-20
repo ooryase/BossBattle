@@ -19,18 +19,6 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{71eb16aa-9f11-470d-a0ac-2b962a2286e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Objects">
-      <UniqueIdentifier>{39eae8e9-4d10-40d4-b49f-a76774cfeab2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Objects\Model">
-      <UniqueIdentifier>{d93ab9ce-b774-4f3b-8f72-2d7f227eac1c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Objects">
-      <UniqueIdentifier>{7b218495-b040-417e-af70-298215efc2a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Objects\Model">
-      <UniqueIdentifier>{a0ba9d8c-6fac-403e-ab43-6e307db8746b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Shader">
       <UniqueIdentifier>{861c3030-62df-4c99-9dee-b6cef1dc8480}</UniqueIdentifier>
     </Filter>
@@ -73,6 +61,42 @@
     <Filter Include="ヘッダー ファイル\Scenes\Battle\Player">
       <UniqueIdentifier>{fe77bd27-7172-41b3-a0f2-c0324c6b894e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Polygon">
+      <UniqueIdentifier>{39eae8e9-4d10-40d4-b49f-a76774cfeab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\Model">
+      <UniqueIdentifier>{d93ab9ce-b774-4f3b-8f72-2d7f227eac1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\Sprite">
+      <UniqueIdentifier>{0c378918-b201-4320-920c-14851d23e628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon">
+      <UniqueIdentifier>{7b218495-b040-417e-af70-298215efc2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\Model">
+      <UniqueIdentifier>{a0ba9d8c-6fac-403e-ab43-6e307db8746b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\Sprite">
+      <UniqueIdentifier>{d2e0d8ef-9ab0-4977-803b-b6bfe25a84ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Objects">
+      <UniqueIdentifier>{46a3142b-5686-494a-acf1-f872d8947c12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects">
+      <UniqueIdentifier>{557dd1c3-f5e4-4ef1-9e36-c96599e646ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Objects\Character">
+      <UniqueIdentifier>{81b18c29-422d-4d94-a138-7f976923e48b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects\Character">
+      <UniqueIdentifier>{dc906bbf-865f-4fbb-aede-0a827fc33e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Objects\Character\GunBehave">
+      <UniqueIdentifier>{bd9cd703-1dd0-479c-902c-f4bddfca50f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects\Character\GunBehave">
+      <UniqueIdentifier>{0906e31b-5555-4d34-9674-a705b2074d8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\System\DeviceManager.cpp">
@@ -80,15 +104,6 @@
     </ClCompile>
     <ClCompile Include="Sources\System\Main.cpp">
       <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Objects\Model\BaseModel.cpp">
-      <Filter>ソース ファイル\Objects\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Objects\Model\FbxModel.cpp">
-      <Filter>ソース ファイル\Objects\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Objects\Model\PolygonModel.cpp">
-      <Filter>ソース ファイル\Objects\Model</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shader\ObjectShader.cpp">
       <Filter>ソース ファイル\Shader</Filter>
@@ -102,6 +117,54 @@
     <ClCompile Include="Sources\System\InputController.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Scenes\Title\Title.cpp">
+      <Filter>ソース ファイル\Scenes\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Shader\SpriteShader.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Shader\ModelShader.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Sprite\Sprite.cpp">
+      <Filter>ソース ファイル\Polygon\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp">
+      <Filter>ソース ファイル\Polygon\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp">
+      <Filter>ソース ファイル\Polygon\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Model\PolygonModel.cpp">
+      <Filter>ソース ファイル\Polygon\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\ObjectManager.cpp">
+      <Filter>ソース ファイル\Polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Scenes\Battle\Battle.cpp">
+      <Filter>ソース ファイル\Scenes\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\BaseObject.cpp">
+      <Filter>ソース ファイル\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\BaseCharacter.cpp">
+      <Filter>ソース ファイル\Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp">
+      <Filter>ソース ファイル\Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunWait.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBehave.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunDash.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -109,15 +172,6 @@
     </ClInclude>
     <ClInclude Include="Sources\System\Resource.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Objects\Model\BaseModel.h">
-      <Filter>ヘッダー ファイル\Objects\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Objects\Model\FbxModel.h">
-      <Filter>ヘッダー ファイル\Objects\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Objects\Model\PolygonModel.h">
-      <Filter>ヘッダー ファイル\Objects\Model</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shader\ObjectShader.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
@@ -130,6 +184,54 @@
     </ClInclude>
     <ClInclude Include="Sources\System\InputController.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Scenes\Title\Title.h">
+      <Filter>ヘッダー ファイル\Scenes\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shader\SpriteShader.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shader\ModelShader.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Model\BaseModel.h">
+      <Filter>ヘッダー ファイル\Polygon\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Model\FbxModel.h">
+      <Filter>ヘッダー ファイル\Polygon\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Model\PolygonModel.h">
+      <Filter>ヘッダー ファイル\Polygon\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Sprite\Sprite.h">
+      <Filter>ヘッダー ファイル\Polygon\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\ObjectManager.h">
+      <Filter>ヘッダー ファイル\Polygon</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Scenes\Battle\Battle.h">
+      <Filter>ヘッダー ファイル\Scenes\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\BaseObject.h">
+      <Filter>ヘッダー ファイル\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\BaseCharacter.h">
+      <Filter>ヘッダー ファイル\Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBreaker.h">
+      <Filter>ヘッダー ファイル\Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBehave.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunDash.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunWait.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

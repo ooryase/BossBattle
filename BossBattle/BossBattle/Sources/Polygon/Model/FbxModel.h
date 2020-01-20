@@ -23,4 +23,12 @@ public:
 	~FbxModel();
 
 	void FbxLoad();
+
+	void CreateVertexBuffer(ID3D11Device* pDevice);
+	void CreateIndexBuffer(ID3D11Device* pDevice);
+	void CreateRasterizeState(ID3D11Device* pDevice);
+
+	void SetAnimSackNumber(int num);
+
+	void Update();
 };

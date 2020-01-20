@@ -19,23 +19,49 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\Objects\Model\BaseModel.cpp" />
-    <ClCompile Include="Sources\Objects\Model\FbxModel.cpp" />
-    <ClCompile Include="Sources\Objects\Model\PolygonModel.cpp" />
+    <ClCompile Include="Sources\Objects\BaseObject.cpp" />
+    <ClCompile Include="Sources\Objects\Character\BaseCharacter.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBehave.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunDash.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunWait.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp" />
+    <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
+    <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp" />
+    <ClCompile Include="Sources\Polygon\Model\PolygonModel.cpp" />
+    <ClCompile Include="Sources\Polygon\ObjectManager.cpp" />
+    <ClCompile Include="Sources\Polygon\Sprite\Sprite.cpp" />
     <ClCompile Include="Sources\Scenes\BaseScene.cpp" />
+    <ClCompile Include="Sources\Scenes\Battle\Battle.cpp" />
     <ClCompile Include="Sources\Scenes\SceneController.cpp" />
+    <ClCompile Include="Sources\Scenes\Title\Title.cpp" />
+    <ClCompile Include="Sources\Shader\ModelShader.cpp" />
     <ClCompile Include="Sources\Shader\ObjectShader.cpp" />
+    <ClCompile Include="Sources\Shader\SpriteShader.cpp" />
     <ClCompile Include="Sources\System\DeviceManager.cpp" />
     <ClCompile Include="Sources\System\InputController.cpp" />
     <ClCompile Include="Sources\System\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sources\Objects\Model\BaseModel.h" />
-    <ClInclude Include="Sources\Objects\Model\FbxModel.h" />
-    <ClInclude Include="Sources\Objects\Model\PolygonModel.h" />
+    <ClInclude Include="Sources\Objects\BaseObject.h" />
+    <ClInclude Include="Sources\Objects\Character\BaseCharacter.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBehave.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunDash.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunWait.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBreaker.h" />
+    <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
+    <ClInclude Include="Sources\Polygon\Model\FbxModel.h" />
+    <ClInclude Include="Sources\Polygon\Model\PolygonModel.h" />
+    <ClInclude Include="Sources\Polygon\ObjectManager.h" />
+    <ClInclude Include="Sources\Polygon\Sprite\Sprite.h" />
     <ClInclude Include="Sources\Scenes\BaseScene.h" />
+    <ClInclude Include="Sources\Scenes\Battle\Battle.h" />
     <ClInclude Include="Sources\Scenes\SceneController.h" />
+    <ClInclude Include="Sources\Scenes\Title\Title.h" />
+    <ClInclude Include="Sources\Shader\ModelShader.h" />
     <ClInclude Include="Sources\Shader\ObjectShader.h" />
+    <ClInclude Include="Sources\Shader\SpriteShader.h" />
     <ClInclude Include="Sources\System\DeviceManager.h" />
     <ClInclude Include="Sources\System\InputController.h" />
     <ClInclude Include="Sources\System\Resource.h" />

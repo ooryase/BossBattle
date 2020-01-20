@@ -1,20 +1,32 @@
 #pragma once
+#include"../System/Resource.h"
+
+struct CONSTANT_BUFFER
+{
+	DirectX::XMFLOAT4X4 View;
+	DirectX::XMFLOAT4X4 Projection;
+};
+
+enum class SceneName
+{
+	NONE,
+	TITLE,
+	SELECT,
+	BATTLE,
+	CLEAR
+};
 
 class BaseScene
 {
-	enum class SceneName
-	{
-		TITLE,
-		SELECT,
-		BATTLE,
-		CLEAR
-	};
-
+protected:
+	SceneName nextScene;
 
 public:
-	BaseScene() {};
-	~BaseScene() {};
+	BaseScene();
 
 	virtual void Update() = 0;
-	virtual void Draw() = 0;
+	virtual void EndUpdate() = 0;
+	virtual void Draw(ID3D11DeviceContext* pDeviceContext) = 0;
+
+	SceneName GetNextScene() const { return nextScene; }
 };

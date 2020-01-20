@@ -20,4 +20,7 @@ public:
 	void RenderBegin();
 
 	void RenderEnd();
+
+	ID3D11Device* GetDevice() { return pDevice; }
+	ID3D11DeviceContext* GetDeviceContext() { return pDeviceContext; }
 };

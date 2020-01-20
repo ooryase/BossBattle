@@ -2,6 +2,8 @@
 
 DeviceManager::DeviceManager(HWND WHandle)
 {
+	CoInitialize(NULL);
+
 	//ウィンドウのクライアントエリア
 	RECT rc;
 	GetClientRect(WHandle, &rc);
@@ -79,6 +81,8 @@ DeviceManager::~DeviceManager()
 	SAFE_RELEASE(pSwapChain);
 	SAFE_RELEASE(pDeviceContext);
 	SAFE_RELEASE(pDevice);
+
+	CoUninitialize();
 }
 
 void DeviceManager::RenderBegin()
