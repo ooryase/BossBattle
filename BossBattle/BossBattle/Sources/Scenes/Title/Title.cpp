@@ -42,11 +42,6 @@ Title::~Title()
 
 void Title::Update()
 {
-	if (InputController::getInstance().IsPressKey(DIK_A))
-	{
-		std::cout << "iketaaaa" << std::endl;
-	}
-	player->Update();
 }
 
 void Title::Draw(ID3D11DeviceContext* pDeviceContext)

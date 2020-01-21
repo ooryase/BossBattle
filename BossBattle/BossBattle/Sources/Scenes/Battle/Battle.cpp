@@ -16,8 +16,8 @@ Battle::Battle(ID3D11Device* pDevice) : BaseScene()
 	pDevice->CreateBuffer(&cb, NULL, &pConstantBuffer);
 
 	objectManager = std::make_unique<ObjectManager>();
-	objectManager->SstModelMap(pDevice, "Monkey");
-	objectManager->SstModelMap(pDevice, "gunbreaker3");
+	//objectManager->SstModelMap(pDevice, "Monkey");
+	objectManager->SstModelMap(pDevice, "gunbreaker2");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstSpriteMap(pDevice, L"Tex");
 	objectManager->SstSpriteShader(pDevice, L"shader");

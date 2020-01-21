@@ -3,11 +3,15 @@
 
 #include"GunBehave/GunWait.h"
 #include"GunBehave/GunDash.h"
+#include"GunBehave/GunRun.h"
 #include"GunBehave/GunJump.h"
+#include"GunBehave/GunFall.h"
+#include"GunBehave/GunBread1.h"
+#include"GunBehave/GunGun1.h"
 
 GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager) : BaseCharacter()
 {
-	model = objectManager->GetModel("gunbreaker3");
+	model = objectManager->GetModel("gunbreaker2");
 	shader = objectManager->GetModelShader(L"shader");
 
 	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -47,19 +51,30 @@ void GunBreaker::EndUpdate()
 {
 	if (behave->IsNextBehave())
 	{
+		model->SetAnimSackNumber(static_cast<int>(behave->GetNextBehave()));
 		switch (behave->GetNextBehave())
 		{
+		case GUN_BEHAVE::BehaveName::WAIT:
+			behave = std::make_shared<GunWait>(param);
+			break;
 		case GUN_BEHAVE::BehaveName::DASH:
-			model->SetAnimSackNumber(0);
 			behave = std::make_shared<GunDash>(param);
 			break;
-		case GUN_BEHAVE::BehaveName::WAIT:
-			model->SetAnimSackNumber(1);
-			behave = std::make_shared<GunWait>(param);
+		case GUN_BEHAVE::BehaveName::RUN:
+			behave = std::make_shared<GunRun>(param);
 			break;
 		case GUN_BEHAVE::BehaveName::JUMP:
 			behave = std::make_shared<GunJump>(param);
-
+			break;
+		case GUN_BEHAVE::BehaveName::FALL:
+			behave = std::make_shared<GunFall>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::BREAD1:
+			behave = std::make_shared<GunBread1>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::GUN1:
+			behave = std::make_shared<GunGun1>(param);
+			break;
 		default:
 			break;
 		}

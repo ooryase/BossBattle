@@ -1,5 +1,4 @@
 #include"GunWait.h"
-#include"../../../System/InputController.h"
 
 GunWait::GunWait(std::shared_ptr<Param> param) : GunBehave()
 {
@@ -7,6 +6,8 @@ GunWait::GunWait(std::shared_ptr<Param> param) : GunBehave()
 
 void GunWait::Update(std::shared_ptr<Param> param)
 {
+	time += Timer::GetInstance().GetDeltaTime();
+
 	param->speed.x = 0.00f;
 	nextBehave = GUN_BEHAVE::BehaveName::NONE;
 
@@ -27,5 +28,7 @@ void GunWait::Update(std::shared_ptr<Param> param)
 	{
 		nextBehave = GUN_BEHAVE::BehaveName::JUMP;
 	}
+
+	ChackAttack();
 
 }

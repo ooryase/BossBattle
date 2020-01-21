@@ -22,8 +22,12 @@
     <ClCompile Include="Sources\Objects\BaseObject.cpp" />
     <ClCompile Include="Sources\Objects\Character\BaseCharacter.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunBehave.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBread1.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunDash.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunFall.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun1.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunRun.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunWait.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp" />
     <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
@@ -41,13 +45,18 @@
     <ClCompile Include="Sources\System\DeviceManager.cpp" />
     <ClCompile Include="Sources\System\InputController.cpp" />
     <ClCompile Include="Sources\System\Main.cpp" />
+    <ClCompile Include="Sources\System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Objects\BaseObject.h" />
     <ClInclude Include="Sources\Objects\Character\BaseCharacter.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunBehave.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBread1.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunDash.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunFall.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun1.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunRun.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunWait.h" />
     <ClInclude Include="Sources\Objects\Character\GunBreaker.h" />
     <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
@@ -65,6 +74,7 @@
     <ClInclude Include="Sources\System\DeviceManager.h" />
     <ClInclude Include="Sources\System\InputController.h" />
     <ClInclude Include="Sources\System\Resource.h" />
+    <ClInclude Include="Sources\System\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

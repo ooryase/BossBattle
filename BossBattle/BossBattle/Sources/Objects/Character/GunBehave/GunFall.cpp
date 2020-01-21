@@ -1,18 +1,14 @@
-#include"GunJump.h"
+#include"GunFall.h"
 
-GunJump::GunJump(std::shared_ptr<Param> param) : GunBehave()
+GunFall::GunFall(std::shared_ptr<Param> param) : GunBehave()
 {
-	param->speed.y = 0.2f;
-	param->ground = false;
 }
 
-void GunJump::Update(std::shared_ptr<Param> param)
+void GunFall::Update(std::shared_ptr<Param> param)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
-	//param->speed.y -= 0.0002f;
-
-	if(param->ground)
+	if (param->ground)
 		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
 
 	if (InputController::getInstance().IsPressKey(DIK_LEFT))
@@ -24,11 +20,6 @@ void GunJump::Update(std::shared_ptr<Param> param)
 	{
 		param->speed.x += 0.001f;
 		param->direction.z = DirectX::XM_PIDIV2;
-	}
-
-	if (param->speed.y < 0.0f)
-	{
-		nextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 
 	ChackAttack();

@@ -165,6 +165,21 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp">
       <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBread1.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunFall.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun1.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunRun.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\System\Timer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -232,6 +247,21 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h">
       <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBread1.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunFall.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun1.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunRun.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\System\Timer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

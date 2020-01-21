@@ -243,7 +243,6 @@ void FbxModel::SetAnimSackNumber(int num)
 
 void FbxModel::Update()
 {
-
 	//再生するアニメーションの設定
 	//AnimStackNumber = 0;
 	//FbxAnimStack* AnimationStack = fbxScene->FindMember<FbxAnimStack>(AnimStackNameArray[AnimStackNumber]->Buffer());
@@ -258,7 +257,7 @@ void FbxModel::Update()
 	if (!anim)
 		return;
 
-	timeCount += FrameTime / 8;
+	timeCount += FrameTime * Timer::GetInstance().GetDeltaTime() /  16;
 	if (timeCount > stop) timeCount = start;
 
 	//アニメーション処理

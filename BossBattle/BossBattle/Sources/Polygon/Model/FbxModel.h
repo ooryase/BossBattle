@@ -1,8 +1,8 @@
 #pragma once;
 
-//#include"../../System/Resource.h"
 #include"BaseModel.h"
 #include"fbxsdk.h"
+#include"../../System/Timer.h"
 
 #pragma comment(lib, "libfbxsdk-md.lib")
 

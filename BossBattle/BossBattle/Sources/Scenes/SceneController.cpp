@@ -5,6 +5,7 @@
 SceneController::SceneController(ID3D11Device* pDevice)
 {
 	scene = std::make_unique<Battle>(pDevice);
+	Timer::GetInstance().Init();
 }
 
 SceneController::~SceneController()
@@ -14,6 +15,7 @@ SceneController::~SceneController()
 
 void SceneController::Update()
 {
+	Timer::GetInstance().Update();
 	scene->Update();
 }
 
@@ -26,6 +28,8 @@ void SceneController::EndUpdate(ID3D11Device* pDevice)
 {
 	scene->EndUpdate();
 	ChackNextScene(pDevice);
+
+	Timer::GetInstance().Sleep();
 }
 
 void SceneController::ChackNextScene(ID3D11Device* pDevice)

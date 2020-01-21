@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include"BaseScene.h"
+#include"../System/Timer.h"
 #include"../System/Resource.h"
 
 class SceneController
