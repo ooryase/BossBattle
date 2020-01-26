@@ -1,8 +1,9 @@
 #include"BaseObject.h"
 #include"../System/InputController.h"
 
-BaseObject::BaseObject()
+BaseObject::BaseObject(std::shared_ptr<Light> _light)
 {
+	light = _light;
 	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);

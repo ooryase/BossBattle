@@ -2,11 +2,11 @@
 
 GunJump::GunJump(std::shared_ptr<Param> param) : GunBehave()
 {
-	param->speed.y = 0.2f;
+	param->speed.y = 0.3f;
 	param->ground = false;
 }
 
-void GunJump::Update(std::shared_ptr<Param> param)
+void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -15,14 +15,16 @@ void GunJump::Update(std::shared_ptr<Param> param)
 	if(param->ground)
 		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
 
-	if (InputController::getInstance().IsPressKey(DIK_LEFT))
+	if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
 	{
-		param->speed.x += -0.001f;
+		param->speed.x += -0.0003f;
 		param->direction.z = -DirectX::XM_PIDIV2;
 	}
-	if (InputController::getInstance().IsPressKey(DIK_RIGHT))
+	if (InputController::getInstance().IsPressKey(DIK_RIGHT) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT))
 	{
-		param->speed.x += 0.001f;
+		param->speed.x += 0.0003f;
 		param->direction.z = DirectX::XM_PIDIV2;
 	}
 

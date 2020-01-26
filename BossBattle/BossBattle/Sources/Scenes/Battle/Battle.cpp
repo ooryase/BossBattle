@@ -17,13 +17,19 @@ Battle::Battle(ID3D11Device* pDevice) : BaseScene()
 
 	objectManager = std::make_unique<ObjectManager>();
 	//objectManager->SstModelMap(pDevice, "Monkey");
-	objectManager->SstModelMap(pDevice, "gunbreaker2");
+	objectManager->SstModelMap(pDevice, "gunbreaker");
+	objectManager->SstModelMap(pDevice, "grid");
 	objectManager->SstModelShader(pDevice, L"shader");
+	objectManager->SstModelShader(pDevice, L"alpha");
 	objectManager->SstSpriteMap(pDevice, L"Tex");
 	objectManager->SstSpriteShader(pDevice, L"shader");
 
-	player = std::make_shared<GunBreaker>(objectManager);
+	light = std::make_shared<Light>();
 
+	player = std::make_shared<GunBreaker>(objectManager, light);
+
+	grid = objectManager->GetModel("grid");
+	gridShader = objectManager->GetModelShader(L"alpha");
 }
 
 Battle::~Battle()
@@ -45,11 +51,12 @@ void Battle::Draw(ID3D11DeviceContext* pDeviceContext)
 {
 	pDeviceContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 
-	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 1.0f, -20.0f, 1.0f);
-	DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 10.0f, -50.0f, 1.0f);
+	DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 10.0f, 0.0f, 1.0f);
 	DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 	DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);
-	DirectX::XMMATRIX Proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
+	//DirectX::XMMATRIX Proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
+	DirectX::XMMATRIX Proj = DirectX::XMMatrixOrthographicLH(1280.0f * 0.05f, 720.0f * 0.05f, 0.1f, 500.0f);
 
 	D3D11_MAPPED_SUBRESOURCE data;
 	CONSTANT_BUFFER cb;
@@ -60,5 +67,47 @@ void Battle::Draw(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->Unmap(pConstantBuffer, 0);
 
 	player->Draw(pDeviceContext);
+
+
+	///////////////////////////////////////////////////////
+		// パラメータの計算
+	DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
+
+	DirectX::XMMATRIX m_Offset = DirectX::XMMatrixTranslation(0.0f,35.0f,10.0f);
+	DirectX::XMMATRIX m_Rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
+	DirectX::XMMATRIX m_Scale = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
+	m_World *= m_Scale * m_Rotate * m_Offset;
+
+	// パラメータの受け渡し
+	MODEL::CONSTANT_BUFFER ccb;
+
+	DirectX::XMStoreFloat4x4(&ccb.World, DirectX::XMMatrixTranspose(m_World));
+	DirectX::XMStoreFloat4(&ccb.Light,
+		DirectX::XMVectorSet(
+			light->playerLight.x,
+			light->playerLight.y,
+			light->playerLight.z, 0.0f));
+	DirectX::XMStoreFloat4(&ccb.Attenuation,
+		DirectX::XMVectorSet(
+			light->playerAttenuation.x,
+			light->playerAttenuation.y,
+			light->playerAttenuation.z,
+			light->playerAttenuation.w));
+
+	gridShader->SetConstantBuffer(pDeviceContext, ccb);
+
+
+	grid->DrawSet(pDeviceContext);
+	gridShader->DrawSet(pDeviceContext);
+
+	// 描画実行
+	pDeviceContext->DrawIndexed(grid->GetIndexCount(), 0, 0);
+
+	//model->DrawLineAdjSet(pDeviceContext);
+	//shader->DrawLineAdjSet(pDeviceContext);
+	//
+	//// 描画実行
+	//pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
 
 }

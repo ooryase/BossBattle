@@ -23,6 +23,8 @@ class Title : public BaseScene
 	std::shared_ptr<GunBreaker> player;
 
 	std::shared_ptr<ObjectManager> objectManager;
+	std::shared_ptr<Light> light;
+
 
 public:
 	Title(ID3D11Device* pDevice);

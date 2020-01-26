@@ -40,7 +40,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		return S_FALSE;
 	}
 
-	InputController::getInstance().Init(hInstance, WHandle);
+	if (FAILED(InputController::getInstance().Init(hInstance, WHandle)))
+	{
+		MessageBox(WHandle, _T("InputController"), _T("Err"), MB_ICONSTOP);
+		return S_FALSE;
+	}
 	auto sceneController = std::make_unique<SceneController>(deviceManager->GetDevice());
 
 	// ウインドウ表示

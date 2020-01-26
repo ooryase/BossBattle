@@ -34,7 +34,7 @@ protected:
 
 
 public:
-	BaseCharacter();
+	BaseCharacter(std::shared_ptr<Light> _light);
 	~BaseCharacter() {};
 
 	virtual void Update() = 0;

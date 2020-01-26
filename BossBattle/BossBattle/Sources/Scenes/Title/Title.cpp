@@ -25,7 +25,7 @@ Title::Title(ID3D11Device* pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"Tex");
 	objectManager->SstSpriteShader(pDevice, L"shader");
 
-	player = std::make_shared<GunBreaker>(objectManager);
+	player = std::make_shared<GunBreaker>(objectManager,light);
 
 	sprite = objectManager->GetSprite(L"Tex");// std::make_unique<Sprite>(pDevice, L"Assets/Textures/Tex.jpg");
 	spriteShader = objectManager->GetSpriteShader(L"shader"); //std::make_unique<SpriteShader>(pDevice, L"Shader/shader.hlsl");

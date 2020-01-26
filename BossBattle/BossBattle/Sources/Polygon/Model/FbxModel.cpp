@@ -26,22 +26,7 @@ FbxModel::~FbxModel()
 
 void FbxModel::FbxLoad()
 {
-	
-
-	//アニメーションデータの取り出し
-	//FbxArray<FbxString*> AnimStackNameArray;
-	fbxScene->FillAnimStackNameArray(AnimStackNameArray);
-
-	//再生するアニメーションの設定
-	AnimStackNumber = 0;
-	FbxAnimStack* AnimationStack = fbxScene->FindMember<FbxAnimStack>(AnimStackNameArray[AnimStackNumber]->Buffer());
-	fbxScene->SetCurrentAnimationStack(AnimationStack);
-
-	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(*(AnimStackNameArray[AnimStackNumber]));
-	start = takeInfo->mLocalTimeSpan.GetStart();
-	stop = takeInfo->mLocalTimeSpan.GetStop();
-	FrameTime.SetTime(0, 0, 0, 1, 0, fbxScene->GetGlobalSettings().GetTimeMode());
-	timeCount = start;
+	AnimationLoad();
 
 	// メッシュデータの取り出し
 	for (int i = 0; i < fbxScene->GetRootNode()->GetChildCount(); i++) {
@@ -163,6 +148,31 @@ void FbxModel::FbxLoad()
 		}
 	}
 	
+}
+
+void FbxModel::AnimationLoad()
+{
+	//アニメーションデータの取り出し
+//FbxArray<FbxString*> AnimStackNameArray;
+	fbxScene->FillAnimStackNameArray(AnimStackNameArray);
+
+	if (AnimStackNameArray.Size() == 0)
+	{
+		anim = false;
+		return;
+	}
+
+	//再生するアニメーションの設定
+	AnimStackNumber = 0;
+	FbxAnimStack* AnimationStack = fbxScene->FindMember<FbxAnimStack>(AnimStackNameArray[AnimStackNumber]->Buffer());
+	fbxScene->SetCurrentAnimationStack(AnimationStack);
+
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(*(AnimStackNameArray[AnimStackNumber]));
+	start = takeInfo->mLocalTimeSpan.GetStart();
+	stop = takeInfo->mLocalTimeSpan.GetStop();
+	FrameTime.SetTime(0, 0, 0, 1, 0, fbxScene->GetGlobalSettings().GetTimeMode());
+	timeCount = start;
+
 }
 
 void FbxModel::CreateVertexBuffer(ID3D11Device* pDevice)

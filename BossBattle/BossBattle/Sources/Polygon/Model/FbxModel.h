@@ -23,6 +23,7 @@ public:
 	~FbxModel();
 
 	void FbxLoad();
+	void AnimationLoad();
 
 	void CreateVertexBuffer(ID3D11Device* pDevice);
 	void CreateIndexBuffer(ID3D11Device* pDevice);

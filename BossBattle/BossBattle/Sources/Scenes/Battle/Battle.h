@@ -15,7 +15,10 @@ class Battle : public BaseScene
 	ID3D11Buffer* pConstantBuffer;
 
 	std::shared_ptr<GunBreaker> player;
+	std::shared_ptr<Light> light;
 
+	std::shared_ptr<BaseModel> grid;
+	std::shared_ptr<ModelShader> gridShader;
 
 public:
 	Battle(ID3D11Device* pDevice);

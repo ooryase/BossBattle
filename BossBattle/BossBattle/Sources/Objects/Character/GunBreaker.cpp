@@ -7,11 +7,15 @@
 #include"GunBehave/GunJump.h"
 #include"GunBehave/GunFall.h"
 #include"GunBehave/GunBread1.h"
+#include"GunBehave/GunBread2.h"
+#include"GunBehave/GunBread3.h"
 #include"GunBehave/GunGun1.h"
+#include"GunBehave/GunGun2.h"
+#include"GunBehave/GunGun3.h"
 
-GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager) : BaseCharacter()
+GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light) : BaseCharacter(_light)
 {
-	model = objectManager->GetModel("gunbreaker2");
+	model = objectManager->GetModel("gunbreaker");
 	shader = objectManager->GetModelShader(L"shader");
 
 	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -21,7 +25,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager) : BaseChara
 	
 	behave = std::make_shared<GunWait>(param);
 
-	param->gravity = 0.002f;
+	param->gravity = 0.0025f;
 }
 
 GunBreaker::~GunBreaker()
@@ -31,7 +35,7 @@ GunBreaker::~GunBreaker()
 
 void GunBreaker::Update()
 {
-	behave->Update(param);
+	behave->Update(position, param, light);
 
 	position.x += param->speed.x;
 	position.y += param->speed.y;
@@ -43,6 +47,8 @@ void GunBreaker::Update()
 		position.y = 0.0f;
 		param->ground = true;
 	}
+	else
+		param->ground = false;
 
 	model->Update();
 }
@@ -72,8 +78,20 @@ void GunBreaker::EndUpdate()
 		case GUN_BEHAVE::BehaveName::BREAD1:
 			behave = std::make_shared<GunBread1>(param);
 			break;
+		case GUN_BEHAVE::BehaveName::BREAD2:
+			behave = std::make_shared<GunBread2>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::BREAD3:
+			behave = std::make_shared<GunBread3>(param);
+			break;
 		case GUN_BEHAVE::BehaveName::GUN1:
 			behave = std::make_shared<GunGun1>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::GUN2:
+			behave = std::make_shared<GunGun2>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::GUN3:
+			behave = std::make_shared<GunGun3>(param);
 			break;
 		default:
 			break;
@@ -96,15 +114,24 @@ void GunBreaker::DrawSet(ID3D11DeviceContext* pDeviceContext)
 
 	m_World *= m_Scale * m_Rotate * m_Offset;
 
-	DirectX::XMVECTOR m_Light = DirectX::XMVectorSet(std::cos(4.0f) * 40.1f, -20.0f, std::sin(4.0f) * 40.1f, 0.0f);
-	DirectX::XMVECTOR m_Attenuation = DirectX::XMVectorSet(1.0f, 0.0005f, 0.0005f, 0.0f);
+	//DirectX::XMVECTOR m_Light = DirectX::XMVectorSet(std::cos(4.0f) * 40.1f, -20.0f, std::sin(4.0f) * 40.1f, 0.0f);
+	//DirectX::XMVECTOR m_Attenuation = DirectX::XMVectorSet(1.0f, 0.0005f, 0.0005f, 0.0f);
 
 	// ƒpƒ‰ƒ[ƒ^‚ÌŽó‚¯“n‚µ
 	MODEL::CONSTANT_BUFFER ccb;
 
 	DirectX::XMStoreFloat4x4(&ccb.World, DirectX::XMMatrixTranspose(m_World));
-	DirectX::XMStoreFloat4(&ccb.Light, m_Light);
-	DirectX::XMStoreFloat4(&ccb.Attenuation, m_Attenuation);
+	DirectX::XMStoreFloat4(&ccb.Light, 
+		DirectX::XMVectorSet(
+			light->playerLight.x,
+			light->playerLight.y,
+			light->playerLight.z,0.0f));
+	DirectX::XMStoreFloat4(&ccb.Attenuation, 
+		DirectX::XMVectorSet(
+			light->playerAttenuation.x,
+			light->playerAttenuation.y,
+			light->playerAttenuation.z,
+			light->playerAttenuation.w));
 
 	shader->SetConstantBuffer(pDeviceContext, ccb);
 }

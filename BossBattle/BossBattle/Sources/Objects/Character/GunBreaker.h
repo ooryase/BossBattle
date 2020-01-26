@@ -11,7 +11,7 @@ class GunBreaker : public BaseCharacter, public std::enable_shared_from_this<Gun
 
 public:
 
-	GunBreaker( std::shared_ptr<ObjectManager> objectManager);
+	GunBreaker( std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light);
 	~GunBreaker();
 
 	std::shared_ptr<GunBehave> behave;

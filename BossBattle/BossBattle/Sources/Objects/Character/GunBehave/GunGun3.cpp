@@ -1,11 +1,11 @@
-#include"GunGun1.h"
+#include"GunGun3.h"
 
-GunGun1::GunGun1(std::shared_ptr<Param> param) : GunBehave()
+GunGun3::GunGun3(std::shared_ptr<Param> param) : GunBehave()
 {
 	shootFlag = false;
 }
 
-void GunGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -24,8 +24,10 @@ void GunGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::s
 		if (!shootFlag)
 		{
 			shootPos = pos;
+			param->speed.y = 0.1f;
+			shootFlag = true;
 		}
-		float temp = static_cast<float>(time - 15* 16) * 1.1f;
+		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
 
 		light->playerLight.x = pos.x + temp * sin(param->direction.z);
 		light->playerLight.y = pos.y - 2.0f;
@@ -38,40 +40,19 @@ void GunGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::s
 
 	param->speed.x *= 0.99f;
 
-	if (time > 600)
+	/*if (time > 800)
 	{
 		if (InputController::getInstance().IsPressKey(DIK_Z) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::BREAD2;
+			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
 		}
 		else if (InputController::getInstance().IsPressKey(DIK_X) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN2;
+			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
 		}
-	}
-
-	//param->speed.x = 0.00f;
-	//nextBehave = GUN_BEHAVE::BehaveName::WAIT;
-	//
-	//if (InputController::getInstance().IsPressKey(DIK_LEFT))
-	//{
-	//	param->speed.x += -0.01f;
-	//	param->direction.z = -DirectX::XM_PIDIV2;
-	//	nextBehave = GUN_BEHAVE::BehaveName::NONE;
-	//}
-	//if (InputController::getInstance().IsPressKey(DIK_RIGHT))
-	//{
-	//	param->speed.x += 0.01f;
-	//	param->direction.z = DirectX::XM_PIDIV2;
-	//	nextBehave = GUN_BEHAVE::BehaveName::NONE;
-	//}
-	//
-	//if (InputController::getInstance().IsPressKey(DIK_SPACE))
-	//{
-	//	nextBehave = GUN_BEHAVE::BehaveName::JUMP;
-	//}
+	}*/
 
 	if (time > 1000)
 	{

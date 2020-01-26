@@ -87,9 +87,5 @@ float4 PS(PS_IN input) : SV_Target
  
     col = colD * colA;
 
-	//階調化
-	int level = (int)(col / 0.2f);
-	col = 1.0f / 4.0f * level;
-
-    return float4(col, col, col, 1.0f);
+    return float4(col, 0.125f + col * 0.875f, 0.3f + col * 0.7f, col);
 }

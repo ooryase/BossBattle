@@ -19,11 +19,13 @@ GUN_BEHAVE::BehaveName GunBehave::GetNextBehave()
 
 void GunBehave::ChackAttack()
 {
-	if (InputController::getInstance().IsPressKey(DIK_Z))
+	if (InputController::getInstance().IsPressKey(DIK_Z) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
 	{
 		nextBehave = GUN_BEHAVE::BehaveName::BREAD1;
 	}
-	else if (InputController::getInstance().IsPressKey(DIK_X))
+	else if (InputController::getInstance().IsPressKey(DIK_X) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
 	{
 		nextBehave = GUN_BEHAVE::BehaveName::GUN1;
 	}

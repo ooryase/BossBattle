@@ -6,7 +6,7 @@ InputController& InputController::getInstance()
 	return instance;
 }
 
-void InputController::Init(HINSTANCE hInstance, HWND hWnd)
+HRESULT InputController::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_DPAD_UP		, PressData()));
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_DPAD_DOWN		, PressData()));
@@ -28,13 +28,13 @@ void InputController::Init(HINSTANCE hInstance, HWND hWnd)
 
 	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&lpDI, NULL);
 	if (FAILED(hr))
-		return;
+		return hr;
 
 	hr = lpDI->CreateDevice(GUID_SysKeyboard, &lpKeyboard, NULL);
 	if (FAILED(hr))
 	{
 		//lpDI->Release();
-		return;
+		return hr;
 	}
 
 	hr = lpKeyboard->SetDataFormat(&c_dfDIKeyboard);
@@ -42,7 +42,7 @@ void InputController::Init(HINSTANCE hInstance, HWND hWnd)
 	{
 		//lpKeyboard->Release();
 		//lpDI->Release();
-		return;
+		return hr;
 	}
 
 	hr = lpKeyboard->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
@@ -50,13 +50,14 @@ void InputController::Init(HINSTANCE hInstance, HWND hWnd)
 	{
 		//lpKeyboard->Release();
 		//lpDI->Release();
-		return;
+		return hr;
 	}
 
 	lpKeyboard->Acquire();
 
 	ZeroMemory(key, sizeof(key));
 
+	return S_OK;
 }
 
 void InputController::Update()
@@ -88,6 +89,11 @@ void InputController::Release()
 bool InputController::IsPressKey(int keyCode)
 {
 	return key[keyCode] & 0x80;
+}
+
+bool InputController::IsPressButtom(int Xcode)
+{
+	return pad.at(Xcode).press;
 }
 
 

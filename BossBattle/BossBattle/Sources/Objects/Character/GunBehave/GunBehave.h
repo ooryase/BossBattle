@@ -14,7 +14,11 @@ namespace GUN_BEHAVE
 		JUMP,
 		FALL,
 		BREAD1,
+		BREAD2,
+		BREAD3,
 		GUN1,
+		GUN2,
+		GUN3,
 	};
 
 }
@@ -24,7 +28,7 @@ struct GunBehave
 	GunBehave();
 	~GunBehave() {};
 
-	virtual void Update(std::shared_ptr<Param> param) = 0;
+	virtual void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light) = 0;
 
 	int time;
 

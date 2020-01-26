@@ -39,10 +39,11 @@ private:
 public:
 	static InputController& getInstance();
 
-	void Init(HINSTANCE hInstance, HWND hWnd);
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
 	void Update();
 	void Release();
 
 	bool IsPressKey(int keyCode);
+	bool IsPressButtom(int Xcode);
 
 };

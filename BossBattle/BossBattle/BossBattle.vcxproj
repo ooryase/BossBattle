@@ -23,9 +23,13 @@
     <ClCompile Include="Sources\Objects\Character\BaseCharacter.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunBehave.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunBread1.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBread2.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunBread3.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunDash.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunFall.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun1.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun2.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun3.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunRun.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunWait.cpp" />
@@ -52,9 +56,13 @@
     <ClInclude Include="Sources\Objects\Character\BaseCharacter.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunBehave.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunBread1.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBread2.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunBread3.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunDash.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunFall.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun1.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun2.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun3.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunRun.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunWait.h" />

@@ -1,12 +1,12 @@
-#include"GunBread1.h"
+#include"GunBread2.h"
 
-GunBread1::GunBread1(std::shared_ptr<Param> param) : GunBehave()
+GunBread2::GunBread2(std::shared_ptr<Param> param) : GunBehave()
 {
-	if(!param->ground && param->speed.y < 0.0f)
-		param->speed.y = 0.1f;
+	param->speed.y = 0.0f;
+
 }
 
-void GunBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -25,17 +25,16 @@ void GunBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std:
 		if (InputController::getInstance().IsPressKey(DIK_Z) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::BREAD2;
+			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
 		}
 		else if (InputController::getInstance().IsPressKey(DIK_X) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN2;
+			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
 		}
 	}
 
-
-	if (time > 1000)
+	if (time > 1300)
 	{
 		light->playerLight.x = 1000.0f;
 		light->playerLight.y = 1000.0f;
