@@ -18,11 +18,11 @@ protected:
 	bool anim;
 	std::string animName;
 
-	ID3D11RasterizerState* pRasterizerState;
+	ComPtr<ID3D11RasterizerState> pRasterizerState;
 
-	ID3D11Buffer* pVerBuffer;
-	ID3D11Buffer* pIndexBuffer;
-	ID3D11Buffer* pLineAdjIndexBuffer;
+	ComPtr<ID3D11Buffer> pVerBuffer;
+	ComPtr<ID3D11Buffer> pIndexBuffer;
+	ComPtr<ID3D11Buffer> pLineAdjIndexBuffer;
 
 	std::vector<MODEL::VERTEX> vertices;
 	std::vector<UINT> indices;
@@ -32,17 +32,17 @@ public:
 	~BaseModel();
 
 protected:
-	void CreateBuffer(ID3D11Device* pDevice);
-	virtual void CreateVertexBuffer(ID3D11Device* pDevice) = 0;
-	virtual void CreateIndexBuffer(ID3D11Device* pDevice) = 0;
-	virtual void CreateRasterizeState(ID3D11Device* pDevice) = 0;
+	void CreateBuffer(ComPtr<ID3D11Device> pDevice);
+	virtual void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
+	virtual void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
+	virtual void CreateRasterizeState(ComPtr<ID3D11Device> pDevice) = 0;
 
 public:
 	virtual void Update() = 0;
 	virtual void SetAnimSackNumber(int num) = 0;
 
-	void DrawSet(ID3D11DeviceContext* pDeviceContext);
-	void DrawLineAdjSet(ID3D11DeviceContext* pDeviceContext);
+	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawLineAdjSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 	int GetVertexCount() { return vertices.size(); }
 	int GetIndexCount() { return indices.size(); }

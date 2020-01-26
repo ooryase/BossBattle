@@ -19,10 +19,10 @@ public:
 	ObjectManager();
 	~ObjectManager();
 
-	void SstModelMap(ID3D11Device* pDevice, std::string);
-	void SstSpriteMap(ID3D11Device* pDevice, std::wstring);
-	void SstModelShader(ID3D11Device* pDevice, std::wstring);
-	void SstSpriteShader(ID3D11Device* pDevice, std::wstring);
+	void SstModelMap(ComPtr<ID3D11Device> pDevice, std::string);
+	void SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring);
+	void SstModelShader(ComPtr<ID3D11Device> pDevice, std::wstring);
+	void SstSpriteShader(ComPtr<ID3D11Device> pDevice, std::wstring);
 
 	std::shared_ptr<BaseModel> GetModel(std::string key);
 	std::shared_ptr<Sprite> GetSprite(std::wstring key);

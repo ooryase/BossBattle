@@ -105,9 +105,6 @@
     <ClCompile Include="Sources\System\Main.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Shader\ObjectShader.cpp">
-      <Filter>ソース ファイル\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Scenes\SceneController.cpp">
       <Filter>ソース ファイル\Scenes</Filter>
     </ClCompile>
@@ -199,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="Sources\System\Resource.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Shader\ObjectShader.h">
-      <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Scenes\SceneController.h">
       <Filter>ヘッダー ファイル\Scenes</Filter>

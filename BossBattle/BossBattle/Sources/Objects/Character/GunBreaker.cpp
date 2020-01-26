@@ -100,7 +100,7 @@ void GunBreaker::EndUpdate()
 
 }
 
-void GunBreaker::DrawSet(ID3D11DeviceContext* pDeviceContext)
+void GunBreaker::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	// パラメータの計算
 	DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
@@ -136,7 +136,7 @@ void GunBreaker::DrawSet(ID3D11DeviceContext* pDeviceContext)
 	shader->SetConstantBuffer(pDeviceContext, ccb);
 }
 
-void GunBreaker::Draw(ID3D11DeviceContext* pDeviceContext)
+void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	DrawSet(pDeviceContext);
 

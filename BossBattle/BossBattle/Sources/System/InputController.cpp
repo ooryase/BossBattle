@@ -23,14 +23,14 @@ HRESULT InputController::Init(HINSTANCE hInstance, HWND hWnd)
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_X				, PressData()));
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_Y				, PressData()));
 
-	lpDI = NULL;
-	lpKeyboard = NULL;
+	//lpDI = NULL;
+	//lpKeyboard = NULL;
 
-	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&lpDI, NULL);
+	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)lpDI.GetAddressOf(), NULL);
 	if (FAILED(hr))
 		return hr;
 
-	hr = lpDI->CreateDevice(GUID_SysKeyboard, &lpKeyboard, NULL);
+	hr = lpDI->CreateDevice(GUID_SysKeyboard, lpKeyboard.GetAddressOf(), NULL);
 	if (FAILED(hr))
 	{
 		//lpDI->Release();
@@ -82,8 +82,11 @@ void InputController::Update()
 
 void InputController::Release()
 {
-	SAFE_RELEASE(lpKeyboard);
-	SAFE_RELEASE(lpDI);
+	//SAFE_RELEASE(lpKeyboard);
+	//SAFE_RELEASE(lpDI);
+
+	lpKeyboard.Reset();
+	lpDI.Reset();
 }
 
 bool InputController::IsPressKey(int keyCode)

@@ -16,27 +16,27 @@ namespace SPRITE
 
 class Sprite
 {
-	ID3D11Texture2D* pTexture;
-	ID3D11ShaderResourceView* pSRV;
-	ID3D11SamplerState* pSampler;
+	ComPtr<ID3D11Texture2D> pTexture;
+	ComPtr<ID3D11ShaderResourceView> pSRV;
+	ComPtr<ID3D11SamplerState> pSampler;
 
-	ID3D11RasterizerState* pRasterizerState;
+	ComPtr<ID3D11RasterizerState> pRasterizerState;
 
-	ID3D11Buffer* pVerBuffer;
-	ID3D11Buffer* pIndexBuffer;
+	ComPtr<ID3D11Buffer> pVerBuffer;
+	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	std::vector<SPRITE::VERTEX> vertices;
 	std::vector<UINT> indices;
 
 public:
-	Sprite(ID3D11Device* pDevice, const wchar_t filename[]);
+	Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
 	~Sprite();
 
 	int GetIndexCount() { return indices.size(); };
-	void DrawSet(ID3D11DeviceContext* pDeviceContext);
+	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 private:
-	void TextureLoad(ID3D11Device* pDevice, const wchar_t filename[]);
-	void CreateVertexBuffer(ID3D11Device* pDevice);
-	void CreateIndexBuffer(ID3D11Device* pDevice);
-	void CreateRasterizerState(ID3D11Device* pDevice);
+	void TextureLoad(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
+	void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice);
+	void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice);
+	void CreateRasterizerState(ComPtr<ID3D11Device> pDevice);
 };

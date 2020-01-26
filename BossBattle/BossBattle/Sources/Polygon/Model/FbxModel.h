@@ -19,15 +19,15 @@ class FbxModel : public BaseModel
 
 
 public:
-	FbxModel(ID3D11Device* pDevice, const char filename[]);
+	FbxModel(ComPtr<ID3D11Device> pDevice, const char filename[]);
 	~FbxModel();
 
 	void FbxLoad();
 	void AnimationLoad();
 
-	void CreateVertexBuffer(ID3D11Device* pDevice);
-	void CreateIndexBuffer(ID3D11Device* pDevice);
-	void CreateRasterizeState(ID3D11Device* pDevice);
+	void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice);
+	void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice);
+	void CreateRasterizeState(ComPtr<ID3D11Device> pDevice);
 
 	void SetAnimSackNumber(int num);
 

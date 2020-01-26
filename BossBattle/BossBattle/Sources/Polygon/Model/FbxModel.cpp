@@ -2,7 +2,7 @@
 
 using namespace MODEL;
 
-FbxModel::FbxModel(ID3D11Device* pDevice, const char fileName[]) : BaseModel()
+FbxModel::FbxModel(ComPtr<ID3D11Device> pDevice, const char fileName[]) : BaseModel()
 {
 	//FBXの読み込み
 	fbxManager = FbxManager::Create();
@@ -175,7 +175,7 @@ void FbxModel::AnimationLoad()
 
 }
 
-void FbxModel::CreateVertexBuffer(ID3D11Device* pDevice)
+void FbxModel::CreateVertexBuffer(ComPtr<ID3D11Device> pDevice)
 {
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
@@ -187,11 +187,11 @@ void FbxModel::CreateVertexBuffer(ID3D11Device* pDevice)
 	bd_vertex.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_vertex;
 	data_vertex.pSysMem = vertices.data();
-	pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVerBuffer);
+	pDevice->CreateBuffer(&bd_vertex, &data_vertex, pVerBuffer.GetAddressOf());
 
 }
 
-void FbxModel::CreateIndexBuffer(ID3D11Device* pDevice)
+void FbxModel::CreateIndexBuffer(ComPtr<ID3D11Device> pDevice)
 {
 	// インデックスデータの取り出しとバッファの設定
 	D3D11_BUFFER_DESC bd_index;
@@ -203,7 +203,7 @@ void FbxModel::CreateIndexBuffer(ID3D11Device* pDevice)
 	bd_index.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_index;
 	data_index.pSysMem = indices.data();
-	pDevice->CreateBuffer(&bd_index, &data_index, &pIndexBuffer);
+	pDevice->CreateBuffer(&bd_index, &data_index, pIndexBuffer.GetAddressOf());
 
 	// インデックスデータの取り出しとバッファの設定
 	D3D11_BUFFER_DESC bd_lineAdj_index;
@@ -215,10 +215,10 @@ void FbxModel::CreateIndexBuffer(ID3D11Device* pDevice)
 	bd_lineAdj_index.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_lineAdj_index;
 	data_lineAdj_index.pSysMem = lineAdj.data();
-	pDevice->CreateBuffer(&bd_lineAdj_index, &data_lineAdj_index, &pLineAdjIndexBuffer);
+	pDevice->CreateBuffer(&bd_lineAdj_index, &data_lineAdj_index, pLineAdjIndexBuffer.GetAddressOf());
 }
 
-void FbxModel::CreateRasterizeState(ID3D11Device* pDevice)
+void FbxModel::CreateRasterizeState(ComPtr<ID3D11Device> pDevice)
 {
 	// ラスタライザの設定
 	D3D11_RASTERIZER_DESC rdc = {};
@@ -232,7 +232,7 @@ void FbxModel::CreateRasterizeState(ID3D11Device* pDevice)
 	rdc.ScissorEnable = FALSE;
 	rdc.MultisampleEnable = FALSE;
 	rdc.AntialiasedLineEnable = FALSE;
-	pDevice->CreateRasterizerState(&rdc, &pRasterizerState);
+	pDevice->CreateRasterizerState(&rdc, pRasterizerState.GetAddressOf());
 
 }
 

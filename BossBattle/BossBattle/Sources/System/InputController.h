@@ -31,8 +31,11 @@ private:
 	std::unordered_map<int, PressData>keys;
 	std::unordered_map<int, PressData>pad;
 
-	LPDIRECTINPUT8 lpDI;
-	LPDIRECTINPUTDEVICE8 lpKeyboard;
+	//LPDIRECTINPUT8 lpDI;
+	//LPDIRECTINPUTDEVICE8 lpKeyboard;
+
+	ComPtr<IDirectInput8A> lpDI;
+	ComPtr<IDirectInputDevice8A> lpKeyboard;
 
 	BYTE key[256];
 

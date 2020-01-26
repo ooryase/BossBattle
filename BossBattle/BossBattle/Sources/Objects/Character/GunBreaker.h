@@ -6,7 +6,7 @@
 //#include "../../Shader/ModelShader.h"
 //#include "../../Polygon/ObjectManager.h"
 
-class GunBreaker : public BaseCharacter, public std::enable_shared_from_this<GunBreaker>
+class GunBreaker : public BaseCharacter
 {
 
 public:
@@ -18,8 +18,8 @@ public:
 
 	void Update();
 	void EndUpdate();
-	void Draw(ID3D11DeviceContext* pDeviceContext) override;
+	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 
 private:
-	void DrawSet(ID3D11DeviceContext* pDeviceContext) override;
+	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 };

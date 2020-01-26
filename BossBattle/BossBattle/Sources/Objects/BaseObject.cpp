@@ -21,7 +21,7 @@ void BaseObject::EndUpdate()
 
 }
 
-void BaseObject::DrawSet(ID3D11DeviceContext* pDeviceContext)
+void BaseObject::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	// パラメータの計算
 	DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
@@ -47,7 +47,7 @@ void BaseObject::DrawSet(ID3D11DeviceContext* pDeviceContext)
 	shader->SetConstantBuffer(pDeviceContext, ccb);
 }
 
-void BaseObject::Draw(ID3D11DeviceContext* pDeviceContext)
+void BaseObject::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	DrawSet(pDeviceContext);
 

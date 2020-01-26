@@ -29,18 +29,20 @@ DeviceManager::DeviceManager(HWND WHandle)
 
 	D3D_FEATURE_LEVEL fl;
 	fl = D3D_FEATURE_LEVEL_11_0;
-	HResult = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &fl, 1, D3D11_SDK_VERSION, &dscd, &pSwapChain, &pDevice, NULL, &pDeviceContext);
+	//HResult = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &fl, 1, D3D11_SDK_VERSION, &dscd, &pSwapChain, &pDevice, NULL, &pDeviceContext);
+	HResult = D3D11CreateDeviceAndSwapChain(
+		NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &fl, 1, D3D11_SDK_VERSION, &dscd, pSwapChain.GetAddressOf(), pDevice.GetAddressOf(), NULL, pDeviceContext.GetAddressOf());
 	if (FAILED(HResult)) return;
 
 	//バックバッファの初期化
-	ID3D11Texture2D* pBackBuffer;
-	HResult = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+	ComPtr<ID3D11Texture2D> pBackBuffer;
+	HResult = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)pBackBuffer.GetAddressOf());
 	if (FAILED(HResult)) return;
 
 	D3D11_TEXTURE2D_DESC descBackBuffer;
 	pBackBuffer->GetDesc(&descBackBuffer);
-	HResult = pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView);
-	SAFE_RELEASE(pBackBuffer);
+	HResult = pDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL, pRenderTargetView.GetAddressOf());
+	pBackBuffer.Reset();
 	if (FAILED(HResult)) return;
 
 	//深度、ステンシル　テクスチャの作成
@@ -52,7 +54,7 @@ DeviceManager::DeviceManager(HWND WHandle)
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
-	HResult = pDevice->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
+	HResult = pDevice->CreateTexture2D(&descDepth, NULL, pDepthStencil.GetAddressOf());
 	if (FAILED(HResult)) return;
 
 	//深度、ステンシル　ビューの作成
@@ -61,7 +63,7 @@ DeviceManager::DeviceManager(HWND WHandle)
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Flags = 0;
 	descDSV.Texture2D.MipSlice = 0;
-	HResult = pDevice->CreateDepthStencilView(pDepthStencil, &descDSV, &pDepthStencilView);
+	HResult = pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, pDepthStencilView.GetAddressOf());
 	if (FAILED(HResult)) return;
 
 	//ビューポートの設定
@@ -75,12 +77,12 @@ DeviceManager::DeviceManager(HWND WHandle)
 
 DeviceManager::~DeviceManager()
 {
-	SAFE_RELEASE(pDepthStencilView);
-	SAFE_RELEASE(pDepthStencil);
-	SAFE_RELEASE(pRenderTargetView);
-	SAFE_RELEASE(pSwapChain);
-	SAFE_RELEASE(pDeviceContext);
-	SAFE_RELEASE(pDevice);
+	//SAFE_RELEASE(pDepthStencilView);
+	//SAFE_RELEASE(pDepthStencil);
+	//SAFE_RELEASE(pRenderTargetView);
+	//SAFE_RELEASE(pSwapChain);
+	//SAFE_RELEASE(pDeviceContext);
+	//SAFE_RELEASE(pDevice);
 
 	CoUninitialize();
 }
@@ -89,16 +91,16 @@ void DeviceManager::RenderBegin()
 {
 	// 描画ターゲットのクリア
 	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	pDeviceContext->ClearRenderTargetView(pRenderTargetView, ClearColor);
+	pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), ClearColor);
 
 	// 深度/ステンシル値のクリア
-	pDeviceContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	pDeviceContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	// ラスタライザにビューポートを設定
 	pDeviceContext->RSSetViewports(1, viewPort);
 
 	// 描画ターゲット・ビューを出力マージャーの描画ターゲットとして設定
-	pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView);
+	pDeviceContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 
 }
 

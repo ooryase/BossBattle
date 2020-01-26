@@ -12,7 +12,7 @@ class Battle : public BaseScene
 {
 	std::shared_ptr<ObjectManager> objectManager;
 
-	ID3D11Buffer* pConstantBuffer;
+	ComPtr<ID3D11Buffer> pConstantBuffer;
 
 	std::shared_ptr<GunBreaker> player;
 	std::shared_ptr<Light> light;
@@ -21,10 +21,10 @@ class Battle : public BaseScene
 	std::shared_ptr<ModelShader> gridShader;
 
 public:
-	Battle(ID3D11Device* pDevice);
+	Battle(ComPtr<ID3D11Device> pDevice);
 	~Battle();
 
 	void Update();
 	void EndUpdate();
-	void Draw(ID3D11DeviceContext* pDeviceContext);
+	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
 };

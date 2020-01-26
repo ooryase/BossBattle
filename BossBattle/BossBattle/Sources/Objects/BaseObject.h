@@ -37,8 +37,8 @@ public:
 
 	virtual void Update() = 0;
 	virtual void EndUpdate() = 0;
-	virtual void Draw(ID3D11DeviceContext* pDeviceContext);
+	virtual void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 protected:
-	virtual void DrawSet(ID3D11DeviceContext* pDeviceContext);
+	virtual void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 };

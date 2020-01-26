@@ -26,7 +26,7 @@ public:
 
 	virtual void Update() = 0;
 	virtual void EndUpdate() = 0;
-	virtual void Draw(ID3D11DeviceContext* pDeviceContext) = 0;
+	virtual void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) = 0;
 
 	SceneName GetNextScene() const { return nextScene; }
 };

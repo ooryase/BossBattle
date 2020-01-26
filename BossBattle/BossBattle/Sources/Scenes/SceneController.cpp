@@ -2,7 +2,7 @@
 #include"Title/Title.h"
 #include"Battle/Battle.h"
 
-SceneController::SceneController(ID3D11Device* pDevice)
+SceneController::SceneController(ComPtr<ID3D11Device> pDevice)
 {
 	scene = std::make_unique<Battle>(pDevice);
 	Timer::GetInstance().Init();
@@ -19,12 +19,12 @@ void SceneController::Update()
 	scene->Update();
 }
 
-void SceneController::Draw(ID3D11DeviceContext* pDeviceContext)
+void SceneController::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	scene->Draw(pDeviceContext);
 }
 
-void SceneController::EndUpdate(ID3D11Device* pDevice)
+void SceneController::EndUpdate(ComPtr<ID3D11Device> pDevice)
 {
 	scene->EndUpdate();
 	ChackNextScene(pDevice);
@@ -32,7 +32,7 @@ void SceneController::EndUpdate(ID3D11Device* pDevice)
 	Timer::GetInstance().Sleep();
 }
 
-void SceneController::ChackNextScene(ID3D11Device* pDevice)
+void SceneController::ChackNextScene(ComPtr<ID3D11Device> pDevice)
 {
 	switch (scene->GetNextScene())
 	{

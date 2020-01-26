@@ -13,30 +13,30 @@ namespace MODEL
 
 class ModelShader
 {
-	ID3D11InputLayout* pVertexLayout;
-	ID3D11VertexShader* pVertexShader;
-	ID3D11GeometryShader* pGeometryShader;
-	ID3D11PixelShader* pPixelShader;
+	ComPtr<ID3D11InputLayout> pVertexLayout;
+	ComPtr<ID3D11VertexShader> pVertexShader;
+	ComPtr<ID3D11GeometryShader> pGeometryShader;
+	ComPtr<ID3D11PixelShader> pPixelShader;
 
-	ID3D11InputLayout* pLineAdjVertexLayout;
-	ID3D11VertexShader* pLineAdjVertexShader;
-	ID3D11GeometryShader* pLineAdjGeometryShader;
-	ID3D11PixelShader* pLineAdjPixelShader;
+	ComPtr<ID3D11InputLayout> pLineAdjVertexLayout;
+	ComPtr<ID3D11VertexShader> pLineAdjVertexShader;
+	ComPtr<ID3D11GeometryShader> pLineAdjGeometryShader;
+	ComPtr<ID3D11PixelShader> pLineAdjPixelShader;
 
-	ID3D11Buffer* pConstantBuffer;
+	ComPtr<ID3D11Buffer> pConstantBuffer;
 
 public:
-	ModelShader(ID3D11Device* pDevice, const wchar_t fileName[], const wchar_t lineAdjFileName[]);
+	ModelShader(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[], const wchar_t lineAdjFileName[]);
 	~ModelShader();
 
-	void ShaderLoad(ID3D11Device* pDevice, const wchar_t fileName[],
-		ID3D11InputLayout** _pLayout,
-		ID3D11VertexShader** _pVertex,
-		ID3D11GeometryShader** _pGeometry,
-		ID3D11PixelShader** _pPixel);
+	void ShaderLoad(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[],
+		ComPtr<ID3D11InputLayout>* _pLayout,
+		ComPtr<ID3D11VertexShader>* _pVertex,
+		ComPtr<ID3D11GeometryShader>* _pGeometry,
+		ComPtr<ID3D11PixelShader>* _pPixel);
 
-	void DrawSet(ID3D11DeviceContext* pDeviceContext);
-	void DrawLineAdjSet(ID3D11DeviceContext* pDeviceContext);
+	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawLineAdjSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
-	void SetConstantBuffer(ID3D11DeviceContext* pDeviceContext, MODEL::CONSTANT_BUFFER constantBuffer);
+	void SetConstantBuffer(ComPtr<ID3D11DeviceContext> pDeviceContext, MODEL::CONSTANT_BUFFER constantBuffer);
 };

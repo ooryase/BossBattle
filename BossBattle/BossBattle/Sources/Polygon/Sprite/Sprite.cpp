@@ -3,7 +3,7 @@
 using namespace SPRITE;
 using namespace DirectX;
 
-Sprite::Sprite(ID3D11Device* pDevice, const wchar_t filename[])
+Sprite::Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
 {
 	TextureLoad(pDevice, filename);
 	CreateVertexBuffer(pDevice);
@@ -13,22 +13,22 @@ Sprite::Sprite(ID3D11Device* pDevice, const wchar_t filename[])
 
 Sprite::~Sprite()
 {
-	SAFE_RELEASE(pVerBuffer);
-	SAFE_RELEASE(pIndexBuffer);
-	SAFE_RELEASE(pRasterizerState);
+	//SAFE_RELEASE(pVerBuffer);
+	//SAFE_RELEASE(pIndexBuffer);
+	//SAFE_RELEASE(pRasterizerState);
 }
 
-void Sprite::TextureLoad(ID3D11Device* pDevice, const wchar_t filename[])
+void Sprite::TextureLoad(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
 {
-	IWICImagingFactory* pFactory = NULL;
-	IWICBitmapDecoder* pDecoder = NULL;
-	IWICBitmapFrameDecode* pFrame = NULL;
-	IWICFormatConverter* pFormatConverter = NULL;
-	CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)(&pFactory));
-	pFactory->CreateDecoderFromFilename(filename, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pDecoder);
-	pDecoder->GetFrame(0, &pFrame);
-	pFactory->CreateFormatConverter(&pFormatConverter);
-	pFormatConverter->Initialize(pFrame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeErrorDiffusion, NULL, 0.0f, WICBitmapPaletteTypeMedianCut);
+	ComPtr<IWICImagingFactory> pFactory;
+	ComPtr<IWICBitmapDecoder> pDecoder;
+	ComPtr<IWICBitmapFrameDecode> pFrame;
+	ComPtr<IWICFormatConverter> pFormatConverter;
+	CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)(pFactory.GetAddressOf()));
+	pFactory->CreateDecoderFromFilename(filename, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, pDecoder.GetAddressOf());
+	pDecoder->GetFrame(0, pFrame.GetAddressOf());
+	pFactory->CreateFormatConverter(pFormatConverter.GetAddressOf());
+	pFormatConverter->Initialize(pFrame.Get(), GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeErrorDiffusion, NULL, 0.0f, WICBitmapPaletteTypeMedianCut);
 
 	UINT imgWidth;
 	UINT imgHeight;
@@ -41,7 +41,7 @@ void Sprite::TextureLoad(ID3D11Device* pDevice, const wchar_t filename[])
 	smpdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	smpdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	smpdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	pDevice->CreateSamplerState(&smpdesc, &pSampler);
+	pDevice->CreateSamplerState(&smpdesc, pSampler.GetAddressOf());
 
 	std::vector<unsigned char> buffer(imgWidth * imgHeight * 4);
 	pFormatConverter->CopyPixels(NULL, imgWidth * 4, imgWidth * imgHeight * 4, &buffer[0]);
@@ -64,22 +64,22 @@ void Sprite::TextureLoad(ID3D11Device* pDevice, const wchar_t filename[])
 	texdec.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texdec.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	texdec.MiscFlags = 0;
-	pDevice->CreateTexture2D(&texdec, &initData, &pTexture);
+	pDevice->CreateTexture2D(&texdec, &initData, pTexture.GetAddressOf());
 
 	// シェーダリソースビュー(テクスチャ用)の設定
 	D3D11_SHADER_RESOURCE_VIEW_DESC srv = {};
 	srv.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	srv.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srv.Texture2D.MipLevels = 1;
-	pDevice->CreateShaderResourceView(pTexture, &srv, &pSRV);
+	pDevice->CreateShaderResourceView(pTexture.Get(), &srv, pSRV.GetAddressOf());
 
-	SAFE_RELEASE(pFormatConverter);
-	SAFE_RELEASE(pFrame);
-	SAFE_RELEASE(pDecoder);
-	SAFE_RELEASE(pFactory);
+	//SAFE_RELEASE(pFormatConverter);
+	//SAFE_RELEASE(pFrame);
+	//SAFE_RELEASE(pDecoder);
+	//SAFE_RELEASE(pFactory);
 }
 
-void Sprite::CreateVertexBuffer(ID3D11Device* pDevice)
+void Sprite::CreateVertexBuffer(ComPtr<ID3D11Device> pDevice)
 {
 	vertices.push_back(VERTEX(XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT2(0, 1)));
 	vertices.push_back(VERTEX(XMFLOAT3(-0.5f, 0.5f, 0.0f), XMFLOAT2(0, 0)));
@@ -95,10 +95,10 @@ void Sprite::CreateVertexBuffer(ID3D11Device* pDevice)
 	bd.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA initData;
 	initData.pSysMem = vertices.data();
-	pDevice->CreateBuffer(&bd, &initData, &pVerBuffer);
+	pDevice->CreateBuffer(&bd, &initData, pVerBuffer.GetAddressOf());
 }
 
-void Sprite::CreateIndexBuffer(ID3D11Device* pDevice)
+void Sprite::CreateIndexBuffer(ComPtr<ID3D11Device> pDevice)
 {
 	indices.push_back(0);
 	indices.push_back(1);
@@ -114,10 +114,10 @@ void Sprite::CreateIndexBuffer(ID3D11Device* pDevice)
 	bd.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA initData;
 	initData.pSysMem = indices.data();
-	pDevice->CreateBuffer(&bd, &initData, &pIndexBuffer);
+	pDevice->CreateBuffer(&bd, &initData, pIndexBuffer.GetAddressOf());
 }
 
-void Sprite::CreateRasterizerState(ID3D11Device* pDevice)
+void Sprite::CreateRasterizerState(ComPtr<ID3D11Device> pDevice)
 {
 	D3D11_RASTERIZER_DESC rdc = {};
 	rdc.CullMode = D3D11_CULL_NONE;
@@ -130,17 +130,17 @@ void Sprite::CreateRasterizerState(ID3D11Device* pDevice)
 	rdc.ScissorEnable = FALSE;
 	rdc.MultisampleEnable = FALSE;
 	rdc.AntialiasedLineEnable = FALSE;
-	pDevice->CreateRasterizerState(&rdc, &pRasterizerState);
+	pDevice->CreateRasterizerState(&rdc, pRasterizerState.GetAddressOf());
 }
 
-void Sprite::DrawSet(ID3D11DeviceContext* pDeviceContext)
+void Sprite::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0, 1, &pVerBuffer, &stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, pVerBuffer.GetAddressOf(), &stride, &offset);
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	pDeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	pDeviceContext->PSSetSamplers(0, 1, &pSampler);
-	pDeviceContext->PSSetShaderResources(0,1,&pSRV);
-	pDeviceContext->RSSetState(pRasterizerState);
+	pDeviceContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	pDeviceContext->PSSetSamplers(0, 1, pSampler.GetAddressOf());
+	pDeviceContext->PSSetShaderResources(0,1,pSRV.GetAddressOf());
+	pDeviceContext->RSSetState(pRasterizerState.Get());
 }

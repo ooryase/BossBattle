@@ -1,6 +1,6 @@
 #include "ModelShader.h"
 
-ModelShader::ModelShader(ID3D11Device* pDevice, const wchar_t fileName[], const wchar_t lineAdjFileName[])
+ModelShader::ModelShader(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[], const wchar_t lineAdjFileName[])
 {
 	ShaderLoad(pDevice, fileName, &pVertexLayout, &pVertexShader, &pGeometryShader, &pPixelShader);
 	ShaderLoad(pDevice, lineAdjFileName, &pLineAdjVertexLayout, &pLineAdjVertexShader, &pLineAdjGeometryShader, &pLineAdjPixelShader);
@@ -8,44 +8,45 @@ ModelShader::ModelShader(ID3D11Device* pDevice, const wchar_t fileName[], const 
 
 ModelShader::~ModelShader()
 {
-	SAFE_RELEASE(pVertexLayout);
-	SAFE_RELEASE(pVertexShader);
-	SAFE_RELEASE(pGeometryShader);
-	SAFE_RELEASE(pPixelShader);
-
-	SAFE_RELEASE(pLineAdjVertexLayout);
-	SAFE_RELEASE(pLineAdjVertexShader);
-	SAFE_RELEASE(pLineAdjGeometryShader);
-	SAFE_RELEASE(pLineAdjPixelShader);
-
-	SAFE_RELEASE(pConstantBuffer);
+	//SAFE_RELEASE(pVertexLayout);
+	//SAFE_RELEASE(pVertexShader);
+	//SAFE_RELEASE(pGeometryShader);
+	//SAFE_RELEASE(pPixelShader);
+	//
+	//SAFE_RELEASE(pLineAdjVertexLayout);
+	//SAFE_RELEASE(pLineAdjVertexShader);
+	//SAFE_RELEASE(pLineAdjGeometryShader);
+	//SAFE_RELEASE(pLineAdjPixelShader);
+	//
+	//SAFE_RELEASE(pConstantBuffer);
 }
 
-void ModelShader::ShaderLoad(ID3D11Device* pDevice, const wchar_t fileName[],
-	ID3D11InputLayout** _pLayout,
-	ID3D11VertexShader** _pVertex,
-	ID3D11GeometryShader** _pGeometry,
-	ID3D11PixelShader** _pPixel)
+void ModelShader::ShaderLoad(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[],
+	ComPtr<ID3D11InputLayout>* _pLayout,
+	ComPtr<ID3D11VertexShader>* _pVertex,
+	ComPtr<ID3D11GeometryShader>* _pGeometry,
+	ComPtr<ID3D11PixelShader>* _pPixel)
 {
 	// シェーダの設定
-	ID3DBlob* pCompileVS = NULL;
-	ID3DBlob* pCompilePS = NULL;
-	ID3DBlob* pCompileGS = NULL;
-	D3DCompileFromFile(fileName, NULL, NULL, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	D3DCompileFromFile(fileName, NULL, NULL, "GS", "gs_5_0", NULL, 0, &pCompileGS, NULL);
-	D3DCompileFromFile(fileName, NULL, NULL, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-	pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, _pVertex);
-	pDevice->CreateGeometryShader(pCompileGS->GetBufferPointer(), pCompileGS->GetBufferSize(), NULL, _pGeometry);
-	pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, _pPixel);
+	ComPtr<ID3DBlob> pCompileVS;
+	ComPtr<ID3DBlob> pCompileGS;
+	ComPtr<ID3DBlob> pCompilePS;
+	D3DCompileFromFile(fileName, NULL, NULL, "VS", "vs_5_0", NULL, 0, pCompileVS.GetAddressOf(), NULL);
+	D3DCompileFromFile(fileName, NULL, NULL, "GS", "gs_5_0", NULL, 0, pCompileGS.GetAddressOf(), NULL);
+	D3DCompileFromFile(fileName, NULL, NULL, "PS", "ps_5_0", NULL, 0, pCompilePS.GetAddressOf(), NULL);
+	pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, _pVertex->GetAddressOf());
+	pDevice->CreateGeometryShader(pCompileGS->GetBufferPointer(), pCompileGS->GetBufferSize(), NULL, _pGeometry->GetAddressOf());
+	pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, _pPixel->GetAddressOf());
 
 	// 頂点レイアウト
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	pDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), _pLayout);
-	pCompileVS->Release();
-	pCompilePS->Release();
+	pDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), _pLayout->GetAddressOf());
+	pCompileVS.Reset();
+	pCompileGS.Reset();
+	pCompilePS.Reset();
 
 	// 定数バッファの設定
 	D3D11_BUFFER_DESC cb;
@@ -55,34 +56,34 @@ void ModelShader::ShaderLoad(ID3D11Device* pDevice, const wchar_t fileName[],
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
-	pDevice->CreateBuffer(&cb, NULL, &pConstantBuffer);
+	pDevice->CreateBuffer(&cb, NULL, pConstantBuffer.GetAddressOf());
 
 }
 
-void ModelShader::DrawSet(ID3D11DeviceContext* pDeviceContext)
+void ModelShader::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	pDeviceContext->IASetInputLayout(pVertexLayout);
-	pDeviceContext->VSSetShader(pVertexShader, NULL, 0);
-	pDeviceContext->GSSetShader(pGeometryShader, NULL, 0);
-	pDeviceContext->PSSetShader(pPixelShader, NULL, 0);
+	pDeviceContext->IASetInputLayout(pVertexLayout.Get());
+	pDeviceContext->VSSetShader(pVertexShader.Get(), NULL, 0);
+	pDeviceContext->GSSetShader(pGeometryShader.Get(), NULL, 0);
+	pDeviceContext->PSSetShader(pPixelShader.Get(), NULL, 0);
 }
 
-void ModelShader::DrawLineAdjSet(ID3D11DeviceContext* pDeviceContext)
+void ModelShader::DrawLineAdjSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	pDeviceContext->IASetInputLayout(pLineAdjVertexLayout);
-	pDeviceContext->VSSetShader(pLineAdjVertexShader, NULL, 0);
-	pDeviceContext->GSSetShader(pLineAdjGeometryShader, NULL, 0);
-	pDeviceContext->PSSetShader(pLineAdjPixelShader, NULL, 0);
+	pDeviceContext->IASetInputLayout(pLineAdjVertexLayout.Get());
+	pDeviceContext->VSSetShader(pLineAdjVertexShader.Get(), NULL, 0);
+	pDeviceContext->GSSetShader(pLineAdjGeometryShader.Get(), NULL, 0);
+	pDeviceContext->PSSetShader(pLineAdjPixelShader.Get(), NULL, 0);
 }
 
-void ModelShader::SetConstantBuffer(ID3D11DeviceContext* pDeviceContext, MODEL::CONSTANT_BUFFER constantBuffer)
+void ModelShader::SetConstantBuffer(ComPtr<ID3D11DeviceContext> pDeviceContext, MODEL::CONSTANT_BUFFER constantBuffer)
 {
 	D3D11_MAPPED_SUBRESOURCE data;
-	pDeviceContext->Map(pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 	memcpy_s(data.pData, data.RowPitch, (void*)(&constantBuffer), sizeof(constantBuffer));
-	pDeviceContext->Unmap(pConstantBuffer, 0);
+	pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
 
-	pDeviceContext->VSSetConstantBuffers(1, 1, &pConstantBuffer);
-	pDeviceContext->GSSetConstantBuffers(1, 1, &pConstantBuffer);
-	pDeviceContext->PSSetConstantBuffers(1, 1, &pConstantBuffer);
+	pDeviceContext->VSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->GSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
 }

@@ -1,7 +1,7 @@
 #include"Battle.h"
 #include"../../System/InputController.h"
 
-Battle::Battle(ID3D11Device* pDevice) : BaseScene()
+Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 {
 
 
@@ -13,7 +13,7 @@ Battle::Battle(ID3D11Device* pDevice) : BaseScene()
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
-	pDevice->CreateBuffer(&cb, NULL, &pConstantBuffer);
+	pDevice->CreateBuffer(&cb, NULL, pConstantBuffer.GetAddressOf());
 
 	objectManager = std::make_unique<ObjectManager>();
 	//objectManager->SstModelMap(pDevice, "Monkey");
@@ -34,7 +34,7 @@ Battle::Battle(ID3D11Device* pDevice) : BaseScene()
 
 Battle::~Battle()
 {
-	SAFE_RELEASE(pConstantBuffer);
+	//SAFE_RELEASE(pConstantBuffer);
 }
 
 void Battle::Update()
@@ -47,9 +47,9 @@ void Battle::EndUpdate()
 	player->EndUpdate();
 }
 
-void Battle::Draw(ID3D11DeviceContext* pDeviceContext)
+void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	pDeviceContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+	pDeviceContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
 
 	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 10.0f, -50.0f, 1.0f);
 	DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 10.0f, 0.0f, 1.0f);
@@ -62,9 +62,9 @@ void Battle::Draw(ID3D11DeviceContext* pDeviceContext)
 	CONSTANT_BUFFER cb;
 	DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
 	DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(Proj));
-	pDeviceContext->Map(pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 	memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
-	pDeviceContext->Unmap(pConstantBuffer, 0);
+	pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
 
 	player->Draw(pDeviceContext);
 

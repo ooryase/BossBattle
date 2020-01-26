@@ -9,13 +9,13 @@ class SceneController
 	std::unique_ptr<BaseScene> scene;
 
 public:
-	SceneController(ID3D11Device* pDevice);
+	SceneController(ComPtr<ID3D11Device> pDevice);
 	~SceneController();
 
 	void Update();
-	void Draw(ID3D11DeviceContext* pDeviceContext);
-	void EndUpdate(ID3D11Device* pDevice);
+	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void EndUpdate(ComPtr<ID3D11Device> pDevice);
 
 private:
-	void ChackNextScene(ID3D11Device* pDevice);
+	void ChackNextScene(ComPtr<ID3D11Device> pDevice);
 };
