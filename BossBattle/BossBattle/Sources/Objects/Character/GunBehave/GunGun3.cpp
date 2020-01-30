@@ -1,11 +1,14 @@
 #include"GunGun3.h"
 
-GunGun3::GunGun3(std::shared_ptr<Param> param) : GunBehave()
+GunGun3::GunGun3(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 	shootFlag = false;
+	param->speed.y = 0.0f;
+	param->gravity = param->GRAVITY_DEF * 0.4f;
+
 }
 
-void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -24,7 +27,7 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::s
 		if (!shootFlag)
 		{
 			shootPos = pos;
-			param->speed.y = 0.1f;
+			param->speed.y = 0.08f;
 			shootFlag = true;
 		}
 		float temp = static_cast<float>(time - 15 * 16) * 1.1f;

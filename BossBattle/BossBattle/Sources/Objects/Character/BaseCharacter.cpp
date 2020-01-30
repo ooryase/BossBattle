@@ -7,5 +7,4 @@ BaseCharacter::BaseCharacter(std::shared_ptr<Light> _light) : BaseObject(_light)
 	die = false;
 	dead = false;
 
-	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 }

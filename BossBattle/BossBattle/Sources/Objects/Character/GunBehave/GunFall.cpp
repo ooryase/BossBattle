@@ -1,10 +1,10 @@
 #include"GunFall.h"
 
-GunFall::GunFall(std::shared_ptr<Param> param) : GunBehave()
+GunFall::GunFall(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 }
 
-void GunFall::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunFall::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 

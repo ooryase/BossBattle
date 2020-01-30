@@ -11,5 +11,5 @@ struct GunGun2 : public GunBehave
 	DirectX::XMFLOAT3 shootPos;
 	bool shootFlag;
 
-	void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light);
+	void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light);
 };

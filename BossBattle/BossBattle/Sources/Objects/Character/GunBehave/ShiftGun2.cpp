@@ -1,14 +1,12 @@
-#include"GunGun2.h"
+#include"ShiftGun2.h"
 
-GunGun2::GunGun2(std::shared_ptr<Param> _param) : GunBehave(_param)
+ShiftGun2::ShiftGun2(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 	shootFlag = false;
-	param->speed.y = 0.0f;
-	param->gravity = param->GRAVITY_DEF * 0.4f;
-
+	param->gravity = param->GRAVITY_DEF * 0.7f;
 }
 
-void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
+void ShiftGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -27,8 +25,9 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		if (!shootFlag)
 		{
 			shootPos = pos;
-			param->speed.y = 0.12f;
+			param->speed.y = 0.3f;
 			shootFlag = true;
+			param->speed.x = -0.22f * sin(param->direction.z);
 		}
 		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
 
@@ -41,21 +40,21 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	}
 
 
-	param->speed.x *= 0.99f;
-	
-	if (time > 600)
+	param->speed.x *= 0.991f;
+
+	/*if (time > 600)
 	{
 		if (InputController::getInstance().IsPressKey(DIK_Z) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::SHIFT_BREAD2;
+			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
 		}
 		else if (InputController::getInstance().IsPressKey(DIK_X) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
 		{
 			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
 		}
-	}
+	}*/
 
 	if (time > 1000)
 	{

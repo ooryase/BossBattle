@@ -1,12 +1,12 @@
 #include"GunJump.h"
 
-GunJump::GunJump(std::shared_ptr<Param> param) : GunBehave()
+GunJump::GunJump(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 	param->speed.y = 0.3f;
 	param->ground = false;
 }
 
-void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 

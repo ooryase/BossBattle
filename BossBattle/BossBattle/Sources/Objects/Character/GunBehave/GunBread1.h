@@ -9,5 +9,5 @@ struct GunBread1 : public GunBehave
 	~GunBread1() {};
 
 
-	void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light);
+	void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light);
 };

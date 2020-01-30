@@ -3,11 +3,12 @@
 #include"GunBehave.h"
 
 
-struct GunJump : public GunBehave
+struct ShiftBread2 : public GunBehave
 {
-	GunJump(std::shared_ptr<Param> param);
-	~GunJump() {};
+	ShiftBread2(std::shared_ptr<Param> param);
+	~ShiftBread2() {};
 
+	DirectX::XMFLOAT3 shootPos;
 
 	void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light);
 };

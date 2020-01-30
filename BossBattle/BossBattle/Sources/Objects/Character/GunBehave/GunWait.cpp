@@ -1,10 +1,10 @@
 #include"GunWait.h"
 
-GunWait::GunWait(std::shared_ptr<Param> param) : GunBehave()
+GunWait::GunWait(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 }
 
-void GunWait::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunWait::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 

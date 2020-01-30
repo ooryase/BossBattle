@@ -1,10 +1,10 @@
 #include"GunDash.h"
 
-GunDash::GunDash(std::shared_ptr<Param> param) : GunBehave()
+GunDash::GunDash(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 }
 
-void GunDash::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunDash::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 

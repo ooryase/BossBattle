@@ -8,6 +8,8 @@
 
 class GunBreaker : public BaseCharacter
 {
+	std::shared_ptr<Sprite> gauge;
+	std::shared_ptr<SpriteShader> gaugeShader;
 
 public:
 
@@ -19,7 +21,10 @@ public:
 	void Update();
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
+	void DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 private:
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
+
+	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext);
 };

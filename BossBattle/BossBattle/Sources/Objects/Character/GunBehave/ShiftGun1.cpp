@@ -1,14 +1,13 @@
-#include"GunGun2.h"
+#include"ShiftGun1.h"
 
-GunGun2::GunGun2(std::shared_ptr<Param> _param) : GunBehave(_param)
+ShiftGun1::ShiftGun1(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 	shootFlag = false;
-	param->speed.y = 0.0f;
-	param->gravity = param->GRAVITY_DEF * 0.4f;
+	param->gravity = param->GRAVITY_DEF * 0.7f;
 
 }
 
-void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
+void ShiftGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -27,8 +26,9 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		if (!shootFlag)
 		{
 			shootPos = pos;
-			param->speed.y = 0.12f;
+			param->speed.y = 0.15f;
 			shootFlag = true;
+			param->speed.x = -0.27f * sin(param->direction.z);
 		}
 		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
 
@@ -42,7 +42,7 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 
 	param->speed.x *= 0.99f;
-	
+
 	if (time > 600)
 	{
 		if (InputController::getInstance().IsPressKey(DIK_Z) ||

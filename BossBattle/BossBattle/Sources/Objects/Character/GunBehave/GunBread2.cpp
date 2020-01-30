@@ -1,12 +1,14 @@
 #include"GunBread2.h"
 
-GunBread2::GunBread2(std::shared_ptr<Param> param) : GunBehave()
+GunBread2::GunBread2(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
-	param->speed.y = 0.0f;
+	if (!param->ground && param->speed.y < 0.0f)
+		param->speed.y = 0.015f;
 
+	param->gravity = param->GRAVITY_DEF * 0.2f;
 }
 
-void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -30,7 +32,7 @@ void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std:
 		else if (InputController::getInstance().IsPressKey(DIK_X) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
 		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
+			nextBehave = GUN_BEHAVE::BehaveName::SHIFT_GUN2;
 		}
 	}
 

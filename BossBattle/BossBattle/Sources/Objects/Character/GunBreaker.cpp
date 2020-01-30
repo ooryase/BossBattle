@@ -12,20 +12,28 @@
 #include"GunBehave/GunGun1.h"
 #include"GunBehave/GunGun2.h"
 #include"GunBehave/GunGun3.h"
+#include"GunBehave/ShiftBread1.h"
+#include"GunBehave/ShiftBread2.h"
+#include"GunBehave/ShiftGun1.h"
+#include"GunBehave/ShiftGun2.h"
 
 GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light) : BaseCharacter(_light)
 {
 	model = objectManager->GetModel("gunbreaker");
 	shader = objectManager->GetModelShader(L"shader");
 
+	gauge = objectManager->GetSprite(L"Tex");
+	gaugeShader = objectManager->GetSpriteShader(L"shader");
+
 	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotateDef = DirectX::XMFLOAT3(-DirectX::XM_PIDIV2, 0.0f, DirectX::XM_PI);
 	
+	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0025f);
 	behave = std::make_shared<GunWait>(param);
 
-	param->gravity = 0.0025f;
+
 }
 
 GunBreaker::~GunBreaker()
@@ -35,7 +43,7 @@ GunBreaker::~GunBreaker()
 
 void GunBreaker::Update()
 {
-	behave->Update(position, param, light);
+	behave->Update(position, light);
 
 	position.x += param->speed.x;
 	position.y += param->speed.y;
@@ -57,8 +65,12 @@ void GunBreaker::EndUpdate()
 {
 	if (behave->IsNextBehave())
 	{
-		model->SetAnimSackNumber(static_cast<int>(behave->GetNextBehave()));
-		switch (behave->GetNextBehave())
+		GUN_BEHAVE::BehaveName temp = behave->GetNextBehave();
+
+		model->SetAnimSackNumber(static_cast<int>(temp));
+
+		behave.reset();
+		switch (temp)
 		{
 		case GUN_BEHAVE::BehaveName::WAIT:
 			behave = std::make_shared<GunWait>(param);
@@ -92,6 +104,18 @@ void GunBreaker::EndUpdate()
 			break;
 		case GUN_BEHAVE::BehaveName::GUN3:
 			behave = std::make_shared<GunGun3>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::SHIFT_BREAD1:
+			behave = std::make_shared<ShiftBread1>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::SHIFT_BREAD2:
+			behave = std::make_shared<ShiftBread2>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::SHIFT_GUN1:
+			behave = std::make_shared<ShiftGun1>(param);
+			break;
+		case GUN_BEHAVE::BehaveName::SHIFT_GUN2:
+			behave = std::make_shared<ShiftGun2>(param);
 			break;
 		default:
 			break;
@@ -134,6 +158,7 @@ void GunBreaker::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 			light->playerAttenuation.w));
 
 	shader->SetConstantBuffer(pDeviceContext, ccb);
+
 }
 
 void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
@@ -152,5 +177,30 @@ void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// •`‰æŽÀs
 	pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
 
+}
 
+void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	DirectX::XMMATRIX m_World = DirectX::XMMatrixTranslation(0.0f, 0.0f, -2.0f);
+	m_World *= DirectX::XMMatrixScaling(1.6f, 1.6f, 1.6f);
+
+	SPRITE::CONSTANT_BUFFER ccb2;
+	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(m_World));
+	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
+
+	//DirectX::XMMATRIX World = DirectX::XMMatrixRotationY(x += 0.001f);
+//DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f);
+//World *= Offset;
+}
+
+void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	DrawSetGauge(pDeviceContext);
+
+	gauge->DrawSet(pDeviceContext);
+	gaugeShader->DrawSet(pDeviceContext);
+
+	//pDeviceContext->Draw(sprite->GetIndexCount(), 0);
+
+	pDeviceContext->Draw(gauge->GetIndexCount(), 0);
 }

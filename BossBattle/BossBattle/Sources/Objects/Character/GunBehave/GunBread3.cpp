@@ -1,11 +1,13 @@
 #include"GunBread3.h"
 
-GunBread3::GunBread3(std::shared_ptr<Param> param) : GunBehave()
+GunBread3::GunBread3(std::shared_ptr<Param> _param) : GunBehave(_param)
 {
 	param->speed.y = 0.26f;
+	param->gravity = param->GRAVITY_DEF * 0.7f;
+
 }
 
-void GunBread3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Param> param, std::shared_ptr<Light> light)
+void GunBread3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 

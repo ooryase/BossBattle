@@ -189,6 +189,18 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunGun3.cpp">
       <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftBread1.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftBread2.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun1.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun2.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -279,6 +291,18 @@
       <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunGun3.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftBread1.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftBread2.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun1.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun2.h">
       <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
     </ClInclude>
   </ItemGroup>

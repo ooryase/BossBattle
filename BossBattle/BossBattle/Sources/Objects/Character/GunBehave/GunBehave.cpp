@@ -1,9 +1,15 @@
 #include"GunBehave.h"
 
-GunBehave::GunBehave()
+GunBehave::GunBehave(std::shared_ptr<Param> _param) :
+	param(_param)
 {
 	nextBehave = GUN_BEHAVE::BehaveName::NONE;
 	time = 0;
+}
+
+GunBehave::~GunBehave()
+{
+	param->gravity = param->GRAVITY_DEF;
 }
 
 

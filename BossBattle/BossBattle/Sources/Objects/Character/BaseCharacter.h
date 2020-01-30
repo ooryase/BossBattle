@@ -7,12 +7,14 @@ struct Param
 	DirectX::XMFLOAT3 direction;
 	bool ground;
 	float gravity;
+	const float GRAVITY_DEF;
 
-	Param(DirectX::XMFLOAT3 _speed) :
+	Param(DirectX::XMFLOAT3 _speed, float gravityDefault) :
 		speed(_speed),
 		direction(DirectX::XMFLOAT3(0.0f,0.0f,DirectX::XM_PIDIV2)),
 		ground(false),
-		gravity(0.0f)
+		gravity(gravityDefault),
+		GRAVITY_DEF(gravityDefault)
 	{}
 
 };

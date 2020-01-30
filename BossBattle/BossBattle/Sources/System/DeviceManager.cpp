@@ -66,6 +66,22 @@ DeviceManager::DeviceManager(HWND WHandle)
 	HResult = pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, pDepthStencilView.GetAddressOf());
 	if (FAILED(HResult)) return;
 
+	D3D11_BLEND_DESC descBS;
+	descBS.AlphaToCoverageEnable = FALSE;
+	descBS.IndependentBlendEnable = FALSE;
+	for (int i = 0; i < 8; i++) {
+		descBS.RenderTarget[i].BlendEnable = TRUE;
+		descBS.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		descBS.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		descBS.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		descBS.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		descBS.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		descBS.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		descBS.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
+	pDevice->CreateBlendState(&descBS, pBlendState.GetAddressOf());
+
+
 	//ビューポートの設定
 	viewPort[0].TopLeftX = 0.0f;
 	viewPort[0].TopLeftY = 0.0f;
@@ -101,6 +117,11 @@ void DeviceManager::RenderBegin()
 
 	// 描画ターゲット・ビューを出力マージャーの描画ターゲットとして設定
 	pDeviceContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
+
+
+	//ブレンディングをコンテキストを設定
+	float blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
+	pDeviceContext->OMSetBlendState(pBlendState.Get(), blendFactor, 0xffffffff);
 
 }
 

@@ -33,6 +33,10 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunJump.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunRun.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunWait.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftBread1.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftBread2.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun1.cpp" />
+    <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun2.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp" />
     <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp" />
@@ -65,6 +69,10 @@
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunJump.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunRun.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunWait.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftBread1.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftBread2.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun1.h" />
+    <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun2.h" />
     <ClInclude Include="Sources\Objects\Character\GunBreaker.h" />
     <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
     <ClInclude Include="Sources\Polygon\Model\FbxModel.h" />

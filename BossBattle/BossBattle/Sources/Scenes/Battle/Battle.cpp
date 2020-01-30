@@ -68,7 +68,6 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	player->Draw(pDeviceContext);
 
-
 	///////////////////////////////////////////////////////
 		// パラメータの計算
 	DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
@@ -109,5 +108,8 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	//
 	//// 描画実行
 	//pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
+
+	player->DrawGauge(pDeviceContext);
+
 
 }
