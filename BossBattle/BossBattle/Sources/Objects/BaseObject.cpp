@@ -65,3 +65,18 @@ void BaseObject::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 
 }
+
+DirectX::XMFLOAT3 BaseObject::GetPos() const
+{
+	return position;
+}
+
+float BaseObject::GetRadius() const
+{
+	return radius;
+}
+
+ObjectTag BaseObject::GetTag() const
+{
+	return tag;
+}

@@ -29,4 +29,8 @@ public:
 	virtual void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) = 0;
 
 	SceneName GetNextScene() const { return nextScene; }
+
+private:
+	virtual void SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext) = 0;
+
 };

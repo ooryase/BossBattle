@@ -130,3 +130,23 @@ void Title::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	//player->Draw(pDeviceContext);
 	//
 }
+
+void Title::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	//pDeviceContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
+	//
+	//DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 10.0f, -50.0f, 1.0f);
+	//DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 10.0f, 0.0f, 1.0f);
+	//DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+	//DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);
+	////DirectX::XMMATRIX Proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
+	//DirectX::XMMATRIX Proj = DirectX::XMMatrixOrthographicLH(1280.0f * 0.05f, 720.0f * 0.05f, 0.1f, 500.0f);
+	//
+	//D3D11_MAPPED_SUBRESOURCE data;
+	//CONSTANT_BUFFER cb;
+	//DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
+	//DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(Proj));
+	//pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	//memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
+	//pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
+}

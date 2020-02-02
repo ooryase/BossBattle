@@ -41,5 +41,10 @@ public:
 
 	virtual void Update() = 0;
 
+	void OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta);
+protected:
+	//void CollisionNormal();
+	//void CollisionStealth();
+	//void CollisionDamage();
 
 };

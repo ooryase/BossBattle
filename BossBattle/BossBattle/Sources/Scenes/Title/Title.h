@@ -33,4 +33,7 @@ public:
 	void Update();
 	void EndUpdate() {};
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
+
+private:
+	void SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext);
 };

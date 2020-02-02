@@ -18,6 +18,15 @@ struct Light
 	{}
 };
 
+enum class ObjectTag
+{
+	NORMAL,
+	STEALTH,
+	DAMAGE,
+	//ITEM,
+	//EVENT,
+};
+
 
 class BaseObject
 {
@@ -31,6 +40,11 @@ protected:
 	std::shared_ptr<ModelShader> shader;
 
 	std::shared_ptr<Light> light;
+
+	ObjectTag tag;
+
+	float radius; //“–‚½‚è”»’è‚Ì”¼Œa
+
 public:
 	BaseObject(std::shared_ptr<Light> _light);
 	~BaseObject();
@@ -41,4 +55,14 @@ public:
 
 protected:
 	virtual void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
+
+
+public:
+	virtual void OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta) = 0;
+
+public:
+	DirectX::XMFLOAT3 GetPos() const;
+	float GetRadius() const;
+	ObjectTag GetTag() const;
+
 };

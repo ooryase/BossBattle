@@ -201,6 +201,9 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun2.cpp">
       <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\SpaceBoss.cpp">
+      <Filter>ソース ファイル\Objects\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun2.h">
       <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\SpaceBoss.h">
+      <Filter>ヘッダー ファイル\Objects\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

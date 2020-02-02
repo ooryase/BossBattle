@@ -33,7 +33,10 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0025f);
 	behave = std::make_shared<GunWait>(param);
 
+	e = 1.0f;
+	radius = 2.0f;
 
+	tag = ObjectTag::NORMAL;
 }
 
 GunBreaker::~GunBreaker()
@@ -181,7 +184,7 @@ void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	DirectX::XMMATRIX m_World = DirectX::XMMatrixTranslation(0.0f, 0.0f, -2.0f);
+	DirectX::XMMATRIX m_World = DirectX::XMMatrixTranslation(-20.0f, 20.0f, -2.0f);
 	m_World *= DirectX::XMMatrixScaling(1.6f, 1.6f, 1.6f);
 
 	SPRITE::CONSTANT_BUFFER ccb2;
