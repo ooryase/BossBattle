@@ -16,6 +16,7 @@ namespace SPRITE
 
 class Sprite
 {
+protected:
 	ComPtr<ID3D11Texture2D> pTexture;
 	ComPtr<ID3D11ShaderResourceView> pSRV;
 	ComPtr<ID3D11SamplerState> pSampler;
@@ -33,10 +34,12 @@ public:
 	~Sprite();
 
 	int GetIndexCount() { return indices.size(); };
-	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
-private:
+	virtual void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
+
+	virtual void Scroll(float param);
+protected:
 	void TextureLoad(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
-	void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice);
-	void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice);
-	void CreateRasterizerState(ComPtr<ID3D11Device> pDevice);
+	virtual void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
+	virtual void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
+	virtual void CreateRasterizerState(ComPtr<ID3D11Device> pDevice) = 0;
 };

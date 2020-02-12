@@ -1,5 +1,6 @@
 #pragma once
 #include "../BaseObject.h"
+#include "../Effect/BaseEffect.h"
 
 struct Param
 {
@@ -19,7 +20,7 @@ struct Param
 
 };
 
-class BaseCharacter : public BaseObject
+class BaseCharacter : public BaseObject, public std::enable_shared_from_this<BaseCharacter>
 {
 
 protected:
@@ -27,24 +28,43 @@ protected:
 
 	float e; //îΩî≠åWêî
 
-	bool die;
-	bool dead;
+	bool isDead;
 
 	//IsHit();
 
+	std::shared_ptr<Light> light;
+
+	std::shared_ptr<BaseModel> model;
+	std::shared_ptr<ModelShader> shader;
+
+
 	std::shared_ptr<Param> param;
 
+	std::vector< std::shared_ptr< BaseEffect>> *effectReserves;
+	std::shared_ptr<ObjectManager> objectManager;
 
 public:
-	BaseCharacter(std::shared_ptr<Light> _light);
+	BaseCharacter(std::shared_ptr<Light> _light,
+		std::vector< std::shared_ptr< BaseEffect>>& _effectReserves,
+		std::shared_ptr<ObjectManager> _objectManager);
 	~BaseCharacter() {};
 
 	virtual void Update() = 0;
 
 	void OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta);
-protected:
-	//void CollisionNormal();
-	//void CollisionStealth();
-	//void CollisionDamage();
 
+	void CollisionNormal(DirectX::XMFLOAT3 delta);
+	void CollisionDamage(DParam* dParam);
+
+protected:
+
+public:
+	virtual void AttackHit(int type, int quantity);
+
+	virtual void SetObjectReserved(std::shared_ptr<BaseCharacter> _chara);
+	virtual void SetEffectReserved(std::shared_ptr<BaseEffect> _obj);
+
+	std::shared_ptr<ObjectManager> GetObjectManager() const;
+	std::shared_ptr<Light> GetLight() const;
+	DirectX::XMFLOAT3 GetDirection() const;
 };

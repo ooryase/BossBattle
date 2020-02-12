@@ -97,6 +97,18 @@
     <Filter Include="ヘッダー ファイル\Objects\Character\GunBehave">
       <UniqueIdentifier>{0906e31b-5555-4d34-9674-a705b2074d8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Objects\Effect">
+      <UniqueIdentifier>{4fec88b0-e274-442f-a63f-1707e3ceb6ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects\Effect">
+      <UniqueIdentifier>{8f9b478b-d8e7-480f-991c-7cb805ee80bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Objects\BackGround">
+      <UniqueIdentifier>{c9823ce2-e1be-4377-aa0d-5f857087f5d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Objects\BackGround">
+      <UniqueIdentifier>{a28135cf-f63f-4222-adc8-f30858ac49c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\System\DeviceManager.cpp">
@@ -204,6 +216,21 @@
     <ClCompile Include="Sources\Objects\Character\SpaceBoss.cpp">
       <Filter>ソース ファイル\Objects\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread1.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\BaseEffect.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Sprite\OctagonSprite.cpp">
+      <Filter>ソース ファイル\Polygon\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Polygon\Sprite\DefaultSprite.cpp">
+      <Filter>ソース ファイル\Polygon\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\BackGround\Space.cpp">
+      <Filter>ソース ファイル\Objects\BackGround</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -310,6 +337,21 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Character\SpaceBoss.h">
       <Filter>ヘッダー ファイル\Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread1.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\BaseEffect.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Sprite\OctagonSprite.h">
+      <Filter>ヘッダー ファイル\Polygon\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Polygon\Sprite\DefaultSprite.h">
+      <Filter>ヘッダー ファイル\Polygon\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\BackGround\Space.h">
+      <Filter>ヘッダー ファイル\Objects\BackGround</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

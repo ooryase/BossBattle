@@ -1,6 +1,7 @@
 #include"GunGun3.h"
 
-GunGun3::GunGun3(std::shared_ptr<Param> _param) : GunBehave(_param)
+GunGun3::GunGun3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 	shootFlag = false;
 	param->speed.y = 0.0f;
@@ -14,13 +15,13 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time < 15 * 16)
 	{
-		light->playerLight.x = pos.x + 6.0f * sin(param->direction.z);
-		light->playerLight.y = pos.y - 2.0f;
+		light->Player.x = pos.x + 6.0f * sin(param->direction.z);
+		light->Player.y = pos.y - 2.0f;
 
 		float temp = static_cast<float>((time + 200) * (time - 1000)) / 360000.0f;
-		light->playerAttenuation.x = 2.0f + temp;
-		light->playerAttenuation.y = 0.0105f + temp / 100.0f;
-		light->playerAttenuation.z = 0.0105f + temp / 100.0f;
+		light->PAttenuation.x = 2.0f + temp;
+		light->PAttenuation.y = 0.0105f + temp / 100.0f;
+		light->PAttenuation.z = 0.0105f + temp / 100.0f;
 	}
 	else
 	{
@@ -32,12 +33,12 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		}
 		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
 
-		light->playerLight.x = pos.x + temp * sin(param->direction.z);
-		light->playerLight.y = pos.y - 2.0f;
+		light->Player.x = pos.x + temp * sin(param->direction.z);
+		light->Player.y = pos.y - 2.0f;
 
-		light->playerAttenuation.x = 1.0f;
-		light->playerAttenuation.y = 0.0105f;
-		light->playerAttenuation.z = 0.0105f;
+		light->PAttenuation.x = 1.0f;
+		light->PAttenuation.y = 0.0105f;
+		light->PAttenuation.z = 0.0105f;
 	}
 
 
@@ -59,8 +60,8 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 1000)
 	{
-		light->playerLight.x = 1000.0f;
-		light->playerLight.y = 1000.0f;
+		light->Player.x = 1000.0f;
+		light->Player.y = 1000.0f;
 
 		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
 	}

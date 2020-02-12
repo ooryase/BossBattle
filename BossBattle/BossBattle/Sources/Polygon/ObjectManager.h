@@ -4,9 +4,10 @@
 #include"Model/BaseModel.h"
 #include"Model/FbxModel.h"
 #include"Sprite/Sprite.h"
+#include"Sprite/DefaultSprite.h"
+#include"Sprite/OctagonSprite.h"
 #include"../Shader/ModelShader.h"
 #include"../Shader/SpriteShader.h"
-
 
 class ObjectManager
 {
@@ -21,6 +22,7 @@ public:
 
 	void SstModelMap(ComPtr<ID3D11Device> pDevice, std::string);
 	void SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring);
+	void SstOctagonSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring);
 	void SstModelShader(ComPtr<ID3D11Device> pDevice, std::wstring);
 	void SstSpriteShader(ComPtr<ID3D11Device> pDevice, std::wstring);
 

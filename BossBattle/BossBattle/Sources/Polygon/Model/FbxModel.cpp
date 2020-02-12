@@ -161,6 +161,8 @@ void FbxModel::AnimationLoad()
 		anim = false;
 		return;
 	}
+	else
+		anim = true;
 
 	//再生するアニメーションの設定
 	AnimStackNumber = 0;

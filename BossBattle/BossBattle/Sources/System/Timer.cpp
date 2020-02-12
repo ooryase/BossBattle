@@ -40,7 +40,10 @@ void Timer::Sleep()
 
 int  Timer::GetDeltaTime() const
 {
-	return deltaTime;
+	if (deltaTime < 30)
+		return deltaTime;
+	else
+		return 30;
 }
 
 Timer& Timer::GetInstance()

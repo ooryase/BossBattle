@@ -1,6 +1,7 @@
 #include"GunDash.h"
 
-GunDash::GunDash(std::shared_ptr<Param> _param) : GunBehave(_param)
+GunDash::GunDash(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 }
 

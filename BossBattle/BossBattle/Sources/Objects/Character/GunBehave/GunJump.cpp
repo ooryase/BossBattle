@@ -1,6 +1,7 @@
 #include"GunJump.h"
 
-GunJump::GunJump(std::shared_ptr<Param> _param) : GunBehave(_param)
+GunJump::GunJump(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 	param->speed.y = 0.3f;
 	param->ground = false;

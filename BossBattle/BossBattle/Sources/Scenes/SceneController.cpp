@@ -9,9 +9,7 @@ SceneController::SceneController(ComPtr<ID3D11Device> pDevice)
 }
 
 SceneController::~SceneController()
-{
-
-}
+{}
 
 void SceneController::Update()
 {

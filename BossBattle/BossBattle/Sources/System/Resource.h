@@ -1,7 +1,5 @@
 #pragma once
 
-//#define SAFE_RELEASE(x) {if(x) { (x)->Release(); (x) = NULL;} }
-
 #include <Windows.h>
 #include<DirectXMath.h>
 #include<d3d11.h>

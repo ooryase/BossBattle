@@ -5,7 +5,9 @@ cbuffer global : register(b0)
 	matrix Projection;
 };
 
-cbuffer global2 : register(b1)
+
+
+cbuffer global3 : register(b2)
 {
 	matrix World;
 };

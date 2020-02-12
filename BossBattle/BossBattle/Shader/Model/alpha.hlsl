@@ -23,9 +23,19 @@ cbuffer CBuffer : register(b0)
 
 cbuffer CBuffer2 : register(b1)
 {
+	float4 Directional;
+	float4 Player;
+	float4 PColor;
+	float4 PAttenuation;
+	int ELCount;
+	float4 Enemy[8];
+	float4 EColor[8];
+	float4 EAttenuation[8];
+}
+
+cbuffer CBuffer3 : register(b2)
+{
 	matrix World;
-	float4 Light;
-	float4 Attenuation;
 }
  
 // 頂点シェーダ
@@ -72,7 +82,7 @@ float4 PS(PS_IN input) : SV_Target
     float  col;
  
     //点光源の方向
-    dir = Light.xyz - input.wld.xyz;
+    dir = Player.xyz - input.wld.xyz;
  
     //点光源の距離
     len = length(dir);
@@ -83,7 +93,7 @@ float4 PS(PS_IN input) : SV_Target
     //拡散
     colD = saturate(dot(normalize(input.nor.xyz), dir));
     //減衰
-    colA = saturate(1.0f / (Attenuation.x + Attenuation.y * len + Attenuation.z * len * len));
+    colA = saturate(1.0f / (PAttenuation.x + PAttenuation.y * len + PAttenuation.z * len * len));
  
     col = colD * colA;
 

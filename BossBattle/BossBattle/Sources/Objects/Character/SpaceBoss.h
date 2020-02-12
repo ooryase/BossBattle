@@ -9,7 +9,8 @@ class SpaceBoss : public BaseCharacter
 
 public:
 
-	SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light);
+	SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light, 
+		std::vector< std::shared_ptr< BaseEffect>>& _effectReserves);
 	~SpaceBoss();
 
 	//std::shared_ptr<GunBehave> behave;

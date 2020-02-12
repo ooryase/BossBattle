@@ -6,16 +6,14 @@
 
 struct Light
 {
-	DirectX::XMFLOAT3 playerLight;
-	DirectX::XMFLOAT4 playerColor;
-	DirectX::XMFLOAT4 playerAttenuation;
-	//DirectX::XMVECTOR
-
-	Light() :
-		playerLight(DirectX::XMFLOAT3(40.1f, -20.0f, -5.0f)),
-		playerColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)),
-		playerAttenuation(DirectX::XMFLOAT4(1.0f, 0.0005f, 0.0005f, 0.0f))
-	{}
+	DirectX::XMFLOAT4 Directional;
+	DirectX::XMFLOAT4 Player;
+	DirectX::XMFLOAT4 PColor;
+	DirectX::XMFLOAT4 PAttenuation;
+	DirectX::XMINT4 ELCount;
+	DirectX::XMFLOAT4 Enemy[8];
+	DirectX::XMFLOAT4 EColor[8];
+	DirectX::XMFLOAT4 EAttenuation[8];
 };
 
 enum class ObjectTag
@@ -27,6 +25,13 @@ enum class ObjectTag
 	//EVENT,
 };
 
+struct DParam
+{
+	float damage;
+	DirectX::XMFLOAT3 direction;
+};
+
+
 
 class BaseObject
 {
@@ -36,26 +41,22 @@ protected:
 	DirectX::XMFLOAT3 rotate;
 	DirectX::XMFLOAT3 rotateDef; //モデルを正面に向かせるためのデフォルト値
 
-	std::shared_ptr<BaseModel> model;
-	std::shared_ptr<ModelShader> shader;
-
-	std::shared_ptr<Light> light;
-
 	ObjectTag tag;
 
 	float radius; //当たり判定の半径
 
+	bool isToDelete;
+
 public:
-	BaseObject(std::shared_ptr<Light> _light);
+	BaseObject();
 	~BaseObject();
 
 	virtual void Update() = 0;
 	virtual void EndUpdate() = 0;
-	virtual void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	virtual void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) = 0;
 
 protected:
-	virtual void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
-
+	virtual void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) = 0;
 
 public:
 	virtual void OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta) = 0;
@@ -65,4 +66,5 @@ public:
 	float GetRadius() const;
 	ObjectTag GetTag() const;
 
+	bool IsDead() const;
 };

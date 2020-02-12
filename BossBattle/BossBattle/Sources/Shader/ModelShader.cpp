@@ -83,7 +83,7 @@ void ModelShader::SetConstantBuffer(ComPtr<ID3D11DeviceContext> pDeviceContext, 
 	memcpy_s(data.pData, data.RowPitch, (void*)(&constantBuffer), sizeof(constantBuffer));
 	pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
 
-	pDeviceContext->VSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
-	pDeviceContext->GSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
-	pDeviceContext->PSSetConstantBuffers(1, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->VSSetConstantBuffers(2, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->GSSetConstantBuffers(2, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(2, 1, pConstantBuffer.GetAddressOf());
 }

@@ -1,7 +1,8 @@
 #include"GunBehave.h"
 
-GunBehave::GunBehave(std::shared_ptr<Param> _param) :
-	param(_param)
+GunBehave::GunBehave(std::shared_ptr<Param> _param, std::shared_ptr< BaseCharacter> _player) :
+	param(_param),
+	player(_player)
 {
 	nextBehave = GUN_BEHAVE::BehaveName::NONE;
 	time = 0;

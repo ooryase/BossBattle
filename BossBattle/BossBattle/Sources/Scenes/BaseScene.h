@@ -21,6 +21,9 @@ class BaseScene
 protected:
 	SceneName nextScene;
 
+	ComPtr<ID3D11Buffer> pConstantBuffer;
+	ComPtr<ID3D11Buffer> lightConstantBuffer;
+
 public:
 	BaseScene();
 

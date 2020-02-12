@@ -1,6 +1,7 @@
 #include"GunWait.h"
 
-GunWait::GunWait(std::shared_ptr<Param> _param) : GunBehave(_param)
+GunWait::GunWait(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 }
 

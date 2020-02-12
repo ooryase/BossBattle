@@ -1,11 +1,10 @@
 #pragma once
-#include"../GunBreaker.h"
 #include"GunBehave.h"
 
 
 struct GunJump : public GunBehave
 {
-	GunJump(std::shared_ptr<Param> param);
+	GunJump(std::shared_ptr<Param> param, std::shared_ptr<BaseCharacter> _player);
 	~GunJump() {};
 
 

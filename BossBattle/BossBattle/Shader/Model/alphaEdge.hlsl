@@ -26,9 +26,19 @@ cbuffer CBuffer : register(b0)
 
 cbuffer CBuffer2 : register(b1)
 {
+	float4 Directional;
+	float4 Player;
+	float4 PColor;
+	float4 PAttenuation;
+	int ELCount;
+	float4 Enemy[8];
+	float4 EColor[8];
+	float4 EAttenuation[8];
+}
+
+cbuffer CBuffer3 : register(b2)
+{
 	matrix World;
-	float4 Light;
-	float4 Attenuation;
 }
  
 // 頂点シェーダ

@@ -1,6 +1,7 @@
 #include"ShiftBread1.h"
 
-ShiftBread1::ShiftBread1(std::shared_ptr<Param> _param) : GunBehave(_param)
+ShiftBread1::ShiftBread1(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 	param->speed.y = 0.0f;
 	param->speed.x = 0.2f * sin(param->direction.z);
@@ -20,13 +21,13 @@ void ShiftBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		upperFlag = true;
 	}
 
-	light->playerLight.x = pos.x + 4.0f * sin(param->direction.z);
-	light->playerLight.y = pos.y - 2.0f;
+	light->Player.x = pos.x + 4.0f * sin(param->direction.z);
+	light->Player.y = pos.y - 2.0f;
 
 	float temp = static_cast<float>((time + 200) * (time - 1000)) / 360000.0f;
-	light->playerAttenuation.x = 2.0f + temp;
-	light->playerAttenuation.y = 0.0105f + temp / 100.0f;
-	light->playerAttenuation.z = 0.0105f + temp / 100.0f;
+	light->PAttenuation.x = 2.0f + temp;
+	light->PAttenuation.y = 0.0105f + temp / 100.0f;
+	light->PAttenuation.z = 0.0105f + temp / 100.0f;
 
 
 	param->speed.x *= 0.995f;
@@ -47,8 +48,8 @@ void ShiftBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 1300)
 	{
-		light->playerLight.x = 1000.0f;
-		light->playerLight.y = 1000.0f;
+		light->Player.x = 1000.0f;
+		light->Player.y = 1000.0f;
 
 		if (param->ground)
 			nextBehave = GUN_BEHAVE::BehaveName::WAIT;

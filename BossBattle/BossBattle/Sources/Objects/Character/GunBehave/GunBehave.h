@@ -29,7 +29,7 @@ namespace GUN_BEHAVE
 
 struct GunBehave
 {
-	GunBehave(std::shared_ptr<Param> _param);
+	GunBehave(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player);
 	~GunBehave();
 
 	std::shared_ptr<Param> param;
@@ -37,6 +37,9 @@ struct GunBehave
 	virtual void Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light) = 0;
 
 	int time;
+
+	std::shared_ptr<BaseCharacter> player;
+
 
 protected:
 	GUN_BEHAVE::BehaveName nextBehave;

@@ -1,6 +1,7 @@
 #include"GunRun.h"
 
-GunRun::GunRun(std::shared_ptr<Param> _param) : GunBehave(_param)
+GunRun::GunRun(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
+	: GunBehave(_param, _player)
 {
 }
 

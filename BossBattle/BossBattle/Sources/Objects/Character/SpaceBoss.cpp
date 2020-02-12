@@ -1,9 +1,11 @@
 #include"SpaceBoss.h"
 #include"../../System/InputController.h"
 
-SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light) : BaseCharacter(_light)
+SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
+	std::vector< std::shared_ptr< BaseEffect>>& _effectReserves)
+	: BaseCharacter(_light, _effectReserves, objectManager)
 {
-	model = objectManager->GetModel("Cube");
+	model = objectManager->GetModel("spaceBoss");
 	shader = objectManager->GetModelShader(L"shader");
 
 	gauge = objectManager->GetSprite(L"Tex");
@@ -22,6 +24,8 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	radius = 1.0f;
 
 	tag = ObjectTag::NORMAL;
+
+	model->SetAnimSackNumber(1);
 }
 
 SpaceBoss::~SpaceBoss()
@@ -88,17 +92,6 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	MODEL::CONSTANT_BUFFER ccb;
 
 	DirectX::XMStoreFloat4x4(&ccb.World, DirectX::XMMatrixTranspose(m_World));
-	DirectX::XMStoreFloat4(&ccb.Light,
-		DirectX::XMVectorSet(
-			light->playerLight.x,
-			light->playerLight.y,
-			light->playerLight.z, 0.0f));
-	DirectX::XMStoreFloat4(&ccb.Attenuation,
-		DirectX::XMVectorSet(
-			light->playerAttenuation.x,
-			light->playerAttenuation.y,
-			light->playerAttenuation.z,
-			light->playerAttenuation.w));
 
 	shader->SetConstantBuffer(pDeviceContext, ccb);
 

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Objects\BackGround\Space.cpp" />
     <ClCompile Include="Sources\Objects\BaseObject.cpp" />
     <ClCompile Include="Sources\Objects\Character\BaseCharacter.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunBehave.cpp" />
@@ -39,10 +40,14 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun2.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp" />
     <ClCompile Include="Sources\Objects\Character\SpaceBoss.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\BaseEffect.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread1.cpp" />
     <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\PolygonModel.cpp" />
     <ClCompile Include="Sources\Polygon\ObjectManager.cpp" />
+    <ClCompile Include="Sources\Polygon\Sprite\DefaultSprite.cpp" />
+    <ClCompile Include="Sources\Polygon\Sprite\OctagonSprite.cpp" />
     <ClCompile Include="Sources\Polygon\Sprite\Sprite.cpp" />
     <ClCompile Include="Sources\Scenes\BaseScene.cpp" />
     <ClCompile Include="Sources\Scenes\Battle\Battle.cpp" />
@@ -56,6 +61,7 @@
     <ClCompile Include="Sources\System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Objects\BackGround\Space.h" />
     <ClInclude Include="Sources\Objects\BaseObject.h" />
     <ClInclude Include="Sources\Objects\Character\BaseCharacter.h" />
     <ClInclude Include="Sources\Objects\Character\GunBehave\GunBehave.h" />
@@ -76,10 +82,14 @@
     <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun2.h" />
     <ClInclude Include="Sources\Objects\Character\GunBreaker.h" />
     <ClInclude Include="Sources\Objects\Character\SpaceBoss.h" />
+    <ClInclude Include="Sources\Objects\Effect\BaseEffect.h" />
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread1.h" />
     <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
     <ClInclude Include="Sources\Polygon\Model\FbxModel.h" />
     <ClInclude Include="Sources\Polygon\Model\PolygonModel.h" />
     <ClInclude Include="Sources\Polygon\ObjectManager.h" />
+    <ClInclude Include="Sources\Polygon\Sprite\DefaultSprite.h" />
+    <ClInclude Include="Sources\Polygon\Sprite\OctagonSprite.h" />
     <ClInclude Include="Sources\Polygon\Sprite\Sprite.h" />
     <ClInclude Include="Sources\Scenes\BaseScene.h" />
     <ClInclude Include="Sources\Scenes\Battle\Battle.h" />

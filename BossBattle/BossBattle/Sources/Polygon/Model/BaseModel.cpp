@@ -4,16 +4,11 @@ using namespace MODEL;
 
 BaseModel::BaseModel()
 {
-	anim = true;
+	anim = false;
 }
 
 BaseModel::~BaseModel()
-{
-	//SAFE_RELEASE(pVerBuffer);
-	//SAFE_RELEASE(pIndexBuffer);
-	//SAFE_RELEASE(pLineAdjIndexBuffer);
-	//SAFE_RELEASE(pRasterizerState);
-}
+{}
 
 void BaseModel::CreateBuffer(ComPtr<ID3D11Device> pDevice)
 {
