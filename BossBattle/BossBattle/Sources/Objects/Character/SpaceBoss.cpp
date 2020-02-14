@@ -2,8 +2,11 @@
 #include"../../System/InputController.h"
 #include"../../System/Timer.h"
 
+using DirectX::XMFLOAT3;
+
 SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
-	std::vector< std::shared_ptr< BaseEffect>>& _effectReserves)
+	std::vector< std::shared_ptr< BaseEffect>>& _effectReserves,
+	std::shared_ptr<Camera> _camera)
 	: BaseCharacter(_light, _effectReserves, objectManager)
 {
 	model = objectManager->GetModel("spaceBoss");
@@ -20,6 +23,8 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0025f);
 	//behave = std::make_shared<GunWait>(param);
 
+	camera = _camera;
+
 	e = 0.0f;
 	radius = 8.0f;
 	param->gravity = 0.0f;
@@ -30,6 +35,7 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	animNum = AnimNumber::AWAKE;
 	model->SetAnimSackNumber(animNum);
 	behaveTime = 0;
+	behaveStep = 0;
 	animSpeedDiv = 1;
 }
 
@@ -111,23 +117,32 @@ void SpaceBoss::UpdateAwake()
 {
 	if (behaveTime < 2000)
 	{
-		position.y =26.0f - behaveTime / 100.0f;
-		animSpeedDiv = 0;
+		if (behaveStep == 0)
+		{
+			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 40.0f, 0.0f), 0);
+			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2000);
+			animSpeedDiv = 0;
+			behaveStep++;
+		}
+		position.y =46.0f - behaveTime / 50.0f;
 	}
 	else if (behaveTime < 3000)
 	{
 		position.y = 6.0f;
-		animSpeedDiv = 0;
 	}
 	else if (behaveTime < 13000)
 		animSpeedDiv = 3;
 	else if (behaveTime < 20000)
 	{
-		if (animNum != AnimNumber::ROAR2)
+		if (behaveStep == 1)
 		{
 			animNum = AnimNumber::ROAR2;
 			animSpeedDiv = 3;
 			model->SetAnimSackNumber(animNum);
+			behaveStep++;
+			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000);
+			//camera->SetCameraPos(Camera::State::CURVE, XMFLOAT3(0.0f, DirectX::XM_PIDIV2, 0.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000, 50.0f);
+			behaveStep++;
 		}
 	}
 	else

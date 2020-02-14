@@ -1,5 +1,7 @@
 #pragma once
 #include"../System/Resource.h"
+#include"Camera.h"
+
 
 struct CONSTANT_BUFFER
 {
@@ -24,6 +26,7 @@ protected:
 	ComPtr<ID3D11Buffer> pConstantBuffer;
 	ComPtr<ID3D11Buffer> lightConstantBuffer;
 
+	std::shared_ptr<Camera> camera;
 	DirectX::XMMATRIX proj;
 
 public:

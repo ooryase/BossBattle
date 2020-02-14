@@ -50,9 +50,10 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 		light->EColor[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->EAttenuation[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
+	camera = std::make_shared<Camera>(eyeLookAt, DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f));
 
 	player = std::make_shared<GunBreaker>(objectManager, light,playerEffectReserves);
-	bossEnemy = std::make_shared<SpaceBoss>(objectManager,light, enemyEffectReserves);
+	bossEnemy = std::make_shared<SpaceBoss>(objectManager,light, enemyEffectReserves, camera);
 
 	backGround = std::make_unique<Space>(objectManager);
 
@@ -105,9 +106,19 @@ void Battle::UpdateCollision()
 
 void Battle::UpdateCamera()
 {
+	camera->Update();
+
 	phaseTime += Timer::GetInstance().GetDeltaTime();
 
-	if (phaseTime < 2000)
+	if (phaseTime < 1000)
+	{
+		//camera->SetCameraPos(Camera::State::LINER,
+		//	DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f),
+		//	DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f),
+		//	6000);
+		//
+	}
+	else if (phaseTime < 2000)
 	{
 		eyeDirection = DirectX::XMFLOAT3(-sinf(phaseTime / 2000.0f * DirectX::XM_PIDIV2),
 			-cosf(phaseTime / 2000.0f * DirectX::XM_PIDIV2), 0.0f);
@@ -170,13 +181,6 @@ bool Battle::IsCollide(DirectX::XMFLOAT3 delta, float r, float* l)
 	return (*l > 0.0f);
 }
 
-DirectX::XMFLOAT3 Battle::NormalizeFloat3(DirectX::XMFLOAT3 f3)
-{
-	auto l = std::sqrt(f3.x * f3.x + f3.y * f3.y + f3.z * f3.z);
-
-	return DirectX::XMFLOAT3(f3.x / l, f3.y / l, f3.z / l);
-}
-
 void Battle::EndUpdate()
 {
 	player->EndUpdate();
@@ -218,7 +222,7 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 
 	backGround->Draw(pDeviceContext);
-	backGround->DrawBillBoard(pDeviceContext, eyeDirection);
+	backGround->DrawBillBoard(pDeviceContext, camera->GetEyeDirection());
 
 	for (auto&& var : playerEffects)
 	{
@@ -241,7 +245,8 @@ void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	D3D11_MAPPED_SUBRESOURCE data;
 	CONSTANT_BUFFER cb;
-	DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
+	//DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
+	DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(camera->GetView()));
 	DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(proj));
 	pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 	memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
@@ -258,4 +263,11 @@ void Battle::SetLight(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	pDeviceContext->Map(lightConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 	memcpy_s(data.pData, data.RowPitch, (void*)(light.get()), sizeof(*light));
 	pDeviceContext->Unmap(lightConstantBuffer.Get(), 0);
+}
+
+DirectX::XMFLOAT3 Battle::NormalizeFloat3(DirectX::XMFLOAT3 f3)
+{
+	auto l = std::sqrt(f3.x * f3.x + f3.y * f3.y + f3.z * f3.z);
+
+	return DirectX::XMFLOAT3(f3.x / l, f3.y / l, f3.z / l);
 }

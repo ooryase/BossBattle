@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseCharacter.h"
-//#include "GunBehave/GunBehave.h"
+#include"../../Scenes/Camera.h"
 
 class SpaceBoss : public BaseCharacter
 {
@@ -16,6 +16,7 @@ class SpaceBoss : public BaseCharacter
 		SLASH,
 		WAIT
 	} behave;
+	int behaveStep;
 
 	enum AnimNumber
 	{
@@ -29,10 +30,13 @@ class SpaceBoss : public BaseCharacter
 	int behaveTime;
 	int animSpeedDiv;
 
+	std::shared_ptr<Camera> camera;
+
 public:
 
 	SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light, 
-		std::vector< std::shared_ptr< BaseEffect>>& _effectReserves);
+		std::vector< std::shared_ptr< BaseEffect>>& _effectReserves ,
+		std::shared_ptr<Camera> _camera);
 	~SpaceBoss();
 
 	//std::shared_ptr<GunBehave> behave;

@@ -59,8 +59,9 @@ private:
 	//l‚É‹——£‚Ì2æ‚ª“ü‚é
 	bool IsCollide(DirectX::XMFLOAT3 delta, float r, float* l);
 
-	DirectX::XMFLOAT3 NormalizeFloat3(DirectX::XMFLOAT3);
-
 	void SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext);
 	void SetLight(ComPtr<ID3D11DeviceContext> pDeviceContext);
+
+	DirectX::XMFLOAT3 NormalizeFloat3(DirectX::XMFLOAT3 f3);
+
 };
