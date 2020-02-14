@@ -231,6 +231,9 @@
     <ClCompile Include="Sources\Objects\BackGround\Space.cpp">
       <Filter>ソース ファイル\Objects\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Scenes\Camera.cpp">
+      <Filter>ヘッダー ファイル\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -352,6 +355,9 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\BackGround\Space.h">
       <Filter>ヘッダー ファイル\Objects\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Scenes\Camera.h">
+      <Filter>ヘッダー ファイル\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

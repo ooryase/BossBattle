@@ -32,10 +32,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		return S_FALSE;
 	}
 
-	std::unique_ptr<DeviceManager> deviceManager = std::make_unique<DeviceManager>(WHandle);
-	if (FAILED(deviceManager->HResult))
+	if (FAILED(DeviceManager::GetInstance().Init(WHandle)))
 	{
-		deviceManager.release();
 		MessageBox(WHandle, _T("DeviceManager"), _T("Err"), MB_ICONSTOP);
 		return S_FALSE;
 	}
@@ -45,7 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		MessageBox(WHandle, _T("InputController"), _T("Err"), MB_ICONSTOP);
 		return S_FALSE;
 	}
-	auto sceneController = std::make_unique<SceneController>(deviceManager->GetDevice());
+	auto sceneController = std::make_unique<SceneController>(DeviceManager::GetInstance().GetDevice());
 
 	// ウインドウ表示
 	ShowWindow(WHandle, SW_SHOWNORMAL);
@@ -67,10 +65,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 			InputController::getInstance().Update();
 
 			sceneController->Update();
-			deviceManager->RenderBegin();
-			sceneController->Draw(deviceManager->GetDeviceContext());
-			deviceManager->RenderEnd();
-			sceneController->EndUpdate(deviceManager->GetDevice());
+			DeviceManager::GetInstance().RenderBegin();
+			sceneController->Draw(DeviceManager::GetInstance().GetDeviceContext());
+			DeviceManager::GetInstance().RenderEnd();
+			sceneController->EndUpdate(DeviceManager::GetInstance().GetDevice());
 		}
 	}
 
@@ -78,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 	UnregisterClass(WndClassName, hInstance);
 
 	InputController::getInstance().Release();
-	deviceManager.release();
+	DeviceManager::GetInstance().Release();
 
 	return (int)msg.wParam;
 

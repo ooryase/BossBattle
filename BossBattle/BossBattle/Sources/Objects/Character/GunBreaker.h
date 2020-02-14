@@ -37,6 +37,7 @@ private:
 
 
 public:
+	void CollisionWallUpdate(float wall);
 	void AttackHit(int type, int quantity) override;
 	void SetEffectReserved(std::shared_ptr<BaseEffect> _obj) override;
 };

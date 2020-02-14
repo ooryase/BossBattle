@@ -33,11 +33,12 @@ public:
 	void Update();
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawBillBoard(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 eyeDirection);
 
 private:
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 	void DrawSetGrid(ComPtr<ID3D11DeviceContext> pDeviceContext);
-	void DrawSetStar(ComPtr<ID3D11DeviceContext> pDeviceContext, StarPos pos);
+	void DrawSetStar(ComPtr<ID3D11DeviceContext> pDeviceContext, StarPos pos, DirectX::XMFLOAT3 eyeDirection);
 	void DrawSetBlack(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 public:

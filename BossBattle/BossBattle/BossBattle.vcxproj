@@ -51,6 +51,7 @@
     <ClCompile Include="Sources\Polygon\Sprite\Sprite.cpp" />
     <ClCompile Include="Sources\Scenes\BaseScene.cpp" />
     <ClCompile Include="Sources\Scenes\Battle\Battle.cpp" />
+    <ClCompile Include="Sources\Scenes\Camera.cpp" />
     <ClCompile Include="Sources\Scenes\SceneController.cpp" />
     <ClCompile Include="Sources\Scenes\Title\Title.cpp" />
     <ClCompile Include="Sources\Shader\ModelShader.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Sources\Polygon\Sprite\Sprite.h" />
     <ClInclude Include="Sources\Scenes\BaseScene.h" />
     <ClInclude Include="Sources\Scenes\Battle\Battle.h" />
+    <ClInclude Include="Sources\Scenes\Camera.h" />
     <ClInclude Include="Sources\Scenes\SceneController.h" />
     <ClInclude Include="Sources\Scenes\Title\Title.h" />
     <ClInclude Include="Sources\Shader\ModelShader.h" />

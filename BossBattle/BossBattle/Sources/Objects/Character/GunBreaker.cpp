@@ -30,7 +30,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	gauge = objectManager->GetSprite(L"Tex");
 	gaugeShader = objectManager->GetSpriteShader(L"shader");
 
-	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	position = DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotateDef = DirectX::XMFLOAT3(-DirectX::XM_PIDIV2, 0.0f, DirectX::XM_PI);
@@ -200,6 +200,14 @@ void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	gaugeShader->DrawSet(pDeviceContext);
 
 	pDeviceContext->Draw(gauge->GetIndexCount(), 0);
+}
+
+void GunBreaker::CollisionWallUpdate(float wall)
+{
+	if (position.x < -wall + radius)
+		position.x = -wall + radius;
+	else if(position.x > wall - radius)
+		position.x = wall - radius;
 }
 
 void GunBreaker::AttackHit(int type, int quantity)

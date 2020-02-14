@@ -38,7 +38,7 @@ protected:
 	virtual void CreateRasterizeState(ComPtr<ID3D11Device> pDevice) = 0;
 
 public:
-	virtual void Update() = 0;
+	virtual void Update(int speedDiv = 1) = 0;
 	virtual void SetAnimSackNumber(int num) = 0;
 
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);

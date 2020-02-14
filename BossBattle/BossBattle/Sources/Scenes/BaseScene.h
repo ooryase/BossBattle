@@ -24,6 +24,8 @@ protected:
 	ComPtr<ID3D11Buffer> pConstantBuffer;
 	ComPtr<ID3D11Buffer> lightConstantBuffer;
 
+	DirectX::XMMATRIX proj;
+
 public:
 	BaseScene();
 

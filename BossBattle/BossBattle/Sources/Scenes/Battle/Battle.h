@@ -28,6 +28,17 @@ class Battle : public BaseScene
 
 	std::unique_ptr<Space> backGround;
 
+	enum class Phase
+	{
+		START,
+		BATTLE,
+		FINISH,
+	} phase;
+	int phaseTime;
+	DirectX::XMFLOAT3 eyeLookAt;
+	DirectX::XMFLOAT3 eyeDirection;
+	float eyeLenght;
+
 public:
 	Battle(ComPtr<ID3D11Device> pDevice);
 	~Battle();
@@ -39,6 +50,7 @@ public:
 private:
 	void UpdateObjects();
 	void UpdateCollision();
+	void UpdateCamera();
 
 	void CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<BaseObject> obj2);
 	void CheckCollisionDamageObj(std::shared_ptr<BaseEffect> dObj, std::shared_ptr<BaseCharacter> chara);

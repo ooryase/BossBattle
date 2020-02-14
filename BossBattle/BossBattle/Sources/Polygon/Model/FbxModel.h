@@ -31,5 +31,5 @@ public:
 
 	void SetAnimSackNumber(int num);
 
-	void Update();
+	void Update(int speedDiv = 1);
 };

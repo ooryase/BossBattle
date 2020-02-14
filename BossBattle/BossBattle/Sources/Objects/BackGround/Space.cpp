@@ -1,5 +1,6 @@
 #include"Space.h"
 #include"../../System/Timer.h"
+#include"../../System/DeviceManager.h"
 
 Space::Space(std::shared_ptr<ObjectManager> objectManager)
 	: starPosSize(200)
@@ -51,31 +52,37 @@ void Space::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// 描画実行
 	pDeviceContext->DrawIndexed(space->GetIndexCount(), 0, 0);
 
+}
+
+void Space::DrawBillBoard(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 eyeDirection)
+{
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ADD);
 	star->DrawSet(pDeviceContext);
 	starShader->DrawSet(pDeviceContext);
 	for (int i = 0; i < starPosSize; i++)
 	{
-		DrawSetStar(pDeviceContext, starPos[i]);
+		DrawSetStar(pDeviceContext, starPos[i], eyeDirection);
 		pDeviceContext->DrawIndexed(star->GetIndexCount(), 0, 0);
 	}
 
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ALIGMENT);
 	DrawSetBlack(pDeviceContext);
 	pDeviceContext->DrawIndexed(black->GetIndexCount(), 0, 0);
 
 	DrawSetGrid(pDeviceContext);
 	// 描画実行
 	pDeviceContext->DrawIndexed(grid->GetIndexCount(), 0, 0);
-
 }
+
 
 void Space::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 10.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 50.0f);
 	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
-	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
+	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(9.0f, 9.0f, 12.0f);
 
 	world *= scale * rotate * offset;
 
@@ -97,7 +104,7 @@ void Space::DrawSetGrid(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, 8.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, 6.0f);
 	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
 	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
 
@@ -115,18 +122,21 @@ void Space::DrawSetGrid(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	gridShader->DrawSet(pDeviceContext);
 }
 
-void Space::DrawSetStar(ComPtr<ID3D11DeviceContext> pDeviceContext, StarPos pos)
+void Space::DrawSetStar(ComPtr<ID3D11DeviceContext> pDeviceContext, StarPos pos, DirectX::XMFLOAT3 eyeDirection)
 {
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 10.0f);
-	DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(cosf(pos.radian) * (pos.time / 100.0f), sinf(pos.radian) * (pos.time / 100.0f),
-		8.0f * sinf(-pos.time / 10000.0f * DirectX::XM_PIDIV2));
-	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
-	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 49.0f);
+	DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(cosf(pos.radian) * (pos.time / 80.0f), sinf(pos.radian) * (pos.time / 80.0f),
+		80.0f * sinf(-pos.time / 10000.0f * DirectX::XM_PIDIV2));
+	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(
+		-atan2f(eyeDirection.y, eyeDirection.x),
+		DirectX::XM_PIDIV2 - atan2f(eyeDirection.z, eyeDirection.x),
+		-atan2f(eyeDirection.y, eyeDirection.z));
+	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 
-	world *= scale * rotate * offset * trans;
+	world *= scale * rotate * trans * offset;
 
 	// パラメータの受け渡し
 	MODEL::CONSTANT_BUFFER cb;
@@ -142,12 +152,12 @@ void Space::DrawSetBlack(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 9.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 44.0f);
 	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2 + time / 1000.0f);
-	float scaleParam = 11.0f + 3.0f * sinf(time / 1000.0f);
-	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(scaleParam, scaleParam, scaleParam);
+	float scaleParam = 16.0f + 4.0f * sinf(time / 500.0f);
+	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(scaleParam + 16.0f, scaleParam, scaleParam);
 
-	world *= scale * rotate * offset;
+	world *= rotate * scale * offset;
 
 	// パラメータの受け渡し
 	SPRITE::CONSTANT_BUFFER cb;

@@ -44,7 +44,9 @@ void BaseCharacter::CollisionDamage(DParam* dParam)
 {
 	hp -= dParam->damage;
 
-	param->speed = dParam->direction;
+	param->speed.x = dParam->direction.x * e;
+	param->speed.y = dParam->direction.y * e;
+	param->speed.z = dParam->direction.z * e;
 }
 
 
