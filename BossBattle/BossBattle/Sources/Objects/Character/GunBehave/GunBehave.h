@@ -13,6 +13,9 @@ namespace GUN_BEHAVE
 		RUN,
 		JUMP,
 		FALL,
+		DAMEGED,
+		RECOVER,
+		STEP,
 		BREAD1,
 		BREAD2,
 		BREAD3,
@@ -23,6 +26,7 @@ namespace GUN_BEHAVE
 		SHIFT_BREAD2,
 		SHIFT_GUN1,
 		SHIFT_GUN2,
+		SPECIAL,
 	};
 
 }

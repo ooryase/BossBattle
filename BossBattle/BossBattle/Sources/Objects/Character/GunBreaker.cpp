@@ -6,6 +6,9 @@
 #include"GunBehave/GunRun.h"
 #include"GunBehave/GunJump.h"
 #include"GunBehave/GunFall.h"
+#include"GunBehave/GunDameged.h"
+#include"GunBehave/GunRecover.h"
+#include"GunBehave/GunStep.h"
 #include"GunBehave/GunBread1.h"
 #include"GunBehave/GunBread2.h"
 #include"GunBehave/GunBread3.h"
@@ -16,18 +19,23 @@
 #include"GunBehave/ShiftBread2.h"
 #include"GunBehave/ShiftGun1.h"
 #include"GunBehave/ShiftGun2.h"
+#include"GunBehave/GunSpecial.h"
 
 GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
 	std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves) 
 	: BaseCharacter(_light, _playerEffectReserves, objectManager)
 {
-	typeGauge[BREAD] = 0;
-	typeGauge[GUN] = 0;
+	typeGauge[BREAD] = 20;
+	typeGauge[GUN] = 50;
 
-	model = objectManager->GetModel("gunbreaker");
+	model = objectManager->GetModel("gunbreaker3");
 	shader = objectManager->GetModelShader(L"shader");
 
-	gauge = objectManager->GetSprite(L"Tex");
+	hpGauge = objectManager->GetSprite(L"UI/Battle/Gauge/hpGauge");
+	hpFrame = objectManager->GetSprite(L"UI/Battle/Gauge/hpFrame");
+	GBFrame = objectManager->GetSprite(L"UI/Battle/Gauge/GunBreFrame");
+	gunGauge = objectManager->GetSprite(L"UI/Battle/Gauge/GunGauge");
+	breadGauge = objectManager->GetSprite(L"UI/Battle/Gauge/BreadGauge");
 	gaugeShader = objectManager->GetSpriteShader(L"shader");
 
 	position = DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f);
@@ -41,6 +49,10 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	radius = 2.0f;
 
 	tag = ObjectTag::NORMAL;
+
+	maxHp = 100.0f;
+	hp = maxHp;
+
 }
 
 GunBreaker::~GunBreaker()
@@ -97,6 +109,15 @@ void GunBreaker::EndUpdate()
 		case GUN_BEHAVE::BehaveName::FALL:
 			behave = std::make_shared<GunFall>(param, shared_from_this());
 			break;
+		case GUN_BEHAVE::BehaveName::DAMEGED:
+			behave = std::make_shared<GunDameged>(param, shared_from_this());
+			break;
+		case GUN_BEHAVE::BehaveName::RECOVER:
+			behave = std::make_shared<GunRecover>(param, shared_from_this());
+			break;
+		case GUN_BEHAVE::BehaveName::STEP:
+			behave = std::make_shared<GunStep>(param, shared_from_this());
+			break;
 		case GUN_BEHAVE::BehaveName::BREAD1:
 			behave = std::make_shared<GunBread1>(param, shared_from_this());
 			break;
@@ -126,6 +147,9 @@ void GunBreaker::EndUpdate()
 			break;
 		case GUN_BEHAVE::BehaveName::SHIFT_GUN2:
 			behave = std::make_shared<ShiftGun2>(param, shared_from_this());
+			break;
+		case GUN_BEHAVE::BehaveName::SPECIAL:
+			behave = std::make_shared<GunSpecial>(param, shared_from_this());
 			break;
 		default:
 			break;
@@ -178,28 +202,52 @@ void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
-void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+	std::shared_ptr<Sprite> _sprite)
 {
-	DirectX::XMMATRIX m_World = DirectX::XMMatrixTranslation(-10.0f, 10.0f, -2.0f);
-	m_World *= DirectX::XMMatrixScaling(1.6f, 1.6f, 1.6f);
+	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(_offset.x, _offset.y, _offset.z);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(_scale.x, _scale.y, _scale.z);
 
-	SPRITE::CONSTANT_BUFFER ccb2;
-	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(m_World));
-	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
+	SPRITE::CONSTANT_BUFFER cb;
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(Scale * Offset));
+	gaugeShader->SetConstantBuffer(pDeviceContext, cb);
 
-	//DirectX::XMMATRIX World = DirectX::XMMatrixRotationY(x += 0.001f);
-//DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f);
-//World *= Offset;
+	_sprite->DrawSet(pDeviceContext);
+	pDeviceContext->Draw(_sprite->GetIndexCount(), 0);
 }
 
 void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	DrawSetGauge(pDeviceContext);
-
-	gauge->DrawSet(pDeviceContext);
 	gaugeShader->DrawSet(pDeviceContext);
 
-	pDeviceContext->Draw(gauge->GetIndexCount(), 0);
+
+	DrawSetGauge(pDeviceContext, 
+		DirectX::XMFLOAT3(20.0f, -5.0f, -10.0f),
+		DirectX::XMFLOAT3(14.0f, 2.6f, 1.6f),
+		hpFrame);
+
+	hpGauge->Scroll(hp / maxHp);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(26.8f - 6.8f * hp / maxHp, -4.6f, -10.1f),
+		DirectX::XMFLOAT3(13.6f * hp / maxHp, 1.4f, 1.6f),
+		hpGauge);
+
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(20.0f, -2.2f, -10.0f),
+		DirectX::XMFLOAT3(15.0f, 3.2f, 1.6f),
+		GBFrame);
+
+	breadGauge->Scroll(typeGauge[BREAD] / 100.0f);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(27.2f - 7.2f * typeGauge[BREAD] / 100.0f, -1.7f, -10.1f),
+		DirectX::XMFLOAT3(14.4f * typeGauge[BREAD] / 100.0f, 0.8f, 1.6f),
+		breadGauge);
+
+	gunGauge->Scroll(typeGauge[GUN] / 100.0f);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(28.0f - 5.0f * typeGauge[GUN] / 100.0f, -2.6f, -10.1f),
+		DirectX::XMFLOAT3(10.0f * typeGauge[GUN] / 100.0f, 0.8f, 1.6f),
+		gunGauge);
 }
 
 void GunBreaker::CollisionWallUpdate(float wall)
@@ -213,6 +261,8 @@ void GunBreaker::CollisionWallUpdate(float wall)
 void GunBreaker::AttackHit(int type, int quantity)
 {
 	typeGauge[type] += quantity;
+	hp -= 10.0f;
+	typeGauge[BREAD] += 10;
 }
 
 void GunBreaker::SetEffectReserved(std::shared_ptr<BaseEffect> _obj)

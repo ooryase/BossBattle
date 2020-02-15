@@ -234,6 +234,18 @@
     <ClCompile Include="Sources\Scenes\Camera.cpp">
       <Filter>ヘッダー ファイル\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunSpecial.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunStep.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunRecover.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\GunBehave\GunDamaged.cpp">
+      <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -358,6 +370,18 @@
     </ClInclude>
     <ClInclude Include="Sources\Scenes\Camera.h">
       <Filter>ヘッダー ファイル\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunDameged.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunRecover.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunSpecial.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\GunBehave\GunStep.h">
+      <Filter>ヘッダー ファイル\Objects\Character\GunBehave</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,7 +14,11 @@ class GunBreaker : public BaseCharacter
 	//0 : Gun , 1 : Bread
 	int typeGauge[2];
 
-	std::shared_ptr<Sprite> gauge;
+	std::shared_ptr<Sprite> hpGauge;
+	std::shared_ptr<Sprite> hpFrame;
+	std::shared_ptr<Sprite> GBFrame;
+	std::shared_ptr<Sprite> gunGauge;
+	std::shared_ptr<Sprite> breadGauge;
 	std::shared_ptr<SpriteShader> gaugeShader;
 
 public:
@@ -33,7 +37,8 @@ public:
 private:
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 
-	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+		std::shared_ptr<Sprite> _sprite);
 
 
 public:

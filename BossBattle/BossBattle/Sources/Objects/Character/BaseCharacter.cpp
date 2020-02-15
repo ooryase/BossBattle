@@ -43,6 +43,8 @@ void BaseCharacter::CollisionNormal(DirectX::XMFLOAT3 delta)
 void BaseCharacter::CollisionDamage(DParam* dParam)
 {
 	hp -= dParam->damage;
+	if (hp < 0.0f)
+		hp = 0.0f;
 
 	param->speed.x = dParam->direction.x * e;
 	param->speed.y = dParam->direction.y * e;

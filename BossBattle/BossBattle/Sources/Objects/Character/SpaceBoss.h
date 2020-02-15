@@ -5,6 +5,7 @@
 class SpaceBoss : public BaseCharacter
 {
 	std::shared_ptr<Sprite> gauge;
+	std::shared_ptr<Sprite> frame;
 	std::shared_ptr<SpriteShader> gaugeShader;
 
 	enum class BehabeName

@@ -5,6 +5,8 @@ class DefaultSprite : public Sprite
 {
 public:
 	DefaultSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
+	void Scroll(float param) override;
+	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 
 private:
 	void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice);

@@ -12,7 +12,8 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	model = objectManager->GetModel("spaceBoss");
 	shader = objectManager->GetModelShader(L"shader");
 
-	gauge = objectManager->GetSprite(L"Tex");
+	gauge = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpGauge");
+	frame = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpFrame");
 	gaugeShader = objectManager->GetSpriteShader(L"shader");
 
 	position = DirectX::XMFLOAT3(20.0f, 10.0f, 0.0f);
@@ -37,6 +38,9 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	behaveTime = 0;
 	behaveStep = 0;
 	animSpeedDiv = 1;
+
+	maxHp = 10000.0f;
+	hp = maxHp;
 }
 
 SpaceBoss::~SpaceBoss()
@@ -110,6 +114,7 @@ void SpaceBoss::Update()
 		break;
 	}
 
+	gauge->Scroll(hp / maxHp);
 
 }
 
@@ -212,24 +217,35 @@ void SpaceBoss::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 void SpaceBoss::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	DirectX::XMMATRIX m_World = DirectX::XMMatrixTranslation(0.0f, 0.0f, -2.0f);
-	m_World *= DirectX::XMMatrixScaling(1.6f, 1.6f, 1.6f);
+	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(-20.0f, 25.0f, -2.0f);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(30.0f, 5.0f, 1.6f);
+	DirectX::XMMATRIX World = Scale * Offset;
 
 	SPRITE::CONSTANT_BUFFER ccb2;
-	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(m_World));
+	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(World));
 	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
 
-	//DirectX::XMMATRIX World = DirectX::XMMatrixRotationY(x += 0.001f);
-//DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f);
-//World *= Offset;
 }
 
 void SpaceBoss::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	DrawSetGauge(pDeviceContext);
 
-	gauge->DrawSet(pDeviceContext);
 	gaugeShader->DrawSet(pDeviceContext);
+
+
+	frame->DrawSet(pDeviceContext);
+	pDeviceContext->Draw(frame->GetIndexCount(), 0);
+
+	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(-34.6f + 14.6f * hp / maxHp, 26.0f, -2.1f);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(29.2f * hp / maxHp, 2.5f, 1.6f);
+	DirectX::XMMATRIX World = Scale * Offset;
+
+	SPRITE::CONSTANT_BUFFER ccb2;
+	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(World));
+	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
+
+	gauge->DrawSet(pDeviceContext);
 
 	//pDeviceContext->Draw(sprite->GetIndexCount(), 0);
 

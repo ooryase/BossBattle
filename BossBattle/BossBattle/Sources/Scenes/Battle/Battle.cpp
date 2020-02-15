@@ -27,7 +27,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 
 	objectManager = std::make_unique<ObjectManager>();
 	objectManager->SstModelMap(pDevice, "spaceBoss");
-	objectManager->SstModelMap(pDevice, "gunbreaker");
+	objectManager->SstModelMap(pDevice, "gunbreaker3");
 	objectManager->SstModelMap(pDevice, "grid");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstModelShader(pDevice, L"alpha");
@@ -36,6 +36,13 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"slash");
 	objectManager->SstSpriteMap(pDevice, L"kira");
 	objectManager->SstSpriteMap(pDevice, L"black");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpFrame");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpGauge");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/hpFrame");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/hpGauge");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/GunBreFrame");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/BreadGauge");
+	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/GunGauge");
 	objectManager->SstSpriteShader(pDevice, L"shader");
 
 	light = std::make_shared<Light>();
@@ -109,38 +116,6 @@ void Battle::UpdateCamera()
 	camera->Update();
 
 	phaseTime += Timer::GetInstance().GetDeltaTime();
-
-	if (phaseTime < 1000)
-	{
-		//camera->SetCameraPos(Camera::State::LINER,
-		//	DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f),
-		//	DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f),
-		//	6000);
-		//
-	}
-	else if (phaseTime < 2000)
-	{
-		eyeDirection = DirectX::XMFLOAT3(-sinf(phaseTime / 2000.0f * DirectX::XM_PIDIV2),
-			-cosf(phaseTime / 2000.0f * DirectX::XM_PIDIV2), 0.0f);
-		eyeLenght = 40.0f - phaseTime / 66.6f;
-		eyeLookAt.y = 25.0f - phaseTime / 100.0f;
-		eyeLookAt.x = 20.0f - phaseTime / 100.0f;
-	}
-	else if (phaseTime < 13000)
-	{
-		eyeDirection = DirectX::XMFLOAT3(-1.0f,0.0f,0.0f);
-		eyeLenght = 10.0f;
-		eyeLookAt.y = 5.0f;
-	}
-	else if (phaseTime < 20000)
-	{
-		float startTime = (phaseTime - 13000) / 7000.0f;
-		eyeDirection.x = -cosf(startTime * DirectX::XM_PIDIV2);
-		eyeDirection.z = -sinf(startTime * DirectX::XM_PIDIV2);
-		eyeLenght = 10.0f + startTime * 40.0f;
-		eyeLookAt.y = 5.0f + 5.0f * startTime;
-	}
-
 }
 
 void Battle::CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<BaseObject> obj2)
@@ -165,7 +140,8 @@ void Battle::CheckCollisionDamageObj(std::shared_ptr<BaseEffect> dObj, std::shar
 	DirectX::XMFLOAT3 pos2 = chara->GetPos();
 	DirectX::XMFLOAT3 delta = DirectX::XMFLOAT3(pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z);
 	float length;
-	if (IsCollide(delta, dObj->GetRadius() + chara->GetRadius(), &length))
+	if (IsCollide(delta, dObj->GetRadius() + chara->GetRadius(), &length) &&
+		dObj->IsNewHit(chara.get()))
 	{
 		//length = std::sqrt(length);
 		//delta = NormalizeFloat3(delta);
@@ -218,7 +194,6 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	///////////////////////////////////////////////////////
 
 
-	player->DrawGauge(pDeviceContext);
 
 
 	backGround->Draw(pDeviceContext);
@@ -228,6 +203,9 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	{
 		var->Draw(pDeviceContext);
 	}
+
+	player->DrawGauge(pDeviceContext);
+	bossEnemy->DrawGauge(pDeviceContext);
 }
 
 void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)

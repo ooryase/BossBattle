@@ -25,6 +25,7 @@ class BaseCharacter : public BaseObject, public std::enable_shared_from_this<Bas
 
 protected:
 	float hp;
+	float maxHp;
 
 	float e; //”½”­ŒW”
 

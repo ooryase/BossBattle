@@ -20,9 +20,9 @@ void DefaultSprite::CreateVertexBuffer(ComPtr<ID3D11Device> pDevice)
 
 	D3D11_BUFFER_DESC bd;
 	bd.ByteWidth = sizeof(VERTEX) * vertices.size();
-	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bd.MiscFlags = 0;
 	bd.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA initData;
@@ -63,4 +63,29 @@ void DefaultSprite::CreateRasterizerState(ComPtr<ID3D11Device> pDevice)
 	rdc.MultisampleEnable = FALSE;
 	rdc.AntialiasedLineEnable = FALSE;
 	pDevice->CreateRasterizerState(&rdc, pRasterizerState.GetAddressOf());
+}
+
+void DefaultSprite::Scroll(float param)
+{
+	vertices.at(2).TexUV.x = param;
+	vertices.at(3).TexUV.x = param;
+}
+
+void DefaultSprite::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	D3D11_MAPPED_SUBRESOURCE pdata;
+	//頂点パラメータの受け渡し
+	pDeviceContext->Map(pVerBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);
+	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(vertices.data()), sizeof(VERTEX) * vertices.size());
+	pDeviceContext->Unmap(pVerBuffer.Get(), 0);
+
+
+	UINT stride = sizeof(VERTEX);
+	UINT offset = 0;
+	pDeviceContext->IASetVertexBuffers(0, 1, pVerBuffer.GetAddressOf(), &stride, &offset);
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	pDeviceContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	pDeviceContext->PSSetSamplers(0, 1, pSampler.GetAddressOf());
+	pDeviceContext->PSSetShaderResources(0, 1, pSRV.GetAddressOf());
+	pDeviceContext->RSSetState(pRasterizerState.Get());
 }
