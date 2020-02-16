@@ -13,45 +13,13 @@ OctagonSprite::OctagonSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filenam
 
 void OctagonSprite::CreateVertexBuffer(ComPtr<ID3D11Device> pDevice)
 {
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 0.10f,	 1.0f * 0.5f, 0.0f), XMFLOAT2(0, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 0.10f,	 0.72f * 0.5f, 0.0f), XMFLOAT2(0.125f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 1.0f * 0.10f,	 0.0f * 0.5f, 0.0f), XMFLOAT2(0.25f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 0.10f,	 -0.72f * 0.5f, 0.0f), XMFLOAT2(0.375f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 0.10f,	 -1.0f * 0.5f, 0.0f), XMFLOAT2(0.5f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 0.1f,	 -0.72f * 0.5f, 0.0f), XMFLOAT2(0.625f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-1.0f * 0.1f,	0.0f * 0.5f, 0.0f), XMFLOAT2(0.75f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 0.1f,	 0.72f * 0.5f, 0.0f), XMFLOAT2(0.875f, 1.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 0.1f,	 1.0f * 0.5f, 0.0f), XMFLOAT2(1.0f, 1.0f)));
+	SetVertices(0.5f, 0.0f, 1.0f);
+	SetVertices(3.0f, 0.5f, 0.95f);
+	SetVertices(7.5f, 2.5f, 0.8f);
+	SetVertices(10.0f, 10.0f, 0.6f);
+	SetVertices(7.5f, 17.5f, 0.5f);
 
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 2.0f,	 1.0f * 2.0f,	 1.0f), XMFLOAT2(0, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 2.0f,	 0.72f * 2.0f,	 1.0f), XMFLOAT2(0.125f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 1.0f * 2.0f,	 0.0f * 2.0f,	 1.0f), XMFLOAT2(0.25f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 2.0f,	 -0.72f * 2.0f,	 1.0f), XMFLOAT2(0.375f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 2.0f,	 -1.0f * 2.0f,	 1.0f), XMFLOAT2(0.5f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 2.0f,	 -0.72f * 2.0f,	 1.0f), XMFLOAT2(0.625f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3( -1.0f * 2.0f,	 0.0f * 2.0f,	 1.0f), XMFLOAT2(0.75f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 2.0f,	 0.72f * 2.0f,	 1.0f), XMFLOAT2(0.875f, 0.5f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 2.0f,	 1.0f * 2.0f,	 1.0f), XMFLOAT2(1.0f, 0.5f)));
 
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 10.0f,	 1.0f * 10.0f,		 5.0f), XMFLOAT2(0, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 10.0f,	 0.72f * 10.0f,		 5.0f), XMFLOAT2(0.125f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 1.0f * 10.0f,	 0.0f * 10.0f,		 5.0f), XMFLOAT2(0.25f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.72f * 10.0f,	 -0.72f * 10.0f,	 5.0f), XMFLOAT2(0.375f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 10.0f,	 -1.0f * 10.0f,		 5.0f), XMFLOAT2(0.5f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 10.0f,	 -0.72f * 10.0f,	 5.0f), XMFLOAT2(0.625f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-1.0f * 10.0f,	 0.0f * 10.0f,		 5.0f), XMFLOAT2(0.75f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 10.0f,	 0.72f * 10.0f,		 5.0f), XMFLOAT2(0.875f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 10.0f,	 1.0f * 10.0f,		 5.0f), XMFLOAT2(1.0f, 0.0f)));
-
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 8.0f,	 1.0f * 8.0f,		10.0f), XMFLOAT2(0, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 8.0f,	 0.72f * 8.0f,	 10.0f), XMFLOAT2(0.125f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 1.0f * 8.0f,	 0.0f * 8.0f,		10.0f), XMFLOAT2(0.25f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(0.72f * 8.0f,	 -0.72f * 8.0f,	10.0f), XMFLOAT2(0.375f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 8.0f,	 -1.0f * 8.0f,		10.0f), XMFLOAT2(0.5f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 8.0f,	 -0.72f * 8.0f,	10.0f), XMFLOAT2(0.625f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-1.0f * 8.0f,	 0.0f * 8.0f,		10.0f), XMFLOAT2(0.75f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * 8.0f,	 0.72f * 8.0f,	 10.0f), XMFLOAT2(0.875f, 0.0f)));
-	vertices.push_back(VERTEX(XMFLOAT3( 0.0f * 8.0f,	 1.0f * 8.0f,		 10.0f), XMFLOAT2(1.0f, 0.0f)));
 
 	D3D11_BUFFER_DESC bd;
 	bd.ByteWidth = sizeof(VERTEX) * vertices.size();
@@ -66,9 +34,23 @@ void OctagonSprite::CreateVertexBuffer(ComPtr<ID3D11Device> pDevice)
 
 }
 
+void OctagonSprite::SetVertices(float lenghtXY, float lenghtZ, float uvY)
+{
+	vertices.push_back(VERTEX(XMFLOAT3(  0.0f * lenghtXY,  1.0f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0,	  uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3( 0.72f * lenghtXY, 0.72f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.125f, uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3(  1.0f * lenghtXY,  0.0f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.25f,  uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3( 0.72f * lenghtXY,-0.72f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.375f, uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3(  0.0f * lenghtXY, -1.0f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.5f,   uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * lenghtXY,-0.72f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.625f, uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3( -1.0f * lenghtXY,  0.0f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.75f,  uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3(-0.72f * lenghtXY, 0.72f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(0.875f, uvY)));
+	vertices.push_back(VERTEX(XMFLOAT3(  0.0f * lenghtXY,  1.0f * lenghtXY * 0.67f, lenghtZ), XMFLOAT2(1.0f,   uvY)));
+}
+
+
 void OctagonSprite::CreateIndexBuffer(ComPtr<ID3D11Device> pDevice)
 {
-	for (int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < (vertices.size() / 9 - 1); i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
@@ -112,14 +94,13 @@ void OctagonSprite::CreateRasterizerState(ComPtr<ID3D11Device> pDevice)
 
 void OctagonSprite::Scroll(float param)
 {
-	for (int i = 0; i < 4; i++)
+	for (unsigned int i = 0; i < vertices.size() / 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			vertices.at(i * 9 + j).TexUV.y = 0.5f - i * 0.1666f + param * 0.5f;
+			vertices.at(i * 9 + j).TexUV.y = (1.0f - i / (vertices.size() / 9.0f) + param) * 0.5f;
 		}
 	}
-
 }
 
 void OctagonSprite::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)

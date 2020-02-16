@@ -14,7 +14,7 @@ void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	//param->speed.y -= 0.0002f;
 
 	if(param->ground)
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 
 	if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
 		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
@@ -31,9 +31,15 @@ void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (param->speed.y < 0.0f)
 	{
-		nextBehave = GUN_BEHAVE::BehaveName::FALL;
+		NextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 
-	ChackAttack();
+	if (InputController::getInstance().IsPressKey(DIK_LSHIFT) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_LEFT_SHOULDER))
+	{
+		NextBehave = GUN_BEHAVE::BehaveName::STEP;
+	}
+
+	ChackAttack(0);
 
 }

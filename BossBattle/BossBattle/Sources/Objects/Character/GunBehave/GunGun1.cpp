@@ -3,6 +3,8 @@
 GunGun1::GunGun1(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
+	type = GUN_BEHAVE::AttackType::GUN;
+
 	param->speed.y = 0.0f;
 	shootFlag = false;
 	param->gravity = param->GRAVITY_DEF * 0.4f;
@@ -47,26 +49,17 @@ void GunGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	param->speed.x *= 0.99f;
 
-	if (time > 600)
+	if (time > 500)
 	{
-		if (InputController::getInstance().IsPressKey(DIK_Z) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::SHIFT_BREAD1;
-		}
-		else if (InputController::getInstance().IsPressKey(DIK_X) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN2;
-		}
+		ChackAttack(1);
 	}
 
 
-	if (time > 1000)
+	if (time > 800)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 	}
 }

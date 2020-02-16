@@ -10,7 +10,7 @@ void GunFall::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	time += Timer::GetInstance().GetDeltaTime();
 
 	if (param->ground)
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 
 	if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
 		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
@@ -25,6 +25,7 @@ void GunFall::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		param->direction.z = DirectX::XM_PIDIV2;
 	}
 
-	ChackAttack();
+	CheckStep();
+	ChackAttack(0);
 
 }

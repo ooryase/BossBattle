@@ -4,7 +4,8 @@ GunBehave::GunBehave(std::shared_ptr<Param> _param, std::shared_ptr< BaseCharact
 	param(_param),
 	player(_player)
 {
-	nextBehave = GUN_BEHAVE::BehaveName::NONE;
+	NextBehave = GUN_BEHAVE::BehaveName::NONE;
+	type = GUN_BEHAVE::AttackType::NONE;
 	time = 0;
 }
 
@@ -14,26 +15,53 @@ GunBehave::~GunBehave()
 }
 
 
-bool GunBehave::IsNextBehave()
+void GunBehave::ChackAttack(int level)
 {
-	return (nextBehave != GUN_BEHAVE::BehaveName::NONE);
+	if ((InputController::getInstance().IsPushKey(DIK_C) ||
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_X)) &&
+		//param->typeGauge[GUN_BEHAVE::AttackType::GUN] == 100 &&
+		//param->typeGauge[GUN_BEHAVE::AttackType::BREAD] == 100)
+		true)
+	{
+		NextBehave = GUN_BEHAVE::BehaveName::SPECIAL;
+	}
+
+	if (InputController::getInstance().IsPushKey(DIK_Z) ||
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_A))
+	{
+		if(type != GUN_BEHAVE::AttackType::GUN)
+			NextBehave = static_cast<GUN_BEHAVE::BehaveName>(GUN_BEHAVE::BehaveName::BREAD1 + level);
+		else
+			NextBehave = static_cast<GUN_BEHAVE::BehaveName>(GUN_BEHAVE::BehaveName::SHIFT_BREAD1 + level - 1);
+
+	}
+	else if (InputController::getInstance().IsPushKey(DIK_X) ||
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_B))
+	{
+		if (type != GUN_BEHAVE::AttackType::BREAD)
+			NextBehave = static_cast<GUN_BEHAVE::BehaveName>(GUN_BEHAVE::BehaveName::GUN1 + level);
+		else
+			NextBehave = static_cast<GUN_BEHAVE::BehaveName>(GUN_BEHAVE::BehaveName::SHIFT_GUN1 + level - 1);
+	}
 }
 
-GUN_BEHAVE::BehaveName GunBehave::GetNextBehave()
+void GunBehave::CheckStep()
 {
-	return nextBehave;
-}
+	if (InputController::getInstance().IsPushKey(DIK_LSHIFT) ||
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_LEFT_SHOULDER))
+	{
+		if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
+			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			param->direction.z = -DirectX::XM_PIDIV2;
+		}
+		if (InputController::getInstance().IsPressKey(DIK_RIGHT) ||
+			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			param->direction.z = DirectX::XM_PIDIV2;
+		}
 
-void GunBehave::ChackAttack()
-{
-	if (InputController::getInstance().IsPressKey(DIK_Z) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-	{
-		nextBehave = GUN_BEHAVE::BehaveName::BREAD1;
+		NextBehave = GUN_BEHAVE::BehaveName::STEP;
 	}
-	else if (InputController::getInstance().IsPressKey(DIK_X) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-	{
-		nextBehave = GUN_BEHAVE::BehaveName::GUN1;
-	}
+
 }

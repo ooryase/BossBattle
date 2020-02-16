@@ -10,13 +10,18 @@ struct Param
 	float gravity;
 	const float GRAVITY_DEF;
 
+	int typeGauge[2];
+
 	Param(DirectX::XMFLOAT3 _speed, float gravityDefault) :
 		speed(_speed),
 		direction(DirectX::XMFLOAT3(0.0f,0.0f,DirectX::XM_PIDIV2)),
 		ground(false),
 		gravity(gravityDefault),
 		GRAVITY_DEF(gravityDefault)
-	{}
+	{
+		typeGauge[0] = 0;
+		typeGauge[1] = 0;
+	}
 
 };
 
@@ -55,7 +60,7 @@ public:
 	void OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta);
 
 	void CollisionNormal(DirectX::XMFLOAT3 delta);
-	void CollisionDamage(DParam* dParam);
+	virtual void CollisionDamage(DParam* dParam);
 
 protected:
 

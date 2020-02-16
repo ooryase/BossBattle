@@ -3,8 +3,10 @@
 GunBread3::GunBread3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
-	param->speed.y = 0.26f;
-	param->gravity = param->GRAVITY_DEF * 0.7f;
+	type = GUN_BEHAVE::AttackType::BREAD;
+
+	param->speed.y = 0.20f;
+	param->gravity = param->GRAVITY_DEF * 0.85f;
 
 }
 
@@ -22,17 +24,18 @@ void GunBread3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	param->speed.x *= 0.995f;
 
+	if (time > 800)
+		CheckStep();
 
-
-	if (time > 1400)
+	if (time > 1100)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
 		if(param->ground)
-			nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+			NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 		else
-			nextBehave = GUN_BEHAVE::BehaveName::FALL;
+			NextBehave = GUN_BEHAVE::BehaveName::FALL;
 
 	}
 }

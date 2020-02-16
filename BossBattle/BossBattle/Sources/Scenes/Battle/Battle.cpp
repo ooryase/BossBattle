@@ -28,6 +28,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager = std::make_unique<ObjectManager>();
 	objectManager->SstModelMap(pDevice, "spaceBoss");
 	objectManager->SstModelMap(pDevice, "gunbreaker3");
+	objectManager->SstModelMap(pDevice, "Cube");
 	objectManager->SstModelMap(pDevice, "grid");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstModelShader(pDevice, L"alpha");
@@ -94,6 +95,10 @@ void Battle::UpdateObjects()
 	{
 		var->Update();
 	}
+	for (auto&& var : enemyEffects)
+	{
+		var->Update();
+	}
 
 	backGround->Update();
 }
@@ -104,11 +109,8 @@ void Battle::UpdateCollision()
 	const float wallPosX = 35.0f;
 	player->CollisionWallUpdate(wallPosX);
 
-	for (auto&& var : playerEffects)
-	{
-		if (var->GetTag() == ObjectTag::DAMAGE)
-			CheckCollisionDamageObj(var, bossEnemy);
-	}
+	CheckCollisionDamageObjcts(playerEffects, bossEnemy);
+	CheckCollisionDamageObjcts(enemyEffects, player);
 }
 
 void Battle::UpdateCamera()
@@ -131,6 +133,17 @@ void Battle::CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<Ba
 
 		obj1->OnCollisionEnter(obj2->GetTag(), DirectX::XMFLOAT3(delta.x * length, delta.y * length, delta.z * length));
 		obj2->OnCollisionEnter(obj1->GetTag(), DirectX::XMFLOAT3(-delta.x * length, -delta.y * length, -delta.z * length));
+	}
+}
+
+void Battle::CheckCollisionDamageObjcts(vector< shared_ptr< BaseEffect>> dObjs, std::shared_ptr<BaseCharacter> chara)
+{
+	if (chara->GetTag() == ObjectTag::STEALTH)
+		return;
+	for (auto&& var : dObjs)
+	{
+		if (var->GetTag() == ObjectTag::DAMAGE)
+			CheckCollisionDamageObj(var, chara);
 	}
 }
 
@@ -162,22 +175,45 @@ void Battle::EndUpdate()
 	player->EndUpdate();
 	bossEnemy->EndUpdate();
 
-	for (auto&& var : playerEffects)
+	EndUpdateEffects(&playerEffects, &playerEffectReserves);
+	EndUpdateEffects(&enemyEffects, &enemyEffectReserves);
+
+	//for (auto&& var : playerEffects)
+	//{
+	//	var->EndUpdate();
+	//}
+	//auto itr =
+	//	std::remove_if(playerEffects.begin(), playerEffects.end(), [](
+	//		std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
+	//playerEffects.erase(itr, playerEffects.end());
+	//
+	//if (!playerEffectReserves.empty())
+	//{
+	//	for (auto&& var : playerEffectReserves)
+	//		playerEffects.push_back(var);
+	//	playerEffectReserves.clear();
+	//}
+}
+
+void Battle::EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves)
+{
+	for (auto&& var : *effects)
 	{
 		var->EndUpdate();
 	}
 	auto itr =
-		std::remove_if(playerEffects.begin(), playerEffects.end(), [](
+		std::remove_if(effects->begin(), effects->end(), [](
 			std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
-	playerEffects.erase(itr, playerEffects.end());
+	effects->erase(itr, effects->end());
 
-	if (!playerEffectReserves.empty())
+	if (!effectReserves->empty())
 	{
-		for (auto&& var : playerEffectReserves)
-			playerEffects.push_back(var);
-		playerEffectReserves.clear();
+		for (auto&& var : *effectReserves)
+			effects->push_back(var);
+		effectReserves->clear();
 	}
 }
+
 
 void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
@@ -203,6 +239,12 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	{
 		var->Draw(pDeviceContext);
 	}
+
+	for (auto&& var : enemyEffects)
+	{
+		var->Draw(pDeviceContext);
+	}
+
 
 	player->DrawGauge(pDeviceContext);
 	bossEnemy->DrawGauge(pDeviceContext);

@@ -5,7 +5,7 @@
 
 namespace GUN_BEHAVE
 {
-	enum class BehaveName
+	enum BehaveName
 	{
 		NONE = -1,
 		WAIT,
@@ -29,6 +29,13 @@ namespace GUN_BEHAVE
 		SPECIAL,
 	};
 
+	enum class AttackType
+	{
+		NONE = -1,
+		GUN,
+		BREAD,
+	};
+
 }
 
 struct GunBehave
@@ -44,14 +51,14 @@ struct GunBehave
 
 	std::shared_ptr<BaseCharacter> player;
 
+	GUN_BEHAVE::BehaveName NextBehave;
 
 protected:
-	GUN_BEHAVE::BehaveName nextBehave;
+	GUN_BEHAVE::AttackType type;
 
-	void ChackAttack();
+	void ChackAttack(int level);
+	void CheckStep();
 
 public:
-	bool IsNextBehave();
-	GUN_BEHAVE::BehaveName GetNextBehave();
 
 };

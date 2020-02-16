@@ -3,8 +3,10 @@
 ShiftGun1::ShiftGun1(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
+	type = GUN_BEHAVE::AttackType::GUN;
+
 	shootFlag = false;
-	param->gravity = param->GRAVITY_DEF * 0.7f;
+	param->gravity = param->GRAVITY_DEF * 0.1f;
 
 }
 
@@ -26,10 +28,11 @@ void ShiftGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	{
 		if (!shootFlag)
 		{
+			param->gravity = param->GRAVITY_DEF * 0.85f;
 			shootPos = pos;
-			param->speed.y = 0.15f;
+			param->speed.y = 0.12f;
 			shootFlag = true;
-			param->speed.x = -0.27f * sin(param->direction.z);
+			param->speed.x = -0.35f * sin(param->direction.z);
 		}
 		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
 
@@ -42,27 +45,18 @@ void ShiftGun1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	}
 
 
-	param->speed.x *= 0.99f;
+	param->speed.x *= 0.985f;
 
-	if (time > 600)
+	if (time > 800)
 	{
-		if (InputController::getInstance().IsPressKey(DIK_Z) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::SHIFT_BREAD2;
-		}
-		else if (InputController::getInstance().IsPressKey(DIK_X) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
-		}
+		ChackAttack(2);
 	}
 
-	if (time > 1000)
+	if (time > 1100)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 	}
 }

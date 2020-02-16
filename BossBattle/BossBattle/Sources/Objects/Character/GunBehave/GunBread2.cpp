@@ -1,12 +1,17 @@
 #include"GunBread2.h"
+#include"../../Effect/GunBreaker/EffectBread2.h"
 
 GunBread2::GunBread2(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
+	type = GUN_BEHAVE::AttackType::BREAD;
+
 	if (!param->ground && param->speed.y < 0.0f)
 		param->speed.y = 0.015f;
 
-	param->gravity = param->GRAVITY_DEF * 0.2f;
+	param->gravity = param->GRAVITY_DEF * 0.1f;
+	player->SetEffectReserved(std::make_shared<EffectBread2>(player->GetObjectManager(), player));
+
 }
 
 void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
@@ -25,26 +30,19 @@ void GunBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 600)
 	{
-		if (InputController::getInstance().IsPressKey(DIK_Z) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
-		}
-		else if (InputController::getInstance().IsPressKey(DIK_X) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::SHIFT_GUN2;
-		}
+		ChackAttack(2);
+		CheckStep();
+
 	}
 
-	if (time > 1300)
+	if (time > 900)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
 		if (param->ground)
-			nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+			NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 		else
-			nextBehave = GUN_BEHAVE::BehaveName::FALL;
+			NextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 }

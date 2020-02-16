@@ -52,7 +52,10 @@ private:
 	void UpdateCollision();
 	void UpdateCamera();
 
+	void EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves);
+
 	void CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<BaseObject> obj2);
+	void CheckCollisionDamageObjcts(vector< shared_ptr< BaseEffect>> dObjs, std::shared_ptr<BaseCharacter> chara);
 	void CheckCollisionDamageObj(std::shared_ptr<BaseEffect> dObj, std::shared_ptr<BaseCharacter> chara);
 
 	//pos1‚Æpos2‚Ì“–‚½‚è”»’è

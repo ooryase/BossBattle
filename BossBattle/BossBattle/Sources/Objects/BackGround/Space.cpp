@@ -36,7 +36,7 @@ void Space::Update()
 
 	for (int i = 0; i < starPosSize; i++)
 	{
-		starPos[i].time += Timer::GetInstance().GetDeltaTime() / starPos[i].speed;
+		starPos[i].time += Timer::GetInstance().GetDeltaTime() * starPos[i].speed;
 		starPos[i].time = (starPos[i].time > 10000) ? 0 : starPos[i].time;
 	}
 }
@@ -81,7 +81,7 @@ void Space::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
 	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 50.0f);
-	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
+	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, 0.0f);
 	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(9.0f, 9.0f, 12.0f);
 
 	world *= scale * rotate * offset;
@@ -104,7 +104,7 @@ void Space::DrawSetGrid(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, 6.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, 10.0f);
 	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
 	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
 
@@ -127,9 +127,9 @@ void Space::DrawSetStar(ComPtr<ID3D11DeviceContext> pDeviceContext, StarPos pos,
 	// パラメータの計算
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, 49.0f);
-	DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(cosf(pos.radian) * (pos.time / 80.0f), sinf(pos.radian) * (pos.time / 80.0f),
-		80.0f * sinf(-pos.time / 10000.0f * DirectX::XM_PIDIV2));
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 10.0f, -5.0f);
+	float transLenght = sinf( pos.time / 10000.0f * DirectX::XM_PIDIV4 * 3.0f);
+	DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(cosf(pos.radian) * 60.0f * transLenght, sinf(pos.radian) * 40.0f * transLenght, 50.0f * cosf(pos.time / 10000.0f * DirectX::XM_PIDIV4 * 3.0f));
 	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(
 		-atan2f(eyeDirection.y, eyeDirection.x),
 		DirectX::XM_PIDIV2 - atan2f(eyeDirection.z, eyeDirection.x),

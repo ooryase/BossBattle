@@ -3,6 +3,8 @@
 GunGun3::GunGun3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
+	type = GUN_BEHAVE::AttackType::GUN;
+
 	shootFlag = false;
 	param->speed.y = 0.0f;
 	param->gravity = param->GRAVITY_DEF * 0.4f;
@@ -44,25 +46,16 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	param->speed.x *= 0.99f;
 
-	/*if (time > 800)
+	if (time > 800)
 	{
-		if (InputController::getInstance().IsPressKey(DIK_Z) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
-		}
-		else if (InputController::getInstance().IsPressKey(DIK_X) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
-		}
-	}*/
+		CheckStep();
+	}
 
-	if (time > 1000)
+	if (time > 1100)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 	}
 }

@@ -20,9 +20,7 @@ void BaseCharacter::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
 	switch (_tag)
 	{
 	case ObjectTag::NORMAL:
-		position.x += delta.x * 0.4f * e;
-		position.y += delta.y * 0.4f * e;
-
+		CollisionNormal(delta);
 		break;
 	case ObjectTag::STEALTH:
 		break;

@@ -3,17 +3,8 @@
 #include "../Effect/BaseEffect.h"
 #include "GunBehave/GunBehave.h"
 
-enum AttackType
-{
-	BREAD,
-	GUN
-};
-
 class GunBreaker : public BaseCharacter
 {
-	//0 : Gun , 1 : Bread
-	int typeGauge[2];
-
 	std::shared_ptr<Sprite> hpGauge;
 	std::shared_ptr<Sprite> hpFrame;
 	std::shared_ptr<Sprite> GBFrame;
@@ -43,6 +34,7 @@ private:
 
 public:
 	void CollisionWallUpdate(float wall);
+	void CollisionDamage(DParam* dParam) override;
 	void AttackHit(int type, int quantity) override;
 	void SetEffectReserved(std::shared_ptr<BaseEffect> _obj) override;
 };

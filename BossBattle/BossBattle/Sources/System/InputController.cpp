@@ -23,35 +23,21 @@ HRESULT InputController::Init(HINSTANCE hInstance, HWND hWnd)
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_X				, PressData()));
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_Y				, PressData()));
 
-	//lpDI = NULL;
-	//lpKeyboard = NULL;
-
 	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)lpDI.GetAddressOf(), NULL);
 	if (FAILED(hr))
 		return hr;
 
 	hr = lpDI->CreateDevice(GUID_SysKeyboard, lpKeyboard.GetAddressOf(), NULL);
 	if (FAILED(hr))
-	{
-		//lpDI->Release();
 		return hr;
-	}
 
 	hr = lpKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if (FAILED(hr))
-	{
-		//lpKeyboard->Release();
-		//lpDI->Release();
 		return hr;
-	}
 
 	hr = lpKeyboard->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	if (FAILED(hr))
-	{
-		//lpKeyboard->Release();
-		//lpDI->Release();
 		return hr;
-	}
 
 	lpKeyboard->Acquire();
 
@@ -70,7 +56,8 @@ void InputController::Update()
 		var.second.Update(state.Gamepad.wButtons & var.first);
 	}
 
-	//BYTE key[256];
+	memcpy(prevKey, key, sizeof(BYTE) * 256);
+
 	HRESULT hr = lpKeyboard->GetDeviceState(sizeof(key), key);
 	if (FAILED(hr))
 	{
@@ -97,6 +84,26 @@ bool InputController::IsPressKey(int keyCode)
 bool InputController::IsPressButtom(int Xcode)
 {
 	return pad.at(Xcode).press;
+}
+
+bool InputController::IsPushKey(int keyCode)
+{
+	return (key[keyCode] & 0x80) && !(prevKey[keyCode] & 0x80);
+}
+
+bool InputController::IsPushButtom(int Xcode)
+{
+	return pad.at(Xcode).push;
+}
+
+bool InputController::IsReleaseKey(int keyCode)
+{
+	return !(key[keyCode] & 0x80) && (prevKey[keyCode] & 0x80);
+}
+
+bool InputController::IsReleaseButtom(int Xcode)
+{
+	return pad.at(Xcode).release;
 }
 
 

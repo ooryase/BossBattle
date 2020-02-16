@@ -25,9 +25,6 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves) 
 	: BaseCharacter(_light, _playerEffectReserves, objectManager)
 {
-	typeGauge[BREAD] = 20;
-	typeGauge[GUN] = 50;
-
 	model = objectManager->GetModel("gunbreaker3");
 	shader = objectManager->GetModelShader(L"shader");
 
@@ -85,9 +82,9 @@ void GunBreaker::Update()
 
 void GunBreaker::EndUpdate()
 {
-	if (behave->IsNextBehave())
+	if (behave->NextBehave != GUN_BEHAVE::BehaveName::NONE)
 	{
-		GUN_BEHAVE::BehaveName temp = behave->GetNextBehave();
+		GUN_BEHAVE::BehaveName temp = behave->NextBehave;
 
 		model->SetAnimSackNumber(static_cast<int>(temp));
 
@@ -237,16 +234,19 @@ void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		DirectX::XMFLOAT3(15.0f, 3.2f, 1.6f),
 		GBFrame);
 
-	breadGauge->Scroll(typeGauge[BREAD] / 100.0f);
+	const int GUN = 0;
+	const int BREAD = 1;
+
+	breadGauge->Scroll(param->typeGauge[BREAD] / 100.0f);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(27.2f - 7.2f * typeGauge[BREAD] / 100.0f, -1.7f, -10.1f),
-		DirectX::XMFLOAT3(14.4f * typeGauge[BREAD] / 100.0f, 0.8f, 1.6f),
+		DirectX::XMFLOAT3(27.2f - 7.2f * param->typeGauge[BREAD] / 100.0f, -1.7f, -10.1f),
+		DirectX::XMFLOAT3(14.4f * param->typeGauge[BREAD] / 100.0f, 0.8f, 1.6f),
 		breadGauge);
 
-	gunGauge->Scroll(typeGauge[GUN] / 100.0f);
+	gunGauge->Scroll(param->typeGauge[GUN] / 100.0f);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(28.0f - 5.0f * typeGauge[GUN] / 100.0f, -2.6f, -10.1f),
-		DirectX::XMFLOAT3(10.0f * typeGauge[GUN] / 100.0f, 0.8f, 1.6f),
+		DirectX::XMFLOAT3(28.0f - 5.0f * param->typeGauge[GUN] / 100.0f, -2.6f, -10.1f),
+		DirectX::XMFLOAT3(10.0f * param->typeGauge[GUN] / 100.0f, 0.8f, 1.6f),
 		gunGauge);
 }
 
@@ -258,11 +258,22 @@ void GunBreaker::CollisionWallUpdate(float wall)
 		position.x = wall - radius;
 }
 
+void GunBreaker::CollisionDamage(DParam* dParam)
+{
+	behave->NextBehave = GUN_BEHAVE::BehaveName::DAMEGED;
+
+	hp -= dParam->damage;
+	if (hp < 0.0f)
+		hp = 0.0f;
+
+	param->speed.x = dParam->direction.x * e;
+	param->speed.y = dParam->direction.y * e;
+	param->speed.z = dParam->direction.z * e;
+}
+
 void GunBreaker::AttackHit(int type, int quantity)
 {
-	typeGauge[type] += quantity;
-	hp -= 10.0f;
-	typeGauge[BREAD] += 10;
+	param->typeGauge[type] += quantity;
 }
 
 void GunBreaker::SetEffectReserved(std::shared_ptr<BaseEffect> _obj)

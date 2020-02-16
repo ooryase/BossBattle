@@ -9,21 +9,11 @@ void GunDameged::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
-	if (time > 2000)
-		nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+	param->speed.x *= 0.98f;
 
-	if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
-	{
-		param->speed.x += -0.0003f;
-		param->direction.z = -DirectX::XM_PIDIV2;
-	}
-	if (InputController::getInstance().IsPressKey(DIK_RIGHT) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT))
-	{
-		param->speed.x += 0.0003f;
-		param->direction.z = DirectX::XM_PIDIV2;
-	}
+	if (time > 500)
+		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
+
 
 	//ChackAttack();
 

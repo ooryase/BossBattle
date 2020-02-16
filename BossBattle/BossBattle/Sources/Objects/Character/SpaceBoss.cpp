@@ -1,6 +1,7 @@
 #include"SpaceBoss.h"
 #include"../../System/InputController.h"
 #include"../../System/Timer.h"
+#include"../Effect/SpaceBoss/BossBeam.h"
 
 using DirectX::XMFLOAT3;
 
@@ -65,10 +66,15 @@ void SpaceBoss::Update()
 
 	model->Update(animSpeedDiv);
 
-	if (InputController::getInstance().IsPressKey(DIK_H))
+	if (InputController::getInstance().IsPushKey(DIK_H))
 	{
-		rotateDef.x += 0.01f;
-		//param->direction.x += 0.01f; //DirectX::XM_PIDIV2;
+		behave = BehabeName::BEAM;
+		behaveStep = 0;
+		behaveTime = 0;
+		animNum = AnimNumber::BEAM;
+		model->SetAnimSackNumber(animNum);
+		effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
+
 	}
 	if (InputController::getInstance().IsPressKey(DIK_J))
 	{
@@ -109,6 +115,9 @@ void SpaceBoss::Update()
 	{
 	case BehabeName::AWAKE:
 		UpdateAwake();
+		break;
+	case BehabeName::BEAM:
+		UpdateBeam();
 		break;
 	default:
 		break;
@@ -159,6 +168,17 @@ void SpaceBoss::UpdateAwake()
 	}
 
 
+}
+
+void SpaceBoss::UpdateBeam()
+{
+	if (behaveTime > 2000)
+	{
+		behave = BehabeName::WAIT;
+		animNum = AnimNumber::WAIT;
+		animSpeedDiv = 1;
+		model->SetAnimSackNumber(animNum);
+	}
 }
 
 void SpaceBoss::EndUpdate()

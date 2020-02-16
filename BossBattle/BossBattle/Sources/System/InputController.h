@@ -38,6 +38,7 @@ private:
 	ComPtr<IDirectInputDevice8A> lpKeyboard;
 
 	BYTE key[256];
+	BYTE prevKey[256];
 
 public:
 	static InputController& getInstance();
@@ -48,5 +49,9 @@ public:
 
 	bool IsPressKey(int keyCode);
 	bool IsPressButtom(int Xcode);
+	bool IsPushKey(int keyCode);
+	bool IsPushButtom(int Xcode);
+	bool IsReleaseKey(int keyCode);
+	bool IsReleaseButtom(int Xcode);
 
 };

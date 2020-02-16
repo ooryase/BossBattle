@@ -45,6 +45,7 @@ public:
 	void Update();
 private:
 	void UpdateAwake();
+	void UpdateBeam();
 public:
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) override;

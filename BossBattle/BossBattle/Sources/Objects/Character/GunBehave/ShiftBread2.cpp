@@ -3,9 +3,11 @@
 ShiftBread2::ShiftBread2(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
 {
-	param->speed.y = 0.25f;
-	param->speed.x = 0.2f * sin(param->direction.z);
-	param->gravity = param->GRAVITY_DEF * 0.8f;
+	type = GUN_BEHAVE::AttackType::BREAD;
+
+	param->speed.y = 0.2f;
+	param->speed.x = 0.35f * sin(param->direction.z);
+	param->gravity = param->GRAVITY_DEF * 0.95f;
 
 }
 
@@ -23,30 +25,21 @@ void ShiftBread2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	light->PAttenuation.y = 0.0105f + temp / 100.0f;
 	light->PAttenuation.z = 0.0105f + temp / 100.0f;
 
-	param->speed.x *= 0.995f;
+	param->speed.x *= 0.985f;
 
-	/*if (time > 600)
+	if (time > 800)
 	{
-		if (InputController::getInstance().IsPressKey(DIK_Z) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_A))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::BREAD3;
-		}
-		else if (InputController::getInstance().IsPressKey(DIK_X) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_B))
-		{
-			nextBehave = GUN_BEHAVE::BehaveName::GUN3;
-		}
-	}*/
+		CheckStep();
+	}
 
-	if (time > 1300)
+	if (time > 1100)
 	{
 		light->Player.x = 1000.0f;
 		light->Player.y = 1000.0f;
 
 		if (param->ground)
-			nextBehave = GUN_BEHAVE::BehaveName::WAIT;
+			NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 		else
-			nextBehave = GUN_BEHAVE::BehaveName::FALL;
+			NextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 }

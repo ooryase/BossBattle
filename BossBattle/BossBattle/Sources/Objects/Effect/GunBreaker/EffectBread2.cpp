@@ -1,8 +1,8 @@
-#include "EffectBread1.h"
+#include "EffectBread2.h"
 #include"../../../System/Timer.h"
 #include"../../Character/GunBreaker.h"
 
-EffectBread1::EffectBread1(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player)
+EffectBread2::EffectBread2(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player)
 	: BaseEffect(),
 	useChara(_player)
 
@@ -14,27 +14,26 @@ EffectBread1::EffectBread1(std::shared_ptr<ObjectManager> objectManager, std::sh
 
 	direction = useChara->GetDirection();
 	position = useChara->GetPos();
-	position.x += (direction.z == DirectX::XM_PIDIV2) ? 5.0f : -5.0f;
+
+	const float d = (direction.z == DirectX::XM_PIDIV2) ? 1.0f : -1.0f;
+	position.x += 5.0f * d;
 	time = 0;
-	endTime = 300;
+	endTime = 1000;
 
 	radius = 10.0f;
 
 	dParam.damage = 100.0f;
-	if(direction.z == DirectX::XM_PIDIV2)
-		dParam.direction = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
-	else
-		dParam.direction = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f);
-	
+	dParam.direction = DirectX::XMFLOAT3(0.5f * d, 0.5f, 0.0f);
+
 }
 
-void EffectBread1::Update()
+void EffectBread2::Update()
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
 	position = useChara->GetPos();
 	position.y += sin(-time / 130.0f + DirectX::XM_PIDIV2) * 5.0f;
-	position.x += cos(-time / 130.0f + DirectX::XM_PIDIV2) * 
+	position.x += cos(-time / 130.0f + DirectX::XM_PIDIV2) *
 		((direction.z == DirectX::XM_PIDIV2) ? 7.0f : -7.0f);
 
 	if (100 < time)
@@ -47,13 +46,13 @@ void EffectBread1::Update()
 
 }
 
-void  EffectBread1::EndUpdate()
+void  EffectBread2::EndUpdate()
 {
 	if (time > endTime)
 		isToDelete = true;
 }
 
-void EffectBread1::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void EffectBread2::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	DrawSet(pDeviceContext);
 
@@ -66,16 +65,17 @@ void EffectBread1::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
-void EffectBread1::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void EffectBread2::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	float scale = abs((time *  (time - endTime))/ 4500.0f);
+	float rate = time / static_cast<float>(endTime);
+	float scale = abs((rate * (1 - rate)) * 40.0f);
 
 	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
-	DirectX::XMMATRIX World = DirectX::XMMatrixTranslation(0.0f, 0.0f, -2.0f);
-	DirectX::XMMATRIX Rotate = DirectX::XMMatrixRotationZ(-time / 130.0f + DirectX::XM_PIDIV2);
+	Offset *= DirectX::XMMatrixTranslation(0.0f, 0.0f, -2.0f);
+	DirectX::XMMATRIX Rotate = DirectX::XMMatrixRotationZ(time / 130.0f - DirectX::XM_PIDIV2);
 	DirectX::XMMATRIX RotateDef = DirectX::XMMatrixRotationY(direction.z - DirectX::XM_PIDIV2);
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(scale, scale, scale);
-	World *= Scale * Rotate * RotateDef * Offset;
+	DirectX::XMMATRIX World = Scale * Offset;
 
 	SPRITE::CONSTANT_BUFFER cb;
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(World));
@@ -83,12 +83,12 @@ void EffectBread1::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
-void EffectBread1::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
+void EffectBread2::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
 {
 
 }
 
-bool EffectBread1::IsNewHit(BaseObject* obj)
+bool EffectBread2::IsNewHit(BaseObject* obj)
 {
 	auto itr = std::find(collisionObj.begin(), collisionObj.end(), obj);
 	if (itr != collisionObj.end()) {
