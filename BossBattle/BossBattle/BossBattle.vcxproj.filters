@@ -252,6 +252,9 @@
     <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossBeam.cpp">
       <Filter>ソース ファイル\Objects\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectGun.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -393,6 +396,9 @@
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossBeam.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectGun.h">
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
   </ItemGroup>

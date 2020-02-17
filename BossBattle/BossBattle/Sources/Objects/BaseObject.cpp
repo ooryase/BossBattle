@@ -31,6 +31,11 @@ ObjectTag BaseObject::GetTag() const
 	return tag;
 }
 
+void BaseObject::SetTag(ObjectTag _tag)
+{
+	tag = _tag;
+}
+
 bool BaseObject::IsDead() const
 {
 	return isToDelete;

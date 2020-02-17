@@ -2,23 +2,23 @@
 #include"../../Character/BaseCharacter.h"
 #pragma once
 
-class EffectBread2 : public BaseEffect
+class EffectGun : public BaseEffect
 {
-	std::shared_ptr<Sprite> sprite;
-	std::shared_ptr<SpriteShader> spriteShader;
+	std::shared_ptr<BaseModel> model;
+	std::shared_ptr<ModelShader> modelShader;
 
 	int time;
 	int endTime;
 
-	float direction;
-
-	int breadType;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 direction;
 
 	std::shared_ptr<BaseCharacter> useChara;
 
+
 public:
 
-	EffectBread2(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player, int type);
+	EffectGun(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player);
 
 	void Update();
 	void EndUpdate();

@@ -1,4 +1,5 @@
 #include"ShiftGun2.h"
+#include"../../Effect/GunBreaker/EffectGun.h"
 
 ShiftGun2::ShiftGun2(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
@@ -30,6 +31,7 @@ void ShiftGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 			param->gravity = param->GRAVITY_DEF * 0.85f;
 			shootPos = pos;
 			param->speed.y = 0.3f;
+			player->SetEffectReserved(std::make_shared<EffectGun>(player->GetObjectManager(), player));
 			shootFlag = true;
 			param->speed.x = -0.25f * sin(param->direction.z);
 		}

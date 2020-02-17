@@ -1,4 +1,5 @@
 #include"GunGun3.h"
+#include"../../Effect/GunBreaker/EffectGun.h"
 
 GunGun3::GunGun3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
@@ -31,9 +32,10 @@ void GunGun3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		{
 			shootPos = pos;
 			param->speed.y = 0.08f;
+			player->SetEffectReserved(std::make_shared<EffectGun>(player->GetObjectManager(), player));
 			shootFlag = true;
 		}
-		float temp = static_cast<float>(time - 15 * 16) * 1.1f;
+		float temp = static_cast<float>(time - 15 * 16);
 
 		light->Player.x = pos.x + temp * sin(param->direction.z);
 		light->Player.y = pos.y - 2.0f;

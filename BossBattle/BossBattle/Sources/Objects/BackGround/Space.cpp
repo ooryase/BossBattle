@@ -5,7 +5,7 @@
 Space::Space(std::shared_ptr<ObjectManager> objectManager)
 	: starPosSize(200)
 {
-	grid = objectManager->GetModel("grid");
+	grid = objectManager->GetModel("grid2");
 	gridShader = objectManager->GetModelShader(L"alpha");
 
 	space = objectManager->GetSprite(L"space");

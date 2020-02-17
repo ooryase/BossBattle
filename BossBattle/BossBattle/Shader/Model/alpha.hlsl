@@ -36,6 +36,8 @@ cbuffer CBuffer2 : register(b1)
 cbuffer CBuffer3 : register(b2)
 {
 	matrix World;
+	float4 Color;
+	float4 EdgeColor;
 }
  
 // 頂点シェーダ
@@ -97,5 +99,10 @@ float4 PS(PS_IN input) : SV_Target
  
     col = colD * colA;
 
-    return float4(col, 0.125f + col * 0.875f, 0.3f + col * 0.7f, col);
+	//階調化
+	int levelx = (int)((col * PColor.x) / 0.2f);
+	int levely = (int)((col * PColor.y) / 0.2f);
+	int levelz = (int)((col * PColor.z) / 0.2f);
+
+	return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, col);
 }

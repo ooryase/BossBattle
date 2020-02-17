@@ -28,6 +28,10 @@ class Battle : public BaseScene
 
 	std::unique_ptr<Space> backGround;
 
+	std::shared_ptr<BaseModel> fade;
+	std::shared_ptr<ModelShader> fadeShader;
+
+
 	enum class Phase
 	{
 		START,
@@ -50,7 +54,7 @@ public:
 private:
 	void UpdateObjects();
 	void UpdateCollision();
-	void UpdateCamera();
+	void UpdatePhase();
 
 	void EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves);
 

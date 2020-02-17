@@ -4,6 +4,10 @@
 
 struct GunBread3 : public GunBehave
 {
+private:
+	bool slashFlag;
+
+public:
 	GunBread3(std::shared_ptr<Param> param, std::shared_ptr<BaseCharacter> _player);
 	~GunBread3() {};
 

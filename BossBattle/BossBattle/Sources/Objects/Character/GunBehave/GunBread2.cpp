@@ -10,7 +10,7 @@ GunBread2::GunBread2(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacte
 		param->speed.y = 0.015f;
 
 	param->gravity = param->GRAVITY_DEF * 0.1f;
-	player->SetEffectReserved(std::make_shared<EffectBread2>(player->GetObjectManager(), player));
+	player->SetEffectReserved(std::make_shared<EffectBread2>(player->GetObjectManager(), player, 2));
 
 }
 

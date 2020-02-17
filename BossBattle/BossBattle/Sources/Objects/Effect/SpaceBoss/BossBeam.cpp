@@ -7,12 +7,13 @@ BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr
 {
 	tag = ObjectTag::STEALTH;
 
-	model = objectManager->GetModel("Cube");
+	model = objectManager->GetModel("Effects/spine");
 	modelShader = objectManager->GetModelShader(L"shader");
 
 	direction = _player->GetDirection();
 	position = _player->GetPos();
-	position.x += (direction.z == DirectX::XM_PIDIV2) ? -5.0f : 5.0f;
+	position.x += (direction.z == DirectX::XM_PIDIV2) ? -10.0f : 10.0f;
+	position.y -= 1.0f;
 	time = 0;
 	chageTime = 1000;
 	endTime = 3000;
@@ -21,9 +22,9 @@ BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr
 
 	dParam.damage = 10.0f;
 	if (direction.z == DirectX::XM_PIDIV2)
-		dParam.direction = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f);
+		dParam.direction = DirectX::XMFLOAT3(-0.2f, 0.2f, 0.0f);
 	else
-		dParam.direction = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
+		dParam.direction = DirectX::XMFLOAT3(0.2f, 0.2f, 0.0f);
 
 }
 
@@ -58,9 +59,12 @@ void BossBeam::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	model->DrawSet(pDeviceContext);
 	modelShader->DrawSet(pDeviceContext);
 
-
 	pDeviceContext->DrawIndexed(model->GetIndexCount(), 0, 0);
 
+	model->DrawLineAdjSet(pDeviceContext);
+	modelShader->DrawLineAdjSet(pDeviceContext);
+
+	pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
 }
 
 void BossBeam::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
@@ -74,13 +78,24 @@ void BossBeam::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 	DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
-	DirectX::XMMATRIX Rotate = DirectX::XMMatrixRotationZ(-time / 130.0f + DirectX::XM_PIDIV2);
-	DirectX::XMMATRIX RotateDef = DirectX::XMMatrixRotationY(direction.z - DirectX::XM_PIDIV2);
+	DirectX::XMMATRIX Rotate = DirectX::XMMatrixRotationRollPitchYaw(time / 130.0f, time / 200.0f, time / 300.0f);
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(scale, scale, scale);
-	World *= Scale * Offset;
+	World *= Scale * Rotate * Offset;
 
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 0.0f);
+	DirectX::XMVECTOR EdgeColor;
+	if (tag == ObjectTag::DAMAGE)
+		EdgeColor = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	else
+		EdgeColor = DirectX::XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f);
+
+	// ƒpƒ‰ƒ[ƒ^‚ÌŽó‚¯“n‚µ
 	MODEL::CONSTANT_BUFFER cb;
+
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(World));
+	DirectX::XMStoreFloat4(&cb.Color, Color);
+	DirectX::XMStoreFloat4(&cb.EdgeColor, EdgeColor);
+
 	modelShader->SetConstantBuffer(pDeviceContext, cb);
 
 }

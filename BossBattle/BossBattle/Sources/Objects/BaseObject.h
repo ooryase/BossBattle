@@ -65,6 +65,7 @@ public:
 	DirectX::XMFLOAT3 GetPos() const;
 	float GetRadius() const;
 	ObjectTag GetTag() const;
+	void SetTag(ObjectTag _tag);
 
 	bool IsDead() const;
 };

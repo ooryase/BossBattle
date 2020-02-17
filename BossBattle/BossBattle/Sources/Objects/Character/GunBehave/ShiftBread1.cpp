@@ -1,4 +1,5 @@
 #include"ShiftBread1.h"
+#include"../../Effect/GunBreaker/EffectBread2.h"
 
 ShiftBread1::ShiftBread1(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
@@ -21,6 +22,7 @@ void ShiftBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		param->gravity = param->GRAVITY_DEF * 0.85f;
 		param->speed.y = 0.2f;
 		upperFlag = true;
+		player->SetEffectReserved(std::make_shared<EffectBread2>(player->GetObjectManager(), player, 4));
 	}
 
 	light->Player.x = pos.x + 4.0f * sin(param->direction.z);

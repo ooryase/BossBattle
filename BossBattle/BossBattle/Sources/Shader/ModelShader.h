@@ -6,8 +6,8 @@ namespace MODEL
 	struct CONSTANT_BUFFER
 	{
 		DirectX::XMFLOAT4X4 World;
-		DirectX::XMFLOAT4 Light;
-		DirectX::XMFLOAT4 Attenuation;
+		DirectX::XMFLOAT4 Color;
+		DirectX::XMFLOAT4 EdgeColor;
 	};
 }
 

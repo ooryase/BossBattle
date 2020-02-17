@@ -4,6 +4,11 @@
 
 struct ShiftBread2 : public GunBehave
 {
+private:
+	bool slashFlag;
+
+public:
+
 	ShiftBread2(std::shared_ptr<Param> param, std::shared_ptr<BaseCharacter> _player);
 	~ShiftBread2() {};
 

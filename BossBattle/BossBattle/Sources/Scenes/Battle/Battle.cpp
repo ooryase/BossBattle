@@ -28,10 +28,12 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager = std::make_unique<ObjectManager>();
 	objectManager->SstModelMap(pDevice, "spaceBoss");
 	objectManager->SstModelMap(pDevice, "gunbreaker3");
-	objectManager->SstModelMap(pDevice, "Cube");
-	objectManager->SstModelMap(pDevice, "grid");
+	objectManager->SstModelMap(pDevice, "Effects/spine");
+	objectManager->SstModelMap(pDevice, "Effects/bullet");
+	objectManager->SstModelMap(pDevice, "grid2");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstModelShader(pDevice, L"alpha");
+	objectManager->SstModelShader(pDevice, L"noLight");
 	objectManager->SstSpriteMap(pDevice, L"Tex");
 	objectManager->SstOctagonSpriteMap(pDevice, L"space");
 	objectManager->SstSpriteMap(pDevice, L"slash");
@@ -74,6 +76,10 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 
 	proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
 
+	fade = objectManager->GetModel("grid2");
+	fadeShader = objectManager->GetModelShader(L"noLight");
+
+
 }
 
 Battle::~Battle()
@@ -83,7 +89,7 @@ void Battle::Update()
 {
 	UpdateObjects();
 	UpdateCollision();
-	UpdateCamera();
+	UpdatePhase();
 }
 
 void Battle::UpdateObjects()
@@ -101,6 +107,7 @@ void Battle::UpdateObjects()
 	}
 
 	backGround->Update();
+	camera->Update();
 }
 
 void Battle::UpdateCollision()
@@ -113,11 +120,15 @@ void Battle::UpdateCollision()
 	CheckCollisionDamageObjcts(enemyEffects, player);
 }
 
-void Battle::UpdateCamera()
+void Battle::UpdatePhase()
 {
-	camera->Update();
-
 	phaseTime += Timer::GetInstance().GetDeltaTime();
+
+	if (phase == Phase::START && phaseTime > 20000)
+	{
+		phase = Phase::BATTLE;
+		phaseTime = 0;
+	}
 }
 
 void Battle::CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<BaseObject> obj2)
@@ -156,9 +167,6 @@ void Battle::CheckCollisionDamageObj(std::shared_ptr<BaseEffect> dObj, std::shar
 	if (IsCollide(delta, dObj->GetRadius() + chara->GetRadius(), &length) &&
 		dObj->IsNewHit(chara.get()))
 	{
-		//length = std::sqrt(length);
-		//delta = NormalizeFloat3(delta);
-
 		chara->CollisionDamage(&(dObj->dParam));
 	}
 }
@@ -245,9 +253,61 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		var->Draw(pDeviceContext);
 	}
 
+	if (phase == Phase::BATTLE)
+	{
+		player->DrawGauge(pDeviceContext);
+		bossEnemy->DrawGauge(pDeviceContext);
+	}
+	
+	if (phase == Phase::START && phaseTime > 19000)
+	{
+		// パラメータの計算
+		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
-	player->DrawGauge(pDeviceContext);
-	bossEnemy->DrawGauge(pDeviceContext);
+		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, -20.0f);
+		DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
+
+		world *= scale * rotate * offset;
+
+		// パラメータの受け渡し
+		MODEL::CONSTANT_BUFFER cb;
+		cb.Color.x = (phaseTime - 19000) / 200.0f;
+		DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
+
+		fadeShader->SetConstantBuffer(pDeviceContext, cb);
+
+
+		fade->DrawSet(pDeviceContext);
+		fadeShader->DrawSet(pDeviceContext);
+
+		pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
+
+	}
+	else if (phase == Phase::BATTLE && phaseTime < 500)
+	{
+		// パラメータの計算
+		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+
+		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 40.0f, -20.0f);
+		DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
+
+		world *= scale * rotate * offset;
+
+		// パラメータの受け渡し
+		MODEL::CONSTANT_BUFFER cb;
+		cb.Color.x = (500 - phaseTime) / 100.0f;
+		DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
+
+		fadeShader->SetConstantBuffer(pDeviceContext, cb);
+
+
+		fade->DrawSet(pDeviceContext);
+		fadeShader->DrawSet(pDeviceContext);
+
+		pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
+	}
 }
 
 void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)

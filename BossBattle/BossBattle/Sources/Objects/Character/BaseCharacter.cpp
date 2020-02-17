@@ -40,6 +40,9 @@ void BaseCharacter::CollisionNormal(DirectX::XMFLOAT3 delta)
 }
 void BaseCharacter::CollisionDamage(DParam* dParam)
 {
+	if (tag == ObjectTag::STEALTH)
+		return;
+
 	hp -= dParam->damage;
 	if (hp < 0.0f)
 		hp = 0.0f;

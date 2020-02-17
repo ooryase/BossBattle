@@ -207,11 +207,19 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	World *= Scale * Rotate * Offset;
 
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR EdgeColor;
+	if (tag == ObjectTag::NORMAL)
+		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+	else
+		EdgeColor = DirectX::XMVectorSet(0.5f, 0.5f, 0.5f, 0.0f);
 
 	// ƒpƒ‰ƒ[ƒ^‚ÌŽó‚¯“n‚µ
 	MODEL::CONSTANT_BUFFER cb;
 
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(World));
+	DirectX::XMStoreFloat4(&cb.Color, Color);
+	DirectX::XMStoreFloat4(&cb.EdgeColor, EdgeColor);
 
 	shader->SetConstantBuffer(pDeviceContext, cb);
 

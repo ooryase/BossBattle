@@ -1,4 +1,5 @@
 #include"GunBread3.h"
+#include"../../Effect/GunBreaker/EffectBread2.h"
 
 GunBread3::GunBread3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacter> _player)
 	: GunBehave(_param, _player)
@@ -8,6 +9,7 @@ GunBread3::GunBread3(std::shared_ptr<Param> _param, std::shared_ptr<BaseCharacte
 	param->speed.y = 0.20f;
 	param->gravity = param->GRAVITY_DEF * 0.85f;
 
+	slashFlag = false;
 }
 
 void GunBread3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
@@ -23,6 +25,12 @@ void GunBread3::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	light->PAttenuation.z = 0.0105f + temp / 100.0f;
 
 	param->speed.x *= 0.995f;
+
+	if (time > 300 && !slashFlag)
+	{
+		slashFlag = true;
+		player->SetEffectReserved(std::make_shared<EffectBread2>(player->GetObjectManager(), player, 3));
+	}
 
 	if (time > 800)
 		CheckStep();

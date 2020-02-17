@@ -169,15 +169,21 @@ void GunBreaker::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	m_World *= m_Scale * m_Rotate * m_Offset;
 
-	//DirectX::XMVECTOR m_Light = DirectX::XMVectorSet(std::cos(4.0f) * 40.1f, -20.0f, std::sin(4.0f) * 40.1f, 0.0f);
-	//DirectX::XMVECTOR m_Attenuation = DirectX::XMVectorSet(1.0f, 0.0005f, 0.0005f, 0.0f);
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 0.0f);
+	DirectX::XMVECTOR EdgeColor;
+	if(tag == ObjectTag::NORMAL)
+		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+	else
+		EdgeColor = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// ƒpƒ‰ƒ[ƒ^‚ÌŽó‚¯“n‚µ
-	MODEL::CONSTANT_BUFFER ccb;
+	MODEL::CONSTANT_BUFFER cb;
 
-	DirectX::XMStoreFloat4x4(&ccb.World, DirectX::XMMatrixTranspose(m_World));
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(m_World));
+	DirectX::XMStoreFloat4(&cb.Color, Color);
+	DirectX::XMStoreFloat4(&cb.EdgeColor, EdgeColor);
 
-	shader->SetConstantBuffer(pDeviceContext, ccb);
+	shader->SetConstantBuffer(pDeviceContext, cb);
 
 }
 
@@ -274,6 +280,7 @@ void GunBreaker::CollisionDamage(DParam* dParam)
 void GunBreaker::AttackHit(int type, int quantity)
 {
 	param->typeGauge[type] += quantity;
+	param->typeGauge[type] = (param->typeGauge[type] > 100) ? 100 : param->typeGauge[type];
 }
 
 void GunBreaker::SetEffectReserved(std::shared_ptr<BaseEffect> _obj)

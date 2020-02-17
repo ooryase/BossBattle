@@ -27,7 +27,7 @@ cbuffer CBuffer : register(b0)
 cbuffer CBuffer2 : register(b1)
 {
 	float4 Directional;
-	float4 Plyer;
+	float4 Player;
 	float4 PColor;
 	float4 PAttenuation;
 	int ELCount;
@@ -39,6 +39,8 @@ cbuffer CBuffer2 : register(b1)
 cbuffer CBuffer3 : register(b2)
 {
 	matrix World;
+	float4 Color;
+	float4 EdgeColor;
 }
  
 // 頂点シェーダ
@@ -118,15 +120,5 @@ void GS(lineadj GS_IN input[4],
 // ピクセルシェーダ
 float4 PS(PS_IN input) : SV_Target
 {
-	return float4(1.0f,1.0f,1.0f,1.0f);//0.25*input.edge);
-
-	//float3 nor;
-	//nor = mul(input.nor, World).xyz;
-	//nor = normalize(nor);
-
-	//float col;
-	//col = saturate(dot(normalize((float3)Light),normalize(nor)));
-	//col = saturate(dot(nor, (float3)Light));
-	///return float4(col,col,col,1.0f);
-
+	return float4(EdgeColor.x,EdgeColor.y,EdgeColor.z,1.0f);
 }

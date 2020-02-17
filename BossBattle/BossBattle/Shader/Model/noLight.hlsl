@@ -36,8 +36,7 @@ cbuffer CBuffer2 : register(b1)
 cbuffer CBuffer3 : register(b2)
 {
 	matrix World;
-	float4 Color;
-	float4 EdgeColor;
+	float4 Power;
 }
  
 // 頂点シェーダ
@@ -79,12 +78,12 @@ float4 PS(PS_IN input) : SV_Target
 {
     float3 dir;
     float  len;
-    float  colD;
-    float  colA;
     float  col;
+
+	float3 center = float3(0.5f,0.5f,input.wld.z);
  
     //点光源の方向
-    dir = Player.xyz - input.wld.xyz;
+    dir = center.xyz - input.wld.xyz;
  
     //点光源の距離
     len = length(dir);
@@ -92,20 +91,8 @@ float4 PS(PS_IN input) : SV_Target
     //点光源の方向をnormalize
     dir = dir / len;
  
-    //拡散
-    colD = saturate(dot(normalize(input.nor.xyz), dir));
-    //減衰
-    colA = saturate(1.0f / (PAttenuation.x + PAttenuation.y * len + PAttenuation.z * len * len));
  
-    col = colD * colA;
+    col = Power.x - len / 20.0f;
 
-	//平行光源の光を加算
-	col += saturate(dot(input.nor.xyz, (float3)Directional)) * 0.6f;
-
-	//階調化
-	int levelx = (int)((col * PColor.x + Color.x) / 0.2f);
-	int levely = (int)((col * PColor.y + Color.y) / 0.2f);
-	int levelz = (int)((col * PColor.z + Color.z) / 0.2f);
-
-    return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, 1.0f);
+	return float4(col, col, col, col);
 }
