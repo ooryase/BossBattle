@@ -27,7 +27,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 
 	objectManager = std::make_unique<ObjectManager>();
 	objectManager->SstModelMap(pDevice, "spaceBoss");
-	objectManager->SstModelMap(pDevice, "gunbreaker3");
+	objectManager->SstModelMap(pDevice, "gunbreaker");
 	objectManager->SstModelMap(pDevice, "Effects/spine");
 	objectManager->SstModelMap(pDevice, "Effects/bullet");
 	objectManager->SstModelMap(pDevice, "grid2");
@@ -39,6 +39,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"slash");
 	objectManager->SstSpriteMap(pDevice, L"kira");
 	objectManager->SstSpriteMap(pDevice, L"black");
+	objectManager->SstSpriteMap(pDevice, L"particle1");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpFrame");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpGauge");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/hpFrame");
@@ -50,9 +51,9 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 
 	light = std::make_shared<Light>();
 	light->Directional = DirectX::XMFLOAT4(0.0f, 0.9f, -0.3f, 0.0f);
-	light->Player = DirectX::XMFLOAT4(40.1f, -20.0f, -5.0f, 0.0f);
+	light->Player = DirectX::XMFLOAT4(100.1f, 100.0f, 100.0f, 0.0f);
 	light->PColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	light->PAttenuation = DirectX::XMFLOAT4(1.0f, 0.0005f, 0.0005f, 0.0f);
+	light->PAttenuation = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f);
 	light->ELCount = DirectX::XMINT4( 0, 0, 0, 0);
 	for (int i = 0; i < 8; i++)
 	{

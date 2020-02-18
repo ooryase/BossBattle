@@ -255,6 +255,15 @@
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectGun.cpp">
       <Filter>ソース ファイル\Objects\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossSlash.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectChage.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -399,6 +408,15 @@
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectGun.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossSlash.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectChage.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.h">
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
   </ItemGroup>

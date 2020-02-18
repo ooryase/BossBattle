@@ -25,7 +25,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves) 
 	: BaseCharacter(_light, _playerEffectReserves, objectManager)
 {
-	model = objectManager->GetModel("gunbreaker3");
+	model = objectManager->GetModel("gunbreaker");
 	shader = objectManager->GetModelShader(L"shader");
 
 	hpGauge = objectManager->GetSprite(L"UI/Battle/Gauge/hpGauge");

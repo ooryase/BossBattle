@@ -2,6 +2,7 @@
 #include"../../System/InputController.h"
 #include"../../System/Timer.h"
 #include"../Effect/SpaceBoss/BossBeam.h"
+#include"../Effect/SpaceBoss/BossSlash.h"
 
 using DirectX::XMFLOAT3;
 
@@ -33,7 +34,7 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	tag = ObjectTag::NORMAL;
 
-	behave = BehabeName::AWAKE;
+	behave = BehaveName::AWAKE;
 	animNum = AnimNumber::AWAKE;
 	model->SetAnimSackNumber(animNum);
 	behaveTime = 0;
@@ -68,7 +69,7 @@ void SpaceBoss::Update()
 
 	if (InputController::getInstance().IsPushKey(DIK_H))
 	{
-		behave = BehabeName::BEAM;
+		behave = BehaveName::BEAM;
 		behaveStep = 0;
 		behaveTime = 0;
 		animNum = AnimNumber::BEAM;
@@ -78,8 +79,12 @@ void SpaceBoss::Update()
 	}
 	if (InputController::getInstance().IsPressKey(DIK_J))
 	{
-		rotateDef.x -= 0.01f;
-		//		param->direction.x += -0.01f; // DirectX::XM_PIDIV2;
+		behave = BehaveName::SLASH;
+		behaveStep = 0;
+		behaveTime = 0;
+		animNum = AnimNumber::SLASH;
+		model->SetAnimSackNumber(animNum);
+		//effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
 	}
 	if (InputController::getInstance().IsPressKey(DIK_Y))
 	{
@@ -113,12 +118,14 @@ void SpaceBoss::Update()
 	behaveTime += Timer::GetInstance().GetDeltaTime();
 	switch (behave)
 	{
-	case BehabeName::AWAKE:
+	case BehaveName::AWAKE:
 		UpdateAwake();
 		break;
-	case BehabeName::BEAM:
+	case BehaveName::BEAM:
 		UpdateBeam();
 		break;
+	case BehaveName::SLASH:
+		UpdateSlash();
 	default:
 		break;
 	}
@@ -161,7 +168,7 @@ void SpaceBoss::UpdateAwake()
 	}
 	else
 	{
-		behave = BehabeName::WAIT;
+		behave = BehaveName::WAIT;
 		animNum = AnimNumber::WAIT;
 		animSpeedDiv = 1;
 		model->SetAnimSackNumber(animNum);
@@ -174,11 +181,32 @@ void SpaceBoss::UpdateBeam()
 {
 	if (behaveTime > 2000)
 	{
-		behave = BehabeName::WAIT;
+		behave = BehaveName::WAIT;
 		animNum = AnimNumber::WAIT;
 		animSpeedDiv = 1;
 		model->SetAnimSackNumber(animNum);
 	}
+}
+
+void SpaceBoss::UpdateSlash()
+{
+	if(behaveTime < 1400)
+		animSpeedDiv = 2;
+	else if (behaveStep == 0)
+	{
+		animSpeedDiv = 1;
+		effectReserves->push_back(std::make_shared<BossSlash>(objectManager, shared_from_this()));
+		behaveStep++;
+	}
+
+	if (behaveTime > 2000)
+	{
+		behave = BehaveName::WAIT;
+		animNum = AnimNumber::WAIT;
+		animSpeedDiv = 1;
+		model->SetAnimSackNumber(animNum);
+	}
+
 }
 
 void SpaceBoss::EndUpdate()

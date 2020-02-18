@@ -8,7 +8,7 @@ class SpaceBoss : public BaseCharacter
 	std::shared_ptr<Sprite> frame;
 	std::shared_ptr<SpriteShader> gaugeShader;
 
-	enum class BehabeName
+	enum class BehaveName
 	{
 		AWAKE,
 		BEAM,
@@ -46,6 +46,7 @@ public:
 private:
 	void UpdateAwake();
 	void UpdateBeam();
+	void UpdateSlash();
 public:
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) override;

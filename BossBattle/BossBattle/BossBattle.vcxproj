@@ -47,8 +47,11 @@
     <ClCompile Include="Sources\Objects\Effect\BaseEffect.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread1.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread2.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectChage.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectGun.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.cpp" />
     <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossBeam.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossSlash.cpp" />
     <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\PolygonModel.cpp" />
@@ -97,8 +100,11 @@
     <ClInclude Include="Sources\Objects\Effect\BaseEffect.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread1.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread2.h" />
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectChage.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectGun.h" />
+    <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.h" />
     <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossBeam.h" />
+    <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossSlash.h" />
     <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
     <ClInclude Include="Sources\Polygon\Model\FbxModel.h" />
     <ClInclude Include="Sources\Polygon\Model\PolygonModel.h" />
