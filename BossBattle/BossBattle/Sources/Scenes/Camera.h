@@ -28,6 +28,7 @@ private:
 
 	bool isQuake;
 	int quakeTime;
+	DirectX::XMFLOAT3 quakeQuantity;
 
 public:
 	Camera(
@@ -37,7 +38,10 @@ public:
 	
 
 	void Update();
-
+private:
+	void UpdateQuake();
+	void UpdateMove();
+public:
 	void SetCameraPos(State _state, DirectX::XMFLOAT3 _endEyePos, DirectX::XMFLOAT3 _endLookAt, int _moveTime, float _length = 0.0f);
 	void Quake();
 

@@ -1,8 +1,8 @@
-#include "BossBeam.h"
+#include "BossBeam2.h"
 #include"../../../System/Timer.h"
 #include"../../Character/GunBreaker.h"
 
-BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player)
+BossBeam2::BossBeam2(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player, float _directionY)
 	: BaseEffect()
 {
 	tag = ObjectTag::STEALTH;
@@ -11,14 +11,15 @@ BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr
 	modelShader = objectManager->GetModelShader(L"shader");
 
 	direction = _player->GetDirection();
-	position = _player->GetPos();
-	position.x += (direction.z == DirectX::XM_PIDIV2) ? -10.0f : 10.0f;
-	position.y -= 5.0f;
+	basePos = _player->GetPos();
+	basePos.x += (direction.z == DirectX::XM_PIDIV2) ? -10.0f : 10.0f;
+	basePos.y -= 5.0f;
+	position.x = basePos.x;
 	time = 0;
 	chageTime = 1000;
 	endTime = 3000;
 
-	radius = 5.0f;
+	radius = 2.5f;
 
 	dParam.damage = 10.0f;
 	if (direction.z == DirectX::XM_PIDIV2)
@@ -26,9 +27,10 @@ BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr
 	else
 		dParam.direction = DirectX::XMFLOAT3(0.2f, 0.2f, 0.0f);
 
+	directionY = _directionY;
 }
 
-void BossBeam::Update()
+void BossBeam2::Update()
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
@@ -37,22 +39,29 @@ void BossBeam::Update()
 		if (time < endTime)
 		{
 			position.x += ((direction.z == DirectX::XM_PIDIV2) ? -1.0f : 1.0f);
+			position.y += 0.3f * directionY;
 			tag = ObjectTag::DAMAGE;
 		}
 		else
 			tag = ObjectTag::STEALTH;
 	}
+	else
+	{
+		chageLenght = time * 10.0f / chageTime;
+		position.y = basePos.y + sinf(time / 100.0f - directionY * DirectX::XM_PIDIV2) * chageLenght;
+		position.z = basePos.z + cosf(time / 100.0f - directionY * DirectX::XM_PIDIV2) * chageLenght;
+	}
 
 	model->Update();
 }
 
-void  BossBeam::EndUpdate()
+void  BossBeam2::EndUpdate()
 {
 	if (time > endTime)
 		isToDelete = true;
 }
 
-void BossBeam::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void BossBeam2::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	DrawSet(pDeviceContext);
 
@@ -67,14 +76,14 @@ void BossBeam::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
 }
 
-void BossBeam::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void BossBeam2::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	
+
 	float scale;
 	if (chageTime > time)
-		scale = time / static_cast<float>(chageTime) * 5.0f;
+		scale = time / static_cast<float>(chageTime) * 2.5f;
 	else
-		scale = 5.0f;
+		scale = 2.5f;
 
 	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 	DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
@@ -100,7 +109,7 @@ void BossBeam::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
-void BossBeam::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
+void BossBeam2::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
 {
 
 }

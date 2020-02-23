@@ -43,7 +43,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0025f);
 
 	e = 1.0f;
-	radius = 2.0f;
+	radius = 3.0f;
 
 	tag = ObjectTag::NORMAL;
 
@@ -164,7 +164,7 @@ void GunBreaker::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	// パラメータの計算
 	DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
 
-	DirectX::XMMATRIX m_Offset = DirectX::XMMatrixTranslation(position.x,position.y,position.z);
+	DirectX::XMMATRIX m_Offset = DirectX::XMMatrixTranslation(position.x,position.y + 4.0f,position.z);
 	DirectX::XMMATRIX m_RotateDef = DirectX::XMMatrixRotationRollPitchYaw(rotateDef.x, rotateDef.y, rotateDef.z);
 	DirectX::XMMATRIX m_Rotate3 = DirectX::XMMatrixRotationRollPitchYaw(param->direction.x, param->direction.y, param->direction.z);
 	DirectX::XMMATRIX m_Rotate2 = DirectX::XMMatrixRotationRollPitchYaw(rotate.x,rotate.y,rotate.z);

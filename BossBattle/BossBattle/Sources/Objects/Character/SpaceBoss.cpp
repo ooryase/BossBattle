@@ -2,6 +2,7 @@
 #include"../../System/InputController.h"
 #include"../../System/Timer.h"
 #include"../Effect/SpaceBoss/BossBeam.h"
+#include"../Effect/SpaceBoss/BossBeam2.h"
 #include"../Effect/SpaceBoss/BossSlash.h"
 #include"../Effect/SpaceBoss/BossSan.h"
 
@@ -81,6 +82,17 @@ void SpaceBoss::Update()
 		animNum = AnimNumber::BEAM;
 		model->SetAnimSackNumber(animNum);
 		effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
+
+	}
+	if (InputController::getInstance().IsPushKey(DIK_G))
+	{
+		behave = BehaveName::BEAM;
+		behaveStep = 0;
+		behaveTime = 0;
+		animNum = AnimNumber::BEAM;
+		model->SetAnimSackNumber(animNum);
+		effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), 1.0f));
+		effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), -1.0f));
 
 	}
 	if (InputController::getInstance().IsPressKey(DIK_J))
@@ -188,6 +200,7 @@ void SpaceBoss::UpdateAwake()
 			model->SetAnimSackNumber(animNum);
 			behaveStep++;
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000);
+			camera->Quake();
 			//camera->SetCameraPos(Camera::State::CURVE, XMFLOAT3(0.0f, DirectX::XM_PIDIV2, 0.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000, 50.0f);
 			behaveStep++;
 		}

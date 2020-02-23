@@ -10,9 +10,43 @@ Camera::Camera(DirectX::XMFLOAT3 _eyeLookAt, DirectX::XMFLOAT3 _eyePos)
 
 void Camera::Update()
 {
-	if (state == State::STOP)
-		return;
+	if (isQuake)
+		UpdateQuake();
 
+	if (state != State::STOP)
+		UpdateMove();
+}
+
+void Camera::UpdateQuake()
+{
+	quakeTime += Timer::GetInstance().GetDeltaTime();
+
+	const int QUAKE_TIME = 500;
+	const int END_TIME_Y = 50;
+	const int START_TIME_XZ = 50;
+	if (quakeTime < QUAKE_TIME - END_TIME_Y)
+	{
+		float rate = quakeTime / static_cast<float>(QUAKE_TIME - END_TIME_Y);
+		quakeQuantity.y = sinf( DirectX::XM_PI * 4.0 * rate) * (1.0f - rate) * (1.0f - rate);
+	}
+
+	if (quakeTime > START_TIME_XZ)
+	{
+		float eyeLenghtX = abs(eyeLookAt.x - eyePos.x);
+		float eyeLenghtZ = abs(eyeLookAt.z - eyePos.z);
+		float quantityX = eyeLenghtX / (eyeLenghtX + eyeLenghtZ);
+		float quantityZ = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ);
+		float rate = (quakeTime - START_TIME_XZ) / static_cast<float>(QUAKE_TIME - START_TIME_XZ);
+		quakeQuantity.x = cosf(DirectX::XM_PI * 4.0 * rate) * quantityX * (1.0f - rate) * (1.0f - rate);
+		quakeQuantity.z = cosf(DirectX::XM_PI * 4.0 * rate) * quantityZ * (1.0f - rate) * (1.0f - rate);
+	}
+
+	if (quakeTime > QUAKE_TIME)
+		isQuake = false;
+}
+
+void Camera::UpdateMove()
+{
 	auto delta = currentTime / static_cast<float>(moveTime);
 	switch (state)
 	{
@@ -62,7 +96,6 @@ void Camera::Update()
 		eyeLookAt = endLookAt;
 		state = State::STOP;
 	}
-
 }
 
 void Camera::SetCameraPos(State _state, DirectX::XMFLOAT3 _endEyePos, DirectX::XMFLOAT3 _endLookAt, int _moveTime, float _lenght)
@@ -96,7 +129,9 @@ void Camera::SetCameraPos(State _state, DirectX::XMFLOAT3 _endEyePos, DirectX::X
 
 void Camera::Quake()
 {
-
+	isQuake = true;
+	quakeTime = 0;
+	quakeQuantity = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 DirectX::XMFLOAT3 Camera::GetEyeDirection() const
@@ -107,7 +142,8 @@ DirectX::XMFLOAT3 Camera::GetEyeDirection() const
 
 DirectX::XMMATRIX Camera::GetView() const
 {
-	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(eyePos.x,eyePos.y,eyePos.z, 1.0f);
+	DirectX::XMFLOAT3 setEyePos = isQuake ? AddFloat3(eyePos, quakeQuantity) : eyePos;
+	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(setEyePos.x,setEyePos.y,setEyePos.z, 1.0f);
 	DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(eyeLookAt.x, eyeLookAt.y, eyeLookAt.z, 1.0f);
 	DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 	DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);

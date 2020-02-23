@@ -21,7 +21,7 @@ BossSlash::BossSlash(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	radius = 20.0f;
 
-	dParam.damage = 100.0f;
+	dParam.damage = 10.0f;
 	dParam.direction = DirectX::XMFLOAT3(0.2f * direction, 0.2f, 0.0f);
 
 }
