@@ -7,19 +7,7 @@ ModelShader::ModelShader(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[],
 }
 
 ModelShader::~ModelShader()
-{
-	//SAFE_RELEASE(pVertexLayout);
-	//SAFE_RELEASE(pVertexShader);
-	//SAFE_RELEASE(pGeometryShader);
-	//SAFE_RELEASE(pPixelShader);
-	//
-	//SAFE_RELEASE(pLineAdjVertexLayout);
-	//SAFE_RELEASE(pLineAdjVertexShader);
-	//SAFE_RELEASE(pLineAdjGeometryShader);
-	//SAFE_RELEASE(pLineAdjPixelShader);
-	//
-	//SAFE_RELEASE(pConstantBuffer);
-}
+{}
 
 void ModelShader::ShaderLoad(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[],
 	ComPtr<ID3D11InputLayout>* _pLayout,

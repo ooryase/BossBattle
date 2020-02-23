@@ -8,6 +8,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine, int nCmdShow)
 {
+
 	//ウィンドウクラスを登録
 	const char* WndClassName = "D3D11syokika";
 

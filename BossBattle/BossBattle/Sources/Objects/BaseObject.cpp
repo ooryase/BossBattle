@@ -40,3 +40,17 @@ bool BaseObject::IsDead() const
 {
 	return isToDelete;
 }
+
+bool Light::SetPointLight(DirectX::XMFLOAT4 _pos,
+	DirectX::XMFLOAT4 _col,
+	DirectX::XMFLOAT4 _attenuation)
+{
+	if (PointCount > 7)
+		return false;
+
+	Pos[PointCount] = _pos;
+	Color[PointCount] = _col;
+	Attenuation[PointCount] = _attenuation;
+	PointCount++;
+	return true;
+}

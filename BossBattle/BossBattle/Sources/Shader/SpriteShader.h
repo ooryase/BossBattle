@@ -5,6 +5,7 @@ namespace SPRITE
 {
 	struct CONSTANT_BUFFER {
 		DirectX::XMFLOAT4X4 World;
+		DirectX::XMFLOAT4 Weight;
 	};
 }
 

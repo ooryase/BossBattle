@@ -15,9 +15,16 @@ class SpaceBoss : public BaseCharacter
 		ROAR1,
 		ROAR2,
 		SLASH,
-		WAIT
+		SAN,
+		WAIT,
+		SHIFT_RIGHT_UP,
+		SHIFT_RIGHT_DOWN,
+		SHIFT_LEFT_UP,
+		SHIFT_LEFT_DOWN,
 	} behave;
 	int behaveStep;
+
+	DirectX::XMFLOAT2 posBehave;
 
 	enum AnimNumber
 	{
@@ -33,6 +40,8 @@ class SpaceBoss : public BaseCharacter
 
 	std::shared_ptr<Camera> camera;
 
+	float shaderGSLength;
+
 public:
 
 	SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light, 
@@ -47,6 +56,8 @@ private:
 	void UpdateAwake();
 	void UpdateBeam();
 	void UpdateSlash();
+	void UpdateSan();
+	void UpdateShift();
 public:
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
@@ -55,5 +66,7 @@ public:
 private:
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 
-	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+		DirectX::XMVECTOR _weight,
+		std::shared_ptr<Sprite> _sprite);
 };

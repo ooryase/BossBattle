@@ -3,6 +3,7 @@
 #include"../../System/Timer.h"
 #include"../Effect/SpaceBoss/BossBeam.h"
 #include"../Effect/SpaceBoss/BossSlash.h"
+#include"../Effect/SpaceBoss/BossSan.h"
 
 using DirectX::XMFLOAT3;
 
@@ -12,16 +13,17 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	: BaseCharacter(_light, _effectReserves, objectManager)
 {
 	model = objectManager->GetModel("spaceBoss");
-	shader = objectManager->GetModelShader(L"shader");
+	shader = objectManager->GetModelShader(L"enemy");
 
 	gauge = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpGauge");
 	frame = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpFrame");
-	gaugeShader = objectManager->GetSpriteShader(L"shader");
+	gaugeShader = objectManager->GetSpriteShader(L"weight");
 
 	position = DirectX::XMFLOAT3(20.0f, 10.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(1.5f, 1.5f, 1.5f);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, DirectX::XM_PI);
 	rotateDef = DirectX::XMFLOAT3(2.36f, 1.58f, 1.96f);
+	posBehave = DirectX::XMFLOAT2(1.0f, -1.0f);
 
 	param = std::make_shared<Param>(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0025f);
 	//behave = std::make_shared<GunWait>(param);
@@ -43,6 +45,10 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	maxHp = 10000.0f;
 	hp = maxHp;
+	damagedHp = maxHp;
+
+	shaderGSLength = 0.0f;
+
 }
 
 SpaceBoss::~SpaceBoss()
@@ -86,23 +92,33 @@ void SpaceBoss::Update()
 		model->SetAnimSackNumber(animNum);
 		//effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
 	}
-	if (InputController::getInstance().IsPressKey(DIK_Y))
+	if (InputController::getInstance().IsPushKey(DIK_Y))
 	{
-		rotateDef.y += 0.01f;
-		//position.x += 0.03f;
+		//position.x = 25.0f;
 		//param->direction.z = DirectX::XM_PIDIV2;
+		//rotateDef.z = 1.96f;
+		behave = BehaveName::SHIFT_RIGHT_UP;
+		behaveStep = 0;
+		behaveTime = 0;
 	}
-	if (InputController::getInstance().IsPressKey(DIK_U))
+	if (InputController::getInstance().IsPushKey(DIK_U))
 	{
-		rotateDef.y -= 0.01f;
-		//position.x -= 0.03f;
+		//position.x = -25.0f;
 		//param->direction.z = -DirectX::XM_PIDIV2;
-	}
-	if (InputController::getInstance().IsPressKey(DIK_N))
-	{
-		rotateDef.z += 0.01f;
+		//rotateDef.z = 1.33f;
 
-		//		param->direction.z += 0.01f;
+		behave = BehaveName::SHIFT_LEFT_DOWN;
+		behaveStep = 0;
+		behaveTime = 0;
+
+	}
+	if (InputController::getInstance().IsPushKey(DIK_N))
+	{
+		behave = BehaveName::SAN;
+		behaveStep = 0;
+		behaveTime = 0;
+		animNum = AnimNumber::ROAR2;
+		model->SetAnimSackNumber(animNum);
 	}
 	if (InputController::getInstance().IsPressKey(DIK_M))
 	{
@@ -126,12 +142,22 @@ void SpaceBoss::Update()
 		break;
 	case BehaveName::SLASH:
 		UpdateSlash();
+		break;
+	case BehaveName::SAN:
+		UpdateSan();
+		break;
+	case BehaveName::SHIFT_RIGHT_UP:
+	case BehaveName::SHIFT_RIGHT_DOWN:
+	case BehaveName::SHIFT_LEFT_UP:
+	case BehaveName::SHIFT_LEFT_DOWN:
+		UpdateShift();
+		break;
 	default:
 		break;
 	}
 
-	gauge->Scroll(hp / maxHp);
 
+	UpdateDamaged();
 }
 
 void SpaceBoss::UpdateAwake()
@@ -209,6 +235,82 @@ void SpaceBoss::UpdateSlash()
 
 }
 
+void SpaceBoss::UpdateSan()
+{
+	if (behaveTime < 1400)
+	{
+	}
+	else if (behaveStep == 0)
+	{
+		animSpeedDiv = 1;
+		effectReserves->push_back(std::make_shared<BossSan>(objectManager, shared_from_this()));
+		behaveStep++;
+	}
+
+	if (behaveTime > 2000)
+	{
+		behave = BehaveName::WAIT;
+		animNum = AnimNumber::WAIT;
+		animSpeedDiv = 1;
+		model->SetAnimSackNumber(animNum);
+	}
+
+}
+
+void SpaceBoss::UpdateShift()
+{
+	if (behaveStep == 0)
+	{
+		if (behaveTime < 1000)
+		{
+			shaderGSLength = behaveTime / 50.0f;
+			position.x = (30.0f + 20.0f * behaveTime / 1000.0f) * posBehave.x;
+		}
+		else
+		{
+			switch (behave)
+			{
+			case SpaceBoss::BehaveName::SHIFT_RIGHT_UP:
+				posBehave = DirectX::XMFLOAT2(1.0f, 1.0f);
+				break;
+			case SpaceBoss::BehaveName::SHIFT_RIGHT_DOWN:
+				posBehave = DirectX::XMFLOAT2(1.0f, -1.0f);
+				break;
+			case SpaceBoss::BehaveName::SHIFT_LEFT_UP:
+				posBehave = DirectX::XMFLOAT2(-1.0f, 1.0f);
+				break;
+			case SpaceBoss::BehaveName::SHIFT_LEFT_DOWN:
+				posBehave = DirectX::XMFLOAT2(-1.0f, -1.0f);
+				break;
+			default:
+				break;
+			}
+			position.y = 10.0f + 5.0f * posBehave.y;
+			param->direction.z = DirectX::XM_PIDIV2 * posBehave.x;
+			rotateDef.z = 1.645f + 0.315f * posBehave.x;
+			behaveStep++;
+			behaveTime = 0;
+		}
+	}
+
+	if (behaveStep == 1)
+	{
+		if(behaveTime < 1000)
+		{
+			shaderGSLength = 20.0f - behaveTime / 50.0f;
+			position.x = (50.0f - 20.0f * behaveTime / 1000.0f) * posBehave.x;
+		}
+		else
+		{
+			shaderGSLength = 0.0f;
+			behave = BehaveName::WAIT;
+			animNum = AnimNumber::WAIT;
+			animSpeedDiv = 1;
+			model->SetAnimSackNumber(animNum);
+		}
+	}
+}
+
 void SpaceBoss::EndUpdate()
 {
 	//if (behave->IsNextBehave())
@@ -235,12 +337,17 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	World *= Scale * Rotate * Offset;
 
-	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR Color;
+	if(isDamaged)
+		Color= DirectX::XMVectorSet(0.0f, -0.2f, -0.2f, 1.0f);
+	else
+		Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 1.0f);
+
 	DirectX::XMVECTOR EdgeColor;
 	if (tag == ObjectTag::NORMAL)
-		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 	else
-		EdgeColor = DirectX::XMVectorSet(0.5f, 0.5f, 0.5f, 0.0f);
+		EdgeColor = DirectX::XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
 
 	// ÉpÉâÉÅÅ[É^ÇÃéÛÇØìnÇµ
 	MODEL::CONSTANT_BUFFER cb;
@@ -248,6 +355,7 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(World));
 	DirectX::XMStoreFloat4(&cb.Color, Color);
 	DirectX::XMStoreFloat4(&cb.EdgeColor, EdgeColor);
+	cb.Lenght.x = shaderGSLength;
 
 	shader->SetConstantBuffer(pDeviceContext, cb);
 
@@ -271,39 +379,46 @@ void SpaceBoss::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
-void SpaceBoss::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
+void SpaceBoss::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+	DirectX::XMVECTOR _weight,
+	std::shared_ptr<Sprite> _sprite)
 {
-	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(-20.0f, 25.0f, -2.0f);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(30.0f, 5.0f, 1.6f);
+
+	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(_offset.x, _offset.y, _offset.z);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(_scale.x, _scale.y, _scale.z);
 	DirectX::XMMATRIX World = Scale * Offset;
 
-	SPRITE::CONSTANT_BUFFER ccb2;
-	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(World));
-	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
+	SPRITE::CONSTANT_BUFFER cb;
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(World));
+	DirectX::XMStoreFloat4(&cb.Weight, _weight);
+	gaugeShader->SetConstantBuffer(pDeviceContext, cb);
+
+	_sprite->DrawSet(pDeviceContext);
+	pDeviceContext->Draw(_sprite->GetIndexCount(), 0);
 
 }
 
 void SpaceBoss::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	DrawSetGauge(pDeviceContext);
-
 	gaugeShader->DrawSet(pDeviceContext);
 
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(-20.0f, 25.0f, -2.0f),
+		DirectX::XMFLOAT3(30.0f, 5.0f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
+		frame);
 
-	frame->DrawSet(pDeviceContext);
-	pDeviceContext->Draw(frame->GetIndexCount(), 0);
+	gauge->Scroll(damagedHp / maxHp);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(-34.6f + 14.6f * damagedHp / maxHp, 26.0f, -2.1f),
+		DirectX::XMFLOAT3(29.2f * damagedHp / maxHp, 2.5f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f),
+		gauge);
 
-	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(-34.6f + 14.6f * hp / maxHp, 26.0f, -2.1f);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(29.2f * hp / maxHp, 2.5f, 1.6f);
-	DirectX::XMMATRIX World = Scale * Offset;
-
-	SPRITE::CONSTANT_BUFFER ccb2;
-	DirectX::XMStoreFloat4x4(&ccb2.World, DirectX::XMMatrixTranspose(World));
-	gaugeShader->SetConstantBuffer(pDeviceContext, ccb2);
-
-	gauge->DrawSet(pDeviceContext);
-
-	//pDeviceContext->Draw(sprite->GetIndexCount(), 0);
-
-	pDeviceContext->Draw(gauge->GetIndexCount(), 0);
+	gauge->Scroll(hp / maxHp);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(-34.6f + 14.6f * hp / maxHp, 26.0f, -2.12f),
+		DirectX::XMFLOAT3(29.2f * hp / maxHp, 2.5f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
+		gauge);
 }

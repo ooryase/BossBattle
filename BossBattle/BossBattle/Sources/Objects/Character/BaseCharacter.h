@@ -31,6 +31,9 @@ class BaseCharacter : public BaseObject, public std::enable_shared_from_this<Bas
 protected:
 	float hp;
 	float maxHp;
+	int damagedTime;
+	float damagedHp;
+	bool isDamaged;
 
 	float e; //”½”­ŒW”
 
@@ -63,6 +66,7 @@ public:
 	virtual void CollisionDamage(DParam* dParam);
 
 protected:
+	void UpdateDamaged();
 
 public:
 	virtual void AttackHit(int type, int quantity);

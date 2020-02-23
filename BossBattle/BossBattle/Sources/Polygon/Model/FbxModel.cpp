@@ -119,6 +119,9 @@ void FbxModel::FbxLoad()
 		}//end for lPolygonIndex //PolygonCount
 	}
 
+
+#ifdef _RELEASE
+
 	//—×Ú•tü‚Ìì¬
 	int polygonCount = fbxMesh->GetPolygonCount();
 	//int setpos = 0;
@@ -147,7 +150,8 @@ void FbxModel::FbxLoad()
 		nextCheck:;
 		}
 	}
-	
+#endif
+
 }
 
 void FbxModel::AnimationLoad()

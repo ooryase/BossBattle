@@ -231,9 +231,6 @@
     <ClCompile Include="Sources\Objects\BackGround\Space.cpp">
       <Filter>ソース ファイル\Objects\BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Scenes\Camera.cpp">
-      <Filter>ヘッダー ファイル\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Objects\Character\GunBehave\GunSpecial.cpp">
       <Filter>ソース ファイル\Objects\Character\GunBehave</Filter>
     </ClCompile>
@@ -262,6 +259,12 @@
       <Filter>ソース ファイル\Objects\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectChage.cpp">
+      <Filter>ソース ファイル\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Scenes\Camera.cpp">
+      <Filter>ソース ファイル\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossSan.cpp">
       <Filter>ソース ファイル\Objects\Effect</Filter>
     </ClCompile>
   </ItemGroup>
@@ -417,6 +420,9 @@
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.h">
+      <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossSan.h">
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
     </ClInclude>
   </ItemGroup>

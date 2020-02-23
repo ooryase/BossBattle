@@ -1,10 +1,6 @@
 #pragma once
 #include"../BaseScene.h"
 
-#include"../../Polygon/Sprite/Sprite.h"
-#include"../../Shader/SpriteShader.h"
-#include"../../Polygon/Model/FbxModel.h"
-#include"../../Shader/ModelShader.h"
 #include"../../Objects/Character/GunBreaker.h"
 #include"../../Polygon/ObjectManager.h"
 

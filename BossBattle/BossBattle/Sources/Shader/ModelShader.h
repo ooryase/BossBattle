@@ -8,6 +8,7 @@ namespace MODEL
 		DirectX::XMFLOAT4X4 World;
 		DirectX::XMFLOAT4 Color;
 		DirectX::XMFLOAT4 EdgeColor;
+		DirectX::XMFLOAT4 Lenght;
 	};
 }
 

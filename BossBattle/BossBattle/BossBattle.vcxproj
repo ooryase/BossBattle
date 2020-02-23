@@ -51,6 +51,7 @@
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectGun.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.cpp" />
     <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossBeam.cpp" />
+    <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossSan.cpp" />
     <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossSlash.cpp" />
     <ClCompile Include="Sources\Polygon\Model\BaseModel.cpp" />
     <ClCompile Include="Sources\Polygon\Model\FbxModel.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectGun.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectSpecial.h" />
     <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossBeam.h" />
+    <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossSan.h" />
     <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossSlash.h" />
     <ClInclude Include="Sources\Polygon\Model\BaseModel.h" />
     <ClInclude Include="Sources\Polygon\Model\FbxModel.h" />
@@ -183,6 +185,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\8oo36\Documents\Tools\Autodesk\FBX\FBX SDK\2019.0\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -196,6 +199,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\8oo36\Documents\Tools\Autodesk\FBX\FBX SDK\2019.0\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -211,6 +215,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\8oo36\Documents\Tools\Autodesk\FBX\FBX SDK\2019.0\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_RELEASE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -229,6 +234,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\8oo36\Documents\Tools\Autodesk\FBX\FBX SDK\2019.0\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_RELEASE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

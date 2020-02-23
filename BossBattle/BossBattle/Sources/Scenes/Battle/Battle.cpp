@@ -30,9 +30,11 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstModelMap(pDevice, "gunbreaker");
 	objectManager->SstModelMap(pDevice, "Effects/spine");
 	objectManager->SstModelMap(pDevice, "Effects/bullet");
+	objectManager->SstModelMap(pDevice, "Effects/sphere");
 	objectManager->SstModelMap(pDevice, "grid2");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstModelShader(pDevice, L"alpha");
+	objectManager->SstModelShader(pDevice, L"enemy");
 	objectManager->SstModelShader(pDevice, L"noLight");
 	objectManager->SstSpriteMap(pDevice, L"Tex");
 	objectManager->SstOctagonSpriteMap(pDevice, L"space");
@@ -40,6 +42,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"kira");
 	objectManager->SstSpriteMap(pDevice, L"black");
 	objectManager->SstSpriteMap(pDevice, L"particle1");
+	objectManager->SstSpriteMap(pDevice, L"san");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpFrame");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/bossHpGauge");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/hpFrame");
@@ -48,19 +51,20 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/BreadGauge");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/GunGauge");
 	objectManager->SstSpriteShader(pDevice, L"shader");
+	objectManager->SstSpriteShader(pDevice, L"weight");
 
 	light = std::make_shared<Light>();
-	light->Directional = DirectX::XMFLOAT4(0.0f, 0.9f, -0.3f, 0.0f);
-	light->Player = DirectX::XMFLOAT4(100.1f, 100.0f, 100.0f, 0.0f);
-	light->PColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	light->PAttenuation = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f);
-	light->ELCount = DirectX::XMINT4( 0, 0, 0, 0);
-	for (int i = 0; i < 8; i++)
-	{
-		light->Enemy[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->EColor[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->EAttenuation[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	}
+	light->Directional = DirectX::XMFLOAT3(0.0f, 0.9f, -0.3f);
+	//light->Player = DirectX::XMFLOAT4(100.1f, 100.0f, 0.0f, 0.0f);
+	//light->PColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//light->PAttenuation = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f);
+	light->PointCount = 0;
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	light->Enemy[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//	light->EColor[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//	light->EAttenuation[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//}
 	camera = std::make_shared<Camera>(eyeLookAt, DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f));
 
 	player = std::make_shared<GunBreaker>(objectManager, light,playerEffectReserves);
@@ -95,6 +99,7 @@ void Battle::Update()
 
 void Battle::UpdateObjects()
 {
+	light->PointCount = 0;
 	player->Update();
 	bossEnemy->Update();
 
@@ -114,7 +119,7 @@ void Battle::UpdateObjects()
 void Battle::UpdateCollision()
 {
 	CheckCollision(player, bossEnemy);
-	const float wallPosX = 35.0f;
+	const float wallPosX = 30.0f;
 	player->CollisionWallUpdate(wallPosX);
 
 	CheckCollisionDamageObjcts(playerEffects, bossEnemy);
@@ -187,21 +192,6 @@ void Battle::EndUpdate()
 	EndUpdateEffects(&playerEffects, &playerEffectReserves);
 	EndUpdateEffects(&enemyEffects, &enemyEffectReserves);
 
-	//for (auto&& var : playerEffects)
-	//{
-	//	var->EndUpdate();
-	//}
-	//auto itr =
-	//	std::remove_if(playerEffects.begin(), playerEffects.end(), [](
-	//		std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
-	//playerEffects.erase(itr, playerEffects.end());
-	//
-	//if (!playerEffectReserves.empty())
-	//{
-	//	for (auto&& var : playerEffectReserves)
-	//		playerEffects.push_back(var);
-	//	playerEffectReserves.clear();
-	//}
 }
 
 void Battle::EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves)
@@ -326,7 +316,6 @@ void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	D3D11_MAPPED_SUBRESOURCE data;
 	CONSTANT_BUFFER cb;
-	//DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
 	DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(camera->GetView()));
 	DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(proj));
 	pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);

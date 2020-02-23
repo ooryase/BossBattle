@@ -23,14 +23,11 @@ cbuffer CBuffer : register(b0)
 
 cbuffer CBuffer2 : register(b1)
 {
-	float4 Directional;
-	float4 Player;
-	float4 PColor;
-	float4 PAttenuation;
-	int ELCount;
-	float4 Enemy[8];
-	float4 EColor[8];
-	float4 EAttenuation[8];
+	float3 Directional;
+	int LightCount;
+	float4 LightPos[8];
+	float4 LightColor[8];
+	float4 LightAttenuation[8];
 }
 
 cbuffer CBuffer3 : register(b2)
@@ -77,35 +74,38 @@ void GS(triangle PS_IN input[3],
 // ピクセルシェーダ
 float4 PS(PS_IN input) : SV_Target
 {
-    float3 dir;
-    float  len;
-    float  colD;
-    float  colA;
-    float  col;
+    float3  col = float3(0.0f, 0.0f, 0.0f);
  
-    //点光源の方向
-    dir = Player.xyz - input.wld.xyz;
- 
-    //点光源の距離
-    len = length(dir);
- 
-    //点光源の方向をnormalize
-    dir = dir / len;
- 
-    //拡散
-    colD = saturate(dot(normalize(input.nor.xyz), dir));
-    //減衰
-    colA = saturate(1.0f / (PAttenuation.x + PAttenuation.y * len + PAttenuation.z * len * len));
- 
-    col = colD * colA;
+	//PointLightの計算
+	for (int i = 0; i < LightCount; i++)
+	{
+		float3 dir;
+		float  len;
+		float  colD;
+		float  colA;
+
+		//点光源の方向
+		dir = LightPos[i].xyz - input.wld.xyz;
+		//点光源の距離
+		len = length(dir);
+		//点光源の方向をnormalize
+		dir = dir / len;
+		//拡散
+		colD = saturate(dot(normalize(input.nor.xyz), dir));
+		//減衰
+		colA = saturate(1.0f / (LightAttenuation[i].x + LightAttenuation[i].y * len + LightAttenuation[i].z * len * len));
+		float3 thisCol = colD * colA;
+
+		col += float3(thisCol.x * LightColor[i].x, thisCol.y * LightColor[i].y, thisCol.z * LightColor[i].z);
+	}
 
 	//平行光源の光を加算
 	col += saturate(dot(input.nor.xyz, (float3)Directional)) * 0.6f;
 
 	//階調化
-	int levelx = (int)((col * PColor.x + Color.x) / 0.2f);
-	int levely = (int)((col * PColor.y + Color.y) / 0.2f);
-	int levelz = (int)((col * PColor.z + Color.z) / 0.2f);
+	int levelx = (int)((col.x + Color.x) / 0.2f);
+	int levely = (int)((col.y + Color.y) / 0.2f);
+	int levelz = (int)((col.z + Color.z) / 0.2f);
 
     return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, 1.0f);
 }

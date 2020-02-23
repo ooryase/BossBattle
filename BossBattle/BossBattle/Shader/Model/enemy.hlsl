@@ -35,6 +35,7 @@ cbuffer CBuffer3 : register(b2)
 	matrix World;
 	float4 Color;
 	float4 EdgeColor;
+	float Lenght;
 }
  
 // 頂点シェーダ
@@ -63,6 +64,7 @@ void GS(triangle PS_IN input[3],
 	[unroll]
 	for (int i = 0; i < 3; i++)
 	{
+		input[i].pos.xyz += normal.xyz * Lenght;
 		input[i].nor = float4(normal,1.0f);
 		Stream.Append(input[i]);
 	}
@@ -74,8 +76,8 @@ void GS(triangle PS_IN input[3],
 // ピクセルシェーダ
 float4 PS(PS_IN input) : SV_Target
 {
-	float3  col = float3(0.0f, 0.0f, 0.0f);
-
+    float3  col = float3(0.0f, 0.0f, 0.0f);
+ 
 	//PointLightの計算
 	for (int i = 0; i < LightCount; i++)
 	{
@@ -103,11 +105,9 @@ float4 PS(PS_IN input) : SV_Target
 	col += saturate(dot(input.nor.xyz, (float3)Directional)) * 0.6f;
 
 	//階調化
-	int levelx = (int)(col.x / 0.2f);
-	int levely = (int)(col.y / 0.2f);
-	int levelz = (int)(col.z / 0.2f);
+	int levelx = (int)((col.x + Color.x) / 0.2f);
+	int levely = (int)((col.y + Color.y) / 0.2f);
+	int levelz = (int)((col.z + Color.z) / 0.2f);
 
-	float alpha = max(col.x, max(col.y, col.z));
-
-	return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, alpha);
+    return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, 1.0f);
 }

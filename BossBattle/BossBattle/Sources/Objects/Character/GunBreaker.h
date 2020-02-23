@@ -29,6 +29,7 @@ private:
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 
 	void DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+		DirectX::XMVECTOR _weight,
 		std::shared_ptr<Sprite> _sprite);
 
 

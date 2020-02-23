@@ -36,13 +36,6 @@ SpriteShader::SpriteShader(ComPtr<ID3D11Device> pDevice, const wchar_t fileName[
 
 SpriteShader::~SpriteShader()
 {
-	//SAFE_RELEASE(pVertexLayout);
-	//
-	//SAFE_RELEASE(pVertexShader);
-	//SAFE_RELEASE(pPixelShader);
-	//SAFE_RELEASE(pGeometryShader);
-	//
-	//SAFE_RELEASE(pConstantBuffer);
 }
 
 void SpriteShader::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
@@ -61,4 +54,5 @@ void SpriteShader::SetConstantBuffer(ComPtr<ID3D11DeviceContext> pDeviceContext,
 	pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
 
 	pDeviceContext->VSSetConstantBuffers(2, 1, pConstantBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(2, 1, pConstantBuffer.GetAddressOf());
 }

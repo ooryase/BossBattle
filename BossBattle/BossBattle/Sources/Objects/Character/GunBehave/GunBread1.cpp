@@ -17,13 +17,13 @@ void GunBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
-	light->Player.x = pos.x + 4.0f * sin(param->direction.z);
-	light->Player.y = pos.y - 2.0f;
 
 	float temp = static_cast<float>((time + 200) * (time - 1000)) / 360000.0f;
-	light->PAttenuation.x = 2.0f + temp;
-	light->PAttenuation.y = 0.0105f + temp / 100.0f;
-	light->PAttenuation.z = 0.0105f + temp / 100.0f;
+	light->SetPointLight(
+		DirectX::XMFLOAT4(pos.x + 4.0f * sin(param->direction.z), pos.y - 2.0f, 0.0f, 0.0f),
+		DirectX::XMFLOAT4(0.5f, 0.5f, 1.0f, 0.0f),
+		DirectX::XMFLOAT4(2.0f + temp, 0.0105f + temp / 100.0f, 0.0105f + temp / 100.0f, 0.0f)
+		);
 
 	param->speed.x *= 0.99f;
 
@@ -37,9 +37,6 @@ void GunBread1::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 800)
 	{
-		light->Player.x = 1000.0f;
-		light->Player.y = 1000.0f;
-
 		if (param->ground)
 			NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 		else

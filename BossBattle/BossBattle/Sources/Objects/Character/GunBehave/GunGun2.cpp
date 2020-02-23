@@ -18,13 +18,12 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time < 15 * 16)
 	{
-		light->Player.x = pos.x + 6.0f * sin(param->direction.z);
-		light->Player.y = pos.y - 2.0f;
-
 		float temp = static_cast<float>((time + 200) * (time - 1000)) / 360000.0f;
-		light->PAttenuation.x = 2.0f + temp;
-		light->PAttenuation.y = 0.0105f + temp / 100.0f;
-		light->PAttenuation.z = 0.0105f + temp / 100.0f;
+		light->SetPointLight(
+			DirectX::XMFLOAT4(pos.x + 6.0f * sin(param->direction.z), pos.y - 2.0f, 0.0f, 0.0f),
+			DirectX::XMFLOAT4(0.5f, 0.5f, 1.0f, 0.0f),
+			DirectX::XMFLOAT4(2.5f + temp, 0.0105f + temp / 100.0f, 0.0105f + temp / 100.0f, 0.0f)
+		);
 	}
 	else
 	{
@@ -36,13 +35,11 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 			shootFlag = true;
 		}
 		float temp = static_cast<float>(time - 15 * 16);
-
-		light->Player.x = pos.x + temp * sin(param->direction.z);
-		light->Player.y = pos.y - 2.0f;
-
-		light->PAttenuation.x = 1.0f;
-		light->PAttenuation.y = 0.0105f;
-		light->PAttenuation.z = 0.0105f;
+		light->SetPointLight(
+			DirectX::XMFLOAT4(pos.x + temp * sin(param->direction.z), pos.y - 2.0f, 0.0f, 0.0f),
+			DirectX::XMFLOAT4(0.5f, 0.5f, 1.0f, 0.0f),
+			DirectX::XMFLOAT4(1.0f, 0.0105f, 0.0105f, 0.0f)
+		);
 	}
 
 
@@ -55,9 +52,6 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 900)
 	{
-		light->Player.x = 1000.0f;
-		light->Player.y = 1000.0f;
-
 		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 	}
 }

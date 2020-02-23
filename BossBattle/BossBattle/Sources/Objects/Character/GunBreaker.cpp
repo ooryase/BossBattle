@@ -33,7 +33,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	GBFrame = objectManager->GetSprite(L"UI/Battle/Gauge/GunBreFrame");
 	gunGauge = objectManager->GetSprite(L"UI/Battle/Gauge/GunGauge");
 	breadGauge = objectManager->GetSprite(L"UI/Battle/Gauge/BreadGauge");
-	gaugeShader = objectManager->GetSpriteShader(L"shader");
+	gaugeShader = objectManager->GetSpriteShader(L"weight");
 
 	position = DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
@@ -49,6 +49,8 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 
 	maxHp = 100.0f;
 	hp = maxHp;
+	damagedHp = maxHp;
+
 
 }
 
@@ -78,6 +80,8 @@ void GunBreaker::Update()
 		param->ground = false;
 
 	model->Update();
+
+	UpdateDamaged();
 }
 
 void GunBreaker::EndUpdate()
@@ -169,12 +173,16 @@ void GunBreaker::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	m_World *= m_Scale * m_Rotate * m_Offset;
 
-	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 0.0f);
+	DirectX::XMVECTOR Color;
+	if (isDamaged)
+		Color = DirectX::XMVectorSet(0.0f, -0.2f, 0.0f, 1.0f);
+	else
+		Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 1.0f);
 	DirectX::XMVECTOR EdgeColor;
 	if(tag == ObjectTag::NORMAL)
-		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 	else
-		EdgeColor = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+		EdgeColor = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
 
 	// ÉpÉâÉÅÅ[É^ÇÃéÛÇØìnÇµ
 	MODEL::CONSTANT_BUFFER cb;
@@ -206,6 +214,7 @@ void GunBreaker::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 }
 
 void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, DirectX::XMFLOAT3 _offset, DirectX::XMFLOAT3 _scale,
+	DirectX::XMVECTOR _weight,
 	std::shared_ptr<Sprite> _sprite)
 {
 	DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(_offset.x, _offset.y, _offset.z);
@@ -213,6 +222,7 @@ void GunBreaker::DrawSetGauge(ComPtr<ID3D11DeviceContext> pDeviceContext, Direct
 
 	SPRITE::CONSTANT_BUFFER cb;
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(Scale * Offset));
+	DirectX::XMStoreFloat4(&cb.Weight, _weight);
 	gaugeShader->SetConstantBuffer(pDeviceContext, cb);
 
 	_sprite->DrawSet(pDeviceContext);
@@ -227,17 +237,27 @@ void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DrawSetGauge(pDeviceContext, 
 		DirectX::XMFLOAT3(20.0f, -5.0f, -10.0f),
 		DirectX::XMFLOAT3(14.0f, 2.6f, 1.6f),
+		DirectX::XMVectorSet(1.0f,1.0f,1.0f,1.0f),
 		hpFrame);
+
+	hpGauge->Scroll(damagedHp / maxHp);
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(26.8f - 6.8f * damagedHp / maxHp, -4.6f, -10.1f),
+		DirectX::XMFLOAT3(13.6f * damagedHp / maxHp, 1.4f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f),
+		hpGauge);
 
 	hpGauge->Scroll(hp / maxHp);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(26.8f - 6.8f * hp / maxHp, -4.6f, -10.1f),
+		DirectX::XMFLOAT3(26.8f - 6.8f * hp / maxHp, -4.6f, -10.2f),
 		DirectX::XMFLOAT3(13.6f * hp / maxHp, 1.4f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		hpGauge);
 
 	DrawSetGauge(pDeviceContext,
 		DirectX::XMFLOAT3(20.0f, -2.2f, -10.0f),
 		DirectX::XMFLOAT3(15.0f, 3.2f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		GBFrame);
 
 	const int GUN = 0;
@@ -247,12 +267,14 @@ void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DrawSetGauge(pDeviceContext,
 		DirectX::XMFLOAT3(27.2f - 7.2f * param->typeGauge[BREAD] / 100.0f, -1.7f, -10.1f),
 		DirectX::XMFLOAT3(14.4f * param->typeGauge[BREAD] / 100.0f, 0.8f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		breadGauge);
 
 	gunGauge->Scroll(param->typeGauge[GUN] / 100.0f);
 	DrawSetGauge(pDeviceContext,
 		DirectX::XMFLOAT3(28.0f - 5.0f * param->typeGauge[GUN] / 100.0f, -2.6f, -10.1f),
 		DirectX::XMFLOAT3(10.0f * param->typeGauge[GUN] / 100.0f, 0.8f, 1.6f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		gunGauge);
 }
 
@@ -268,6 +290,8 @@ void GunBreaker::CollisionDamage(DParam* dParam)
 {
 	behave->NextBehave = GUN_BEHAVE::BehaveName::DAMEGED;
 
+	damagedTime = 0;
+	isDamaged = true;
 	hp -= dParam->damage;
 	if (hp < 0.0f)
 		hp = 0.0f;

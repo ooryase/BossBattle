@@ -8,11 +8,29 @@ BaseCharacter::BaseCharacter(std::shared_ptr<Light> _light,
 	objectManager(_objectManager)
 {
 	light = _light;
-	hp = 100.0f;
+	maxHp = 100.0f;
+	hp = maxHp;
+	damagedHp = maxHp;
+	isDamaged = false;
 	e = 1.0f;
 	isDead = false;  // isDead
 	isToDelete = false;  // isToDelete
 
+}
+
+void BaseCharacter::UpdateDamaged()
+{
+	damagedTime += Timer::GetInstance().GetDeltaTime();
+
+	if (!isDamaged)
+	{
+		if (hp < damagedHp)
+		{
+			damagedHp -= Timer::GetInstance().GetDeltaTime() / 3200.0f * maxHp;
+		}
+	}
+	else if (damagedTime > 500)
+		isDamaged = false;
 }
 
 void BaseCharacter::OnCollisionEnter(ObjectTag _tag, DirectX::XMFLOAT3 delta)
@@ -43,6 +61,8 @@ void BaseCharacter::CollisionDamage(DParam* dParam)
 	if (tag == ObjectTag::STEALTH)
 		return;
 
+	damagedTime = 0;
+	isDamaged = true;
 	hp -= dParam->damage;
 	if (hp < 0.0f)
 		hp = 0.0f;

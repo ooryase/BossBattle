@@ -69,8 +69,8 @@ void EffectGun::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(scale, scale, scale);
 	DirectX::XMMATRIX World = Scale * RotateDef * Offset;
 
-	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 0.0f);
-	DirectX::XMVECTOR EdgeColor = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.0f, 0.0f, 0.2f, 1.0f);
+	DirectX::XMVECTOR EdgeColor = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 
 	// ÉpÉâÉÅÅ[É^ÇÃéÛÇØìnÇµ
 	MODEL::CONSTANT_BUFFER cb;

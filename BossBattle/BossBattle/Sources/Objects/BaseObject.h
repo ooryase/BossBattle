@@ -6,14 +6,15 @@
 
 struct Light
 {
-	DirectX::XMFLOAT4 Directional;
-	DirectX::XMFLOAT4 Player;
-	DirectX::XMFLOAT4 PColor;
-	DirectX::XMFLOAT4 PAttenuation;
-	DirectX::XMINT4 ELCount;
-	DirectX::XMFLOAT4 Enemy[8];
-	DirectX::XMFLOAT4 EColor[8];
-	DirectX::XMFLOAT4 EAttenuation[8];
+	DirectX::XMFLOAT3 Directional;
+	int PointCount;
+	DirectX::XMFLOAT4 Pos[8];
+	DirectX::XMFLOAT4 Color[8];
+	DirectX::XMFLOAT4 Attenuation[8];
+
+	bool SetPointLight(DirectX::XMFLOAT4 _pos,
+		DirectX::XMFLOAT4 _col,
+		DirectX::XMFLOAT4 _attenuation);
 };
 
 enum class ObjectTag
