@@ -2,9 +2,11 @@
 
 BaseCharacter::BaseCharacter(std::shared_ptr<Light> _light, 
 	std::vector< std::shared_ptr< BaseEffect>>& _effectReserves,
+	std::vector< std::shared_ptr< BaseCharacter>>& _charaReserves,
 	std::shared_ptr<ObjectManager> _objectManager) 
 	: BaseObject(),
 	effectReserves(&_effectReserves),
+	charaReserves(&_charaReserves),
 	objectManager(_objectManager)
 {
 	light = _light;

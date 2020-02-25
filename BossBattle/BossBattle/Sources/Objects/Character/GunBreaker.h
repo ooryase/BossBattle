@@ -15,7 +15,8 @@ class GunBreaker : public BaseCharacter
 public:
 
 	GunBreaker( std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
-		std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves);
+		std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves,
+		std::vector< std::shared_ptr< BaseCharacter>>& _charaReserves);
 	~GunBreaker();
 
 	std::shared_ptr<GunBehave> behave;

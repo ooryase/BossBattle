@@ -1,10 +1,8 @@
 #pragma once;
 
 #include"BaseModel.h"
-#include"fbxsdk.h"
 #include"../../System/Timer.h"
 
-#pragma comment(lib, "libfbxsdk-md.lib")
 
 class FbxModel : public BaseModel
 {
@@ -32,4 +30,7 @@ public:
 	void SetAnimSackNumber(int num);
 
 	void Update(int speedDiv = 1);
+	void UpdateAnotherTimeCount(int speedDiv, FbxTime& _timeCount);
+	void SetAnimSackNumberAnotherTimeCount(int num, FbxTime& _timeCount);
+
 };

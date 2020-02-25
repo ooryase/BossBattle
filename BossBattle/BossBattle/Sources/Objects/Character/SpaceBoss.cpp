@@ -5,13 +5,16 @@
 #include"../Effect/SpaceBoss/BossBeam2.h"
 #include"../Effect/SpaceBoss/BossSlash.h"
 #include"../Effect/SpaceBoss/BossSan.h"
+#include"SpaceBossAvatar.h"
 
 using DirectX::XMFLOAT3;
 
 SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
 	std::vector< std::shared_ptr< BaseEffect>>& _effectReserves,
+	std::vector< std::shared_ptr< BaseCharacter>>& _enemyReserves,
 	std::shared_ptr<Camera> _camera)
-	: BaseCharacter(_light, _effectReserves, objectManager)
+	: BaseCharacter(_light, _effectReserves, _enemyReserves, objectManager),
+	scaleDefault(1.5f)
 {
 	model = objectManager->GetModel("spaceBoss");
 	shader = objectManager->GetModelShader(L"enemy");
@@ -20,8 +23,8 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	frame = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpFrame");
 	gaugeShader = objectManager->GetSpriteShader(L"weight");
 
-	position = DirectX::XMFLOAT3(20.0f, 10.0f, 0.0f);
-	scale = DirectX::XMFLOAT3(1.5f, 1.5f, 1.5f);
+	position = DirectX::XMFLOAT3(30.0f, 7.0f, 0.0f);
+	scale = DirectX::XMFLOAT3(scaleDefault, scaleDefault, scaleDefault);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, DirectX::XM_PI);
 	rotateDef = DirectX::XMFLOAT3(2.36f, 1.58f, 1.96f);
 	posBehave = DirectX::XMFLOAT2(1.0f, -1.0f);
@@ -39,7 +42,7 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	behave = BehaveName::AWAKE;
 	animNum = AnimNumber::AWAKE;
-	model->SetAnimSackNumber(animNum);
+	model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 	behaveTime = 0;
 	behaveStep = 0;
 	animSpeedDiv = 1;
@@ -50,6 +53,9 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	shaderGSLength = 0.0f;
 
+	waitTime = 3000;
+	phaseNum = 3;
+	decisionBehave = DecisionBehavePhase::WAIT_NEXT;
 }
 
 SpaceBoss::~SpaceBoss()
@@ -63,86 +69,7 @@ void SpaceBoss::Update()
 	position.y += param->speed.y;
 	position.z += param->speed.z;
 
-	param->speed.y -= param->gravity;
-	if (position.y < 0.0f)
-	{
-		position.y = 0.0f;
-		param->ground = true;
-	}
-	else
-		param->ground = false;
-
-	model->Update(animSpeedDiv);
-
-	if (InputController::getInstance().IsPushKey(DIK_H))
-	{
-		behave = BehaveName::BEAM;
-		behaveStep = 0;
-		behaveTime = 0;
-		animNum = AnimNumber::BEAM;
-		model->SetAnimSackNumber(animNum);
-		effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
-
-	}
-	if (InputController::getInstance().IsPushKey(DIK_G))
-	{
-		behave = BehaveName::BEAM;
-		behaveStep = 0;
-		behaveTime = 0;
-		animNum = AnimNumber::BEAM;
-		model->SetAnimSackNumber(animNum);
-		effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), 1.0f));
-		effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), -1.0f));
-
-	}
-	if (InputController::getInstance().IsPressKey(DIK_J))
-	{
-		behave = BehaveName::SLASH;
-		behaveStep = 0;
-		behaveTime = 0;
-		animNum = AnimNumber::SLASH;
-		model->SetAnimSackNumber(animNum);
-		//effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
-	}
-	if (InputController::getInstance().IsPushKey(DIK_Y))
-	{
-		//position.x = 25.0f;
-		//param->direction.z = DirectX::XM_PIDIV2;
-		//rotateDef.z = 1.96f;
-		behave = BehaveName::SHIFT_RIGHT_UP;
-		behaveStep = 0;
-		behaveTime = 0;
-	}
-	if (InputController::getInstance().IsPushKey(DIK_U))
-	{
-		//position.x = -25.0f;
-		//param->direction.z = -DirectX::XM_PIDIV2;
-		//rotateDef.z = 1.33f;
-
-		behave = BehaveName::SHIFT_LEFT_DOWN;
-		behaveStep = 0;
-		behaveTime = 0;
-
-	}
-	if (InputController::getInstance().IsPushKey(DIK_N))
-	{
-		behave = BehaveName::SAN;
-		behaveStep = 0;
-		behaveTime = 0;
-		animNum = AnimNumber::ROAR2;
-		model->SetAnimSackNumber(animNum);
-	}
-	if (InputController::getInstance().IsPressKey(DIK_M))
-	{
-		rotateDef.z -= 0.01f;
-
-		//		param->direction.z += -0.01f;
-	}
-	if (InputController::getInstance().IsPressKey(DIK_K))
-	{
-		position.z += 0.02f;
-	}
-
+	//model->Update(animSpeedDiv);
 	behaveTime += Timer::GetInstance().GetDeltaTime();
 	switch (behave)
 	{
@@ -150,19 +77,29 @@ void SpaceBoss::Update()
 		UpdateAwake();
 		break;
 	case BehaveName::BEAM:
+	case BehaveName::BEAM2:
 		UpdateBeam();
 		break;
 	case BehaveName::SLASH:
 		UpdateSlash();
 		break;
-	case BehaveName::SAN:
-		UpdateSan();
+	case BehaveName::LEAVE:
+		UpdateLeave();
 		break;
-	case BehaveName::SHIFT_RIGHT_UP:
-	case BehaveName::SHIFT_RIGHT_DOWN:
-	case BehaveName::SHIFT_LEFT_UP:
-	case BehaveName::SHIFT_LEFT_DOWN:
-		UpdateShift();
+	case BehaveName::LAND:
+		UpdateLand();
+		break;
+	case BehaveName::PHASE2_ATTACK:
+		UpdatePhase2Attack();
+		break;
+	case BehaveName::PHASE3_ATTACK:
+		UpdatePhase3Attack();
+		break;
+	case BehaveName::PHASE3_ATTACK_STEP2:
+		UpdatePhase3AttackStep2();
+		break;
+	case BehaveName::WAIT:
+		UpdateWait();
 		break;
 	default:
 		break;
@@ -172,6 +109,203 @@ void SpaceBoss::Update()
 	UpdateDamaged();
 }
 
+
+void SpaceBoss::SetNextBehave()
+{
+
+	if (decisionBehave == DecisionBehavePhase::WAIT_NEXT)
+	{
+		moveCount = std::rand() % (2 + phaseNum);
+		decisionBehave = DecisionBehavePhase::MOVE;
+		behaveTime = 0;
+		waitTime = 500;
+	}
+	else if (decisionBehave == DecisionBehavePhase::MOVE)
+	{
+		if (behave == BehaveName::WAIT)
+		{
+			if (moveCount == 0)
+				DecisionAttackBehave();
+			else
+			{
+				moveCount--;
+				SetBehave(BehaveName::LEAVE);
+			}
+		}
+		else if (behave == BehaveName::LEAVE)
+		{
+			SetBehave(BehaveName::LAND);
+			posBehave = DirectX::XMFLOAT2(static_cast<float>(rand() % 2 * 2 - 1), static_cast<float>(rand() % 2 * 2 - 1));
+		}
+		else if(behave == BehaveName::LAND)
+			SetBehave(BehaveName::WAIT);
+	}
+	else if (decisionBehave == DecisionBehavePhase::ATTACK)
+	{
+		if (behave == BehaveName::LEAVE)
+		{
+			posBehave = phase3SetPos;
+			SetBehave(BehaveName::LAND);
+		}
+		else if (behave == BehaveName::LAND)
+		{
+			//if(phaseNum == 3)
+			SetBehave(BehaveName::PHASE3_ATTACK_STEP2);
+		}
+		else
+		{
+			waitTime = 3000;
+			SetBehave(BehaveName::WAIT);
+			decisionBehave = DecisionBehavePhase::WAIT_NEXT;
+		}
+	}
+}
+
+void SpaceBoss::DecisionAttackBehave()
+{
+	decisionBehave = DecisionBehavePhase::ATTACK;
+
+	if (hp / maxHp > 0.5f)
+		phaseNum = 1;
+	else if (hp / maxHp > 0.2f)
+		phaseNum = 2;
+	else
+		phaseNum = 3;
+
+	if (phaseNum == 1)
+	{
+		auto random = rand() % 3;
+		if (random == 0)
+			SetBehave(BehaveName::SLASH);
+		else if(random == 1)
+			SetBehave(BehaveName::BEAM);
+		else
+			SetBehave(BehaveName::BEAM2);
+
+	}
+	else if (phaseNum == 2)
+	{
+		auto random = rand() % 3;
+		SetBehave(BehaveName::PHASE2_ATTACK);
+		if(random == 0)
+			charaReserves->push_back(std::make_shared<SpaceBossAvatar>(objectManager, light, *effectReserves, *charaReserves, camera,
+				GetAvatarPos(), BehaveName::BEAM, 1000));
+		else if(random == 1)
+			charaReserves->push_back(std::make_shared<SpaceBossAvatar>(objectManager, light, *effectReserves, *charaReserves, camera,
+				GetAvatarPos(), BehaveName::BEAM2, 1000));
+		else
+			effectReserves->push_back(std::make_shared<BossSan>(objectManager, shared_from_this(), 1000, (rand() % 3 - 1) * 20.0f));
+
+	}
+	else if (phaseNum == 3)
+	{
+		SetBehave(BehaveName::PHASE3_ATTACK);
+		auto sanNum = rand() % 4;
+
+		auto sanPos = rand() % 6;
+		for (int i = 0; i < sanNum; i++)
+		{
+			auto sanPosX = (sanPos + (sanPos % 2 * 2 + 2) * i) % 3 - 1;
+			effectReserves->push_back(std::make_shared<BossSan>(objectManager, shared_from_this(), 2500 + 500 * i, sanPosX * 20.0f));
+		}
+
+		std::vector<DirectX::XMFLOAT2> posVec;
+		posVec.push_back(DirectX::XMFLOAT2(1.0f, 1.0f));
+		posVec.push_back(DirectX::XMFLOAT2(-1.0f, 1.0f));
+		posVec.push_back(DirectX::XMFLOAT2(1.0f, -1.0f));
+		posVec.push_back(DirectX::XMFLOAT2(-1.0f, -1.0f));
+
+		std::vector<BehaveName> behaveVec;
+		behaveVec.push_back(BehaveName::BEAM);
+		behaveVec.push_back(BehaveName::BEAM2);
+		behaveVec.push_back(BehaveName::SLASH);
+
+		auto randPos = rand() % 4;
+		phase3SetPos = posVec.at(randPos);
+		posVec.erase(posVec.begin() + randPos);
+
+		auto randBehave = rand() % 3;
+		phase3Attack = behaveVec.at(randBehave);
+		behaveVec.erase(behaveVec.begin() + randBehave);
+
+		for (int i = 0; i < 3 - sanNum; i++)
+		{
+			if (i == 2)
+			{
+				charaReserves->push_back(std::make_shared<SpaceBossAvatar>(objectManager, light, *effectReserves, *charaReserves, camera,
+					posVec.at(0), BehaveName::BEAM2, 2500));
+				break;
+			}
+		
+			randPos = rand() % (3 - i);
+			randBehave = rand() % (2 - i);
+			charaReserves->push_back(std::make_shared<SpaceBossAvatar>(objectManager, light, *effectReserves, *charaReserves, camera,
+				posVec.at(randPos), behaveVec.at(randBehave), 2500));
+			posVec.erase(posVec.begin() + randPos);
+			behaveVec.erase(behaveVec.begin() + randBehave);
+		
+		}
+	}
+}
+
+DirectX::XMFLOAT2 SpaceBoss::GetAvatarPos()
+{
+	auto pos = DirectX::XMFLOAT2(static_cast<float>(rand() % 2 * 2 - 1), static_cast<float>(rand() % 2 * 2 - 1));
+	while (true)
+	{
+		if (posBehave.x != pos.x || posBehave.y != pos.y)
+			return pos;
+		else
+			pos.x *= -1.0f;
+
+		if (posBehave.x != pos.x || posBehave.y != pos.y)
+			return pos;
+		else
+			pos.y *= -1.0f;
+	}
+}
+
+
+void SpaceBoss::SetBehave(BehaveName setBehave)
+{
+	behave = setBehave;
+	behaveStep = 0;
+	behaveTime = 0;
+	animSpeedDiv = 1;
+
+	switch (behave)
+	{
+	case SpaceBoss::BehaveName::AWAKE:
+		animNum = AnimNumber::AWAKE;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		break;
+	case SpaceBoss::BehaveName::BEAM:
+	case SpaceBoss::BehaveName::BEAM2:
+		animNum = AnimNumber::BEAM;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		break;
+	case SpaceBoss::BehaveName::SLASH:
+		animNum = AnimNumber::SLASH;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		break;
+	case SpaceBoss::BehaveName::PHASE2_ATTACK:
+	case SpaceBoss::BehaveName::PHASE3_ATTACK:
+		animNum = AnimNumber::ROAR2;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		break;
+	case SpaceBoss::BehaveName::WAIT:
+	case SpaceBoss::BehaveName::LAND:
+	case SpaceBoss::BehaveName::LEAVE:
+	case SpaceBoss::BehaveName::PHASE3_ATTACK_STEP2:
+		animNum = AnimNumber::WAIT;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		break;
+	default:
+		break;
+	}
+}
+
+
 void SpaceBoss::UpdateAwake()
 {
 	if (behaveTime < 2000)
@@ -180,6 +314,7 @@ void SpaceBoss::UpdateAwake()
 		{
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 40.0f, 0.0f), 0);
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2000);
+			model->UpdateAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
 			animSpeedDiv = 0;
 			behaveStep++;
 		}
@@ -197,7 +332,7 @@ void SpaceBoss::UpdateAwake()
 		{
 			animNum = AnimNumber::ROAR2;
 			animSpeedDiv = 3;
-			model->SetAnimSackNumber(animNum);
+			model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 			behaveStep++;
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000);
 			camera->Quake();
@@ -209,8 +344,9 @@ void SpaceBoss::UpdateAwake()
 	{
 		behave = BehaveName::WAIT;
 		animNum = AnimNumber::WAIT;
+		behaveTime = 0;
 		animSpeedDiv = 1;
-		model->SetAnimSackNumber(animNum);
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 	}
 
 
@@ -218,110 +354,134 @@ void SpaceBoss::UpdateAwake()
 
 void SpaceBoss::UpdateBeam()
 {
-	if (behaveTime > 2000)
+	if (behaveStep == 0)
 	{
-		behave = BehaveName::WAIT;
-		animNum = AnimNumber::WAIT;
-		animSpeedDiv = 1;
-		model->SetAnimSackNumber(animNum);
+		if(behave == BehaveName::BEAM)
+			effectReserves->push_back(std::make_shared<BossBeam>(objectManager, shared_from_this()));
+		else
+		{
+			effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), 1.0f));
+			effectReserves->push_back(std::make_shared<BossBeam2>(objectManager, shared_from_this(), -1.0f));
+		}
+		behaveStep++;
 	}
+	
+	if (behaveTime < 2000)
+		animSpeedDiv = 2;
+	else if(behaveTime < 2160)
+		animSpeedDiv = 1;
+	else
+		animSpeedDiv = 4;
+
+
+	if (behaveTime > 4500)
+		SetNextBehave();
 }
 
 void SpaceBoss::UpdateSlash()
 {
-	if(behaveTime < 1400)
-		animSpeedDiv = 2;
+	if(behaveTime < 2100)
+		animSpeedDiv = 3;
 	else if (behaveStep == 0)
 	{
 		animSpeedDiv = 1;
 		effectReserves->push_back(std::make_shared<BossSlash>(objectManager, shared_from_this()));
 		behaveStep++;
 	}
+	else if (behaveTime > 3500)
+		animSpeedDiv = 4;
+	else if(behaveTime > 2500)
+		animSpeedDiv = 3;
 
-	if (behaveTime > 2000)
-	{
-		behave = BehaveName::WAIT;
-		animNum = AnimNumber::WAIT;
-		animSpeedDiv = 1;
-		model->SetAnimSackNumber(animNum);
-	}
 
+	if (behaveTime > 4500)
+		SetNextBehave();
 }
 
-void SpaceBoss::UpdateSan()
+void SpaceBoss::UpdateLeave()
 {
-	if (behaveTime < 1400)
+	if (behaveTime < 500)
 	{
+		const float SCALE = scaleDefault * (1.0f - behaveTime / 500.0f);
+		scale = DirectX::XMFLOAT3(SCALE, SCALE, SCALE);
+		shaderGSLength = behaveTime / 12.5f;
+		position.x = (30.0f + 10.0f * behaveTime / 500.0f) * posBehave.x;
 	}
-	else if (behaveStep == 0)
+	else
+		SetNextBehave();
+}
+
+void SpaceBoss::UpdateLand()
+{
+	if (behaveTime > 0 && behaveStep == 0)
 	{
-		animSpeedDiv = 1;
-		effectReserves->push_back(std::make_shared<BossSan>(objectManager, shared_from_this()));
+		position.y = 14.5f + 7.5f * posBehave.y;
+		param->direction.z = DirectX::XM_PIDIV2 * posBehave.x;
+		rotateDef.z = 1.645f + 0.315f * posBehave.x;
 		behaveStep++;
-	}
-
-	if (behaveTime > 2000)
-	{
-		behave = BehaveName::WAIT;
-		animNum = AnimNumber::WAIT;
-		animSpeedDiv = 1;
-		model->SetAnimSackNumber(animNum);
-	}
-
-}
-
-void SpaceBoss::UpdateShift()
-{
-	if (behaveStep == 0)
-	{
-		if (behaveTime < 1000)
-		{
-			shaderGSLength = behaveTime / 50.0f;
-			position.x = (30.0f + 20.0f * behaveTime / 1000.0f) * posBehave.x;
-		}
-		else
-		{
-			switch (behave)
-			{
-			case SpaceBoss::BehaveName::SHIFT_RIGHT_UP:
-				posBehave = DirectX::XMFLOAT2(1.0f, 1.0f);
-				break;
-			case SpaceBoss::BehaveName::SHIFT_RIGHT_DOWN:
-				posBehave = DirectX::XMFLOAT2(1.0f, -1.0f);
-				break;
-			case SpaceBoss::BehaveName::SHIFT_LEFT_UP:
-				posBehave = DirectX::XMFLOAT2(-1.0f, 1.0f);
-				break;
-			case SpaceBoss::BehaveName::SHIFT_LEFT_DOWN:
-				posBehave = DirectX::XMFLOAT2(-1.0f, -1.0f);
-				break;
-			default:
-				break;
-			}
-			position.y = 10.0f + 5.0f * posBehave.y;
-			param->direction.z = DirectX::XM_PIDIV2 * posBehave.x;
-			rotateDef.z = 1.645f + 0.315f * posBehave.x;
-			behaveStep++;
-			behaveTime = 0;
-		}
 	}
 
 	if (behaveStep == 1)
 	{
-		if(behaveTime < 1000)
+		if ( behaveTime < 1000)
 		{
-			shaderGSLength = 20.0f - behaveTime / 50.0f;
-			position.x = (50.0f - 20.0f * behaveTime / 1000.0f) * posBehave.x;
+			const float SCALE = scaleDefault * behaveTime / 1000.0f;
+			scale = DirectX::XMFLOAT3(SCALE, SCALE, SCALE);
+			shaderGSLength = 40.0f - behaveTime / 25.0f;
+			position.x = (40.0f - 10.0f * behaveTime / 1000.0f) * posBehave.x;
 		}
 		else
 		{
+			position.x = 30.0f * posBehave.x;
+			scale = DirectX::XMFLOAT3(scaleDefault, scaleDefault, scaleDefault);
 			shaderGSLength = 0.0f;
-			behave = BehaveName::WAIT;
-			animNum = AnimNumber::WAIT;
-			animSpeedDiv = 1;
-			model->SetAnimSackNumber(animNum);
+			SetNextBehave();
 		}
 	}
+}
+
+void SpaceBoss::UpdatePhase2Attack()
+{
+	if (behaveTime > 2000 && behaveStep == 0)
+	{
+		animNum = AnimNumber::WAIT;
+		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
+		behaveStep++;
+	}
+	else if (behaveTime > 2500)
+	{
+		auto random = rand() % 3;
+		if(random == 0)
+			SetBehave(BehaveName::SLASH);
+		else if (random == 1)
+			SetBehave(BehaveName::BEAM);
+		else
+			SetBehave(BehaveName::BEAM2);
+	}
+}
+
+void SpaceBoss::UpdatePhase3Attack()
+{
+	if (behaveTime > 2000)
+	{
+		SetBehave(BehaveName::LEAVE);
+	}
+}
+
+void SpaceBoss::UpdatePhase3AttackStep2()
+{
+	if (behaveTime > 500)
+	{
+		SetBehave(phase3Attack);
+	}
+}
+
+
+
+void SpaceBoss::UpdateWait()
+{
+	if (behaveTime > waitTime)
+		SetNextBehave();
 }
 
 void SpaceBoss::EndUpdate()
@@ -351,16 +511,8 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	World *= Scale * Rotate * Offset;
 
 	DirectX::XMVECTOR Color;
-	if(isDamaged)
-		Color= DirectX::XMVectorSet(0.0f, -0.2f, -0.2f, 1.0f);
-	else
-		Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 1.0f);
-
 	DirectX::XMVECTOR EdgeColor;
-	if (tag == ObjectTag::NORMAL)
-		EdgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
-	else
-		EdgeColor = DirectX::XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
+	SetColor(&Color, &EdgeColor);
 
 	// ÉpÉâÉÅÅ[É^ÇÃéÛÇØìnÇµ
 	MODEL::CONSTANT_BUFFER cb;
@@ -374,8 +526,24 @@ void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
+void SpaceBoss::SetColor(DirectX::XMVECTOR* color, DirectX::XMVECTOR* edgeColor)
+{
+	if (isDamaged)
+		*color = DirectX::XMVectorSet(0.2f, -0.2f, -0.2f, 1.0f);
+	else
+		*color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 1.0f);
+
+	if (tag == ObjectTag::NORMAL)
+		*edgeColor = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
+	else
+		*edgeColor = DirectX::XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
+}
+
 void SpaceBoss::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
+	model->SetAnimSackNumber(animNum);
+	model->UpdateAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
+
 	DrawSet(pDeviceContext);
 
 	model->DrawSet(pDeviceContext);

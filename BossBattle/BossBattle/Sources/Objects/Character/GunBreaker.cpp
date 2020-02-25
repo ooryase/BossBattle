@@ -22,8 +22,9 @@
 #include"GunBehave/GunSpecial.h"
 
 GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<Light> _light,
-	std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves) 
-	: BaseCharacter(_light, _playerEffectReserves, objectManager)
+	std::vector< std::shared_ptr< BaseEffect>>& _playerEffectReserves,
+	std::vector< std::shared_ptr< BaseCharacter>>& _charaReserves)
+	: BaseCharacter(_light, _playerEffectReserves, _charaReserves, objectManager)
 {
 	model = objectManager->GetModel("gunbreaker");
 	shader = objectManager->GetModelShader(L"shader");
@@ -36,7 +37,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	gaugeShader = objectManager->GetSpriteShader(L"weight");
 
 	position = DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f);
-	scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	scale = DirectX::XMFLOAT3(0.95f, 0.95f, 0.95f);
 	rotate = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotateDef = DirectX::XMFLOAT3(-DirectX::XM_PIDIV2, 0.0f, DirectX::XM_PI);
 	
@@ -71,9 +72,9 @@ void GunBreaker::Update()
 	position.z += param->speed.z;
 
 	param->speed.y -= param->gravity;
-	if (position.y < 0.0f)
+	if (position.y < -2.0f)
 	{
-		position.y = 0.0f;
+		position.y = -2.0f;
 		param->ground = true;
 	}
 	else

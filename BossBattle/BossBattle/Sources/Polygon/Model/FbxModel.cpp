@@ -257,19 +257,23 @@ void FbxModel::SetAnimSackNumber(int num)
 
 }
 
-void FbxModel::Update(int speedDiv)
+void FbxModel::SetAnimSackNumberAnotherTimeCount(int num , FbxTime &_timeCount)
 {
 	//再生するアニメーションの設定
-	//AnimStackNumber = 0;
-	//FbxAnimStack* AnimationStack = fbxScene->FindMember<FbxAnimStack>(AnimStackNameArray[AnimStackNumber]->Buffer());
-	//fbxScene->SetCurrentAnimationStack(AnimationStack);
-	//
-	//FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(*(AnimStackNameArray[AnimStackNumber]));
-	//start = takeInfo->mLocalTimeSpan.GetStart();
-	//stop = takeInfo->mLocalTimeSpan.GetStop();
-	//FrameTime.SetTime(0, 0, 0, 1, 0, fbxScene->GetGlobalSettings().GetTimeMode());
-	//timeCount = start;
+	AnimStackNumber = num;
+	FbxAnimStack* AnimationStack = fbxScene->FindMember<FbxAnimStack>(AnimStackNameArray[AnimStackNumber]->Buffer());
+	fbxScene->SetCurrentAnimationStack(AnimationStack);
 
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(*(AnimStackNameArray[AnimStackNumber]));
+	start = takeInfo->mLocalTimeSpan.GetStart();
+	stop = takeInfo->mLocalTimeSpan.GetStop();
+	FrameTime.SetTime(0, 0, 0, 1, 0, fbxScene->GetGlobalSettings().GetTimeMode());
+	_timeCount = start;
+
+}
+
+void FbxModel::Update(int speedDiv)
+{
 	if (!anim || speedDiv == 0)
 		return;
 
@@ -328,8 +332,70 @@ void FbxModel::Update(int speedDiv)
 		//vertices[i].Pos.y = (FLOAT)outVertex[1];
 		//vertices[i].Pos.z = (FLOAT)outVertex[2];
 	}
-
 	delete[] clusterDeformation;
 
+}
+
+void FbxModel::UpdateAnotherTimeCount(int speedDiv, FbxTime &_timeCount)
+{
+	if (!anim || speedDiv == 0)
+		return;
+
+	_timeCount += FrameTime * Timer::GetInstance().GetDeltaTime() / 16 / speedDiv;
+	if (_timeCount > stop) _timeCount = start;
+
+	//アニメーション処理
+	FbxMatrix globalPosition = fbxMeshNode->EvaluateGlobalTransform(_timeCount);
+	FbxVector4 t0 = fbxMeshNode->GetGeometricTranslation(FbxNode::eSourcePivot);
+	FbxVector4 r0 = fbxMeshNode->GetGeometricRotation(FbxNode::eSourcePivot);
+	FbxVector4 s0 = fbxMeshNode->GetGeometricScaling(FbxNode::eSourcePivot);
+	FbxAMatrix geometryOffset = FbxAMatrix(t0, r0, s0);
+
+	//ボーン計算
+	FbxMatrix* clusterDeformation = new FbxMatrix[fbxMesh->GetControlPointsCount()];
+	memset(clusterDeformation, 0, sizeof(FbxMatrix) * fbxMesh->GetControlPointsCount());
+
+	FbxSkin* skinDeformer = (FbxSkin*)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
+	int clusterCount = skinDeformer->GetClusterCount();
+	for (int clusterIndex = 0; clusterIndex < clusterCount; clusterIndex++)
+	{
+		FbxCluster* cluster = skinDeformer->GetCluster(clusterIndex);
+		FbxMatrix vertexTransformMatrix;
+		FbxAMatrix referenceGlobalInitPosition;
+		FbxAMatrix clusterGlobalInitPosition;
+		FbxMatrix clusterGlobalCurrentPosition;
+		FbxMatrix clusterRelativeInitPosition;
+		FbxMatrix clusterRelativeCurrentPositionInverse;
+		cluster->GetTransformMatrix(referenceGlobalInitPosition);
+		referenceGlobalInitPosition *= geometryOffset;
+		cluster->GetTransformLinkMatrix(clusterGlobalInitPosition);
+		clusterGlobalCurrentPosition = cluster->GetLink()->EvaluateGlobalTransform(_timeCount);
+		clusterRelativeInitPosition = clusterGlobalInitPosition.Inverse() * referenceGlobalInitPosition;
+		clusterRelativeCurrentPositionInverse = globalPosition.Inverse() * clusterGlobalCurrentPosition;
+		vertexTransformMatrix = clusterRelativeCurrentPositionInverse * clusterRelativeInitPosition;
+		//clusterDeformationに各頂点毎の影響度に応じてそれぞれに加算
+		for (int i = 0; i < cluster->GetControlPointIndicesCount(); i++)
+		{
+			int index = cluster->GetControlPointIndices()[i];
+			double weight = cluster->GetControlPointWeights()[i];
+			FbxMatrix influence = vertexTransformMatrix * weight;
+			clusterDeformation[index] += influence;
+		}
+	}
+
+	//最終的な頂点座標を計算しVERTEXに変換
+	for (int i = 0; i < fbxMesh->GetControlPointsCount(); i++)
+	{
+		FbxVector4 outVertex = clusterDeformation[i].MultNormalize(fbxMesh->GetControlPointAt(i));
+		vertices.at(i).Pos.x = (FLOAT)outVertex[0];
+		vertices.at(i).Pos.y = (FLOAT)outVertex[1];
+		vertices.at(i).Pos.z = (FLOAT)outVertex[2];
+
+		//FbxVector4 outVertex = clusterDeformation[i].MultNormalize(fbxMesh->GetControlPointAt(i));
+		//vertices[i].Pos.x = (FLOAT)outVertex[0];
+		//vertices[i].Pos.y = (FLOAT)outVertex[1];
+		//vertices[i].Pos.z = (FLOAT)outVertex[2];
+	}
+	delete[] clusterDeformation;
 
 }

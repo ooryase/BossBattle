@@ -50,11 +50,13 @@ protected:
 	std::shared_ptr<Param> param;
 
 	std::vector< std::shared_ptr< BaseEffect>> *effectReserves;
+	std::vector< std::shared_ptr< BaseCharacter>>* charaReserves;
 	std::shared_ptr<ObjectManager> objectManager;
 
 public:
 	BaseCharacter(std::shared_ptr<Light> _light,
 		std::vector< std::shared_ptr< BaseEffect>>& _effectReserves,
+		std::vector< std::shared_ptr< BaseCharacter>>& _charaReserves,
 		std::shared_ptr<ObjectManager> _objectManager);
 	~BaseCharacter() {};
 

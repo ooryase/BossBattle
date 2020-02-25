@@ -67,8 +67,8 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	//}
 	camera = std::make_shared<Camera>(eyeLookAt, DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f));
 
-	player = std::make_shared<GunBreaker>(objectManager, light,playerEffectReserves);
-	bossEnemy = std::make_shared<SpaceBoss>(objectManager,light, enemyEffectReserves, camera);
+	player = std::make_shared<GunBreaker>(objectManager, light,playerEffectReserves, enemyReserves);
+	bossEnemy = std::make_shared<SpaceBoss>(objectManager,light, enemyEffectReserves, enemyReserves, camera);
 
 	backGround = std::make_unique<Space>(objectManager);
 
@@ -103,14 +103,12 @@ void Battle::UpdateObjects()
 	player->Update();
 	bossEnemy->Update();
 
+	for (auto&& var : enemies)
+		var->Update();
 	for(auto&& var : playerEffects)
-	{
 		var->Update();
-	}
 	for (auto&& var : enemyEffects)
-	{
 		var->Update();
-	}
 
 	backGround->Update();
 	camera->Update();
@@ -119,6 +117,8 @@ void Battle::UpdateObjects()
 void Battle::UpdateCollision()
 {
 	CheckCollision(player, bossEnemy);
+	for (auto&& var : enemies)
+		CheckCollision(player, var);
 	const float wallPosX = 30.0f;
 	player->CollisionWallUpdate(wallPosX);
 
@@ -188,9 +188,9 @@ void Battle::EndUpdate()
 {
 	player->EndUpdate();
 	bossEnemy->EndUpdate();
-
-	EndUpdateEffects(&playerEffects, &playerEffectReserves);
-	EndUpdateEffects(&enemyEffects, &enemyEffectReserves);
+	EndUpdateVector(&enemies, &enemyReserves);
+	EndUpdateVector(&playerEffects, &playerEffectReserves);
+	EndUpdateVector(&enemyEffects, &enemyEffectReserves);
 
 }
 
@@ -213,6 +213,26 @@ void Battle::EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector<
 	}
 }
 
+template<typename U, typename V>
+void Battle::EndUpdateVector(vector< shared_ptr< U>>* vectorMain, vector< shared_ptr< V>>* vectorReserves)
+{
+	for (auto&& var : *vectorMain)
+	{
+		var->EndUpdate();
+	}
+	auto itr =
+		std::remove_if(vectorMain->begin(), vectorMain->end(), [](
+			std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
+	vectorMain->erase(itr, vectorMain->end());
+
+	if (!vectorReserves->empty())
+	{
+		for (auto&& var : *vectorReserves)
+			vectorMain->push_back(var);
+		vectorReserves->clear();
+	}
+}
+
 
 void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
@@ -224,6 +244,10 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	bossEnemy->Draw(pDeviceContext);
 
+	for (auto&& var : enemies)
+	{
+		var->Draw(pDeviceContext);
+	}
 
 
 	///////////////////////////////////////////////////////

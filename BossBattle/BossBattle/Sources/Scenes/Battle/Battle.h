@@ -26,6 +26,10 @@ class Battle : public BaseScene
 	vector< shared_ptr< BaseEffect>> enemyEffects;
 	vector< shared_ptr< BaseEffect>> enemyEffectReserves;
 
+	vector< shared_ptr< BaseCharacter>> enemies;
+	vector< shared_ptr< BaseCharacter>> enemyReserves;
+
+
 	std::unique_ptr<Space> backGround;
 
 	std::shared_ptr<BaseModel> fade;
@@ -57,6 +61,9 @@ private:
 	void UpdatePhase();
 
 	void EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves);
+
+	template<typename U, typename V>
+	void EndUpdateVector(vector< shared_ptr< U>>* vectorMain, vector< shared_ptr< V>>* vectorReserves);
 
 	void CheckCollision(std::shared_ptr<BaseObject> obj1, std::shared_ptr<BaseObject> obj2);
 	void CheckCollisionDamageObjcts(vector< shared_ptr< BaseEffect>> dObjs, std::shared_ptr<BaseCharacter> chara);

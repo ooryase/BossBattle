@@ -1,11 +1,13 @@
 #include"SceneController.h"
 #include"Title/Title.h"
 #include"Battle/Battle.h"
+#include <time.h>
 
 SceneController::SceneController(ComPtr<ID3D11Device> pDevice)
 {
 	scene = std::make_unique<Battle>(pDevice);
 	Timer::GetInstance().Init();
+	srand((unsigned int)time(NULL));
 }
 
 SceneController::~SceneController()

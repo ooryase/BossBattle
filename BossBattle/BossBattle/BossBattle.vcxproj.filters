@@ -270,6 +270,9 @@
     <ClCompile Include="Sources\Objects\Effect\SpaceBoss\BossBeam2.cpp">
       <Filter>ソース ファイル\Objects\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Objects\Character\SpaceBossAvatar.cpp">
+      <Filter>ソース ファイル\Objects\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Effect\SpaceBoss\BossBeam2.h">
       <Filter>ヘッダー ファイル\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Character\SpaceBossAvatar.h">
+      <Filter>ヘッダー ファイル\Objects\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

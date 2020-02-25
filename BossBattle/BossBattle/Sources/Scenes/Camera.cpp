@@ -27,18 +27,18 @@ void Camera::UpdateQuake()
 	if (quakeTime < QUAKE_TIME - END_TIME_Y)
 	{
 		float rate = quakeTime / static_cast<float>(QUAKE_TIME - END_TIME_Y);
-		quakeQuantity.y = sinf( DirectX::XM_PI * 4.0 * rate) * (1.0f - rate) * (1.0f - rate);
+		quakeQuantity.y = sinf( DirectX::XM_PI * 4.0f * rate) * (1.0f - rate * rate);
 	}
 
 	if (quakeTime > START_TIME_XZ)
 	{
 		float eyeLenghtX = abs(eyeLookAt.x - eyePos.x);
 		float eyeLenghtZ = abs(eyeLookAt.z - eyePos.z);
-		float quantityX = eyeLenghtX / (eyeLenghtX + eyeLenghtZ);
-		float quantityZ = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ);
+		float quantityZ = eyeLenghtX / (eyeLenghtX + eyeLenghtZ);
+		float quantityX = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ);
 		float rate = (quakeTime - START_TIME_XZ) / static_cast<float>(QUAKE_TIME - START_TIME_XZ);
-		quakeQuantity.x = cosf(DirectX::XM_PI * 4.0 * rate) * quantityX * (1.0f - rate) * (1.0f - rate);
-		quakeQuantity.z = cosf(DirectX::XM_PI * 4.0 * rate) * quantityZ * (1.0f - rate) * (1.0f - rate);
+		quakeQuantity.x = cosf(DirectX::XM_PI * 4.0f * rate) * quantityX * (1.0f - rate * rate);
+		quakeQuantity.z = cosf(DirectX::XM_PI * 4.0f * rate) * quantityZ * (1.0f - rate * rate);
 	}
 
 	if (quakeTime > QUAKE_TIME)

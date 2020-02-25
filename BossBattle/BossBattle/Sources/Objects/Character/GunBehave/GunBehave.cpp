@@ -18,7 +18,7 @@ GunBehave::~GunBehave()
 void GunBehave::ChackAttack(int level)
 {
 	if ((InputController::getInstance().IsPushKey(DIK_C) ||
-		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_X)) &&
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_LEFT_SHOULDER)) &&
 		//param->typeGauge[GUN_BEHAVE::AttackType::GUN] == 100 &&
 		//param->typeGauge[GUN_BEHAVE::AttackType::BREAD] == 100)
 		true)
@@ -48,7 +48,7 @@ void GunBehave::ChackAttack(int level)
 void GunBehave::CheckStep()
 {
 	if (InputController::getInstance().IsPushKey(DIK_LSHIFT) ||
-		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_LEFT_SHOULDER))
+		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_X))
 	{
 		if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
 			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))

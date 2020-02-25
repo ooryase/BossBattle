@@ -14,13 +14,14 @@ class BossSan : public BaseEffect
 	int time;
 	int fallTime;
 	int endTime;
+	int startTime;
 
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 direction;
 
 public:
 
-	BossSan(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player);
+	BossSan(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player, int _startTime, float posX);
 
 	void Update();
 	void EndUpdate();

@@ -15,7 +15,7 @@ BossBeam::BossBeam(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr
 	position.x += (direction.z == DirectX::XM_PIDIV2) ? -10.0f : 10.0f;
 	position.y -= 5.0f;
 	time = 0;
-	chageTime = 1000;
+	chageTime = 2000;
 	endTime = 3000;
 
 	radius = 5.0f;
@@ -82,7 +82,7 @@ void BossBeam::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(scale, scale, scale);
 	World *= Scale * Rotate * Offset;
 
-	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.4f, 0.0f, 0.2f, 1.0f);
 	DirectX::XMVECTOR EdgeColor;
 	if (tag == ObjectTag::DAMAGE)
 		EdgeColor = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);

@@ -44,6 +44,7 @@
     <ClCompile Include="Sources\Objects\Character\GunBehave\ShiftGun2.cpp" />
     <ClCompile Include="Sources\Objects\Character\GunBreaker.cpp" />
     <ClCompile Include="Sources\Objects\Character\SpaceBoss.cpp" />
+    <ClCompile Include="Sources\Objects\Character\SpaceBossAvatar.cpp" />
     <ClCompile Include="Sources\Objects\Effect\BaseEffect.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread1.cpp" />
     <ClCompile Include="Sources\Objects\Effect\GunBreaker\EffectBread2.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="Sources\Objects\Character\GunBehave\ShiftGun2.h" />
     <ClInclude Include="Sources\Objects\Character\GunBreaker.h" />
     <ClInclude Include="Sources\Objects\Character\SpaceBoss.h" />
+    <ClInclude Include="Sources\Objects\Character\SpaceBossAvatar.h" />
     <ClInclude Include="Sources\Objects\Effect\BaseEffect.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread1.h" />
     <ClInclude Include="Sources\Objects\Effect\GunBreaker\EffectBread2.h" />

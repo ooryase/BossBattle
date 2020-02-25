@@ -3,7 +3,7 @@
 #include"../../Character/GunBreaker.h"
 #include"../../../System/DeviceManager.h"
 
-BossSan::BossSan(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player)
+BossSan::BossSan(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<BaseCharacter> _player, int _startTime, float posX)
 	: BaseEffect()
 {
 	tag = ObjectTag::STEALTH;
@@ -16,11 +16,12 @@ BossSan::BossSan(std::shared_ptr<ObjectManager> objectManager, std::shared_ptr<B
 
 	direction = _player->GetDirection();
 	position = _player->GetPos();
-	position.x = 0.0f;
-	position.y = 35.0f;
+	position.x = posX;
+	position.y = 40.0f;
 	time = 0;
-	fallTime = 2500;
-	endTime = 3000;
+	startTime = _startTime;
+	fallTime = 3000 + startTime;
+	endTime = 500 + fallTime;
 
 	radius = 10.0f;
 
@@ -42,8 +43,8 @@ void BossSan::Update()
 		else
 			tag = ObjectTag::STEALTH;
 	}
-	else
-		position.y -= 0.016f * Timer::GetInstance().GetDeltaTime();
+	else if(time > startTime)
+		position.y -= 0.014f * Timer::GetInstance().GetDeltaTime();
 
 	model->Update();
 

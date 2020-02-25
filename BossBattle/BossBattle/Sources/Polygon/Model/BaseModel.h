@@ -1,6 +1,10 @@
 #pragma once
 #include"../../System/Resource.h"
 
+#include"fbxsdk.h"
+
+#pragma comment(lib, "libfbxsdk-md.lib")
+
 namespace MODEL
 {
 	struct VERTEX
@@ -40,6 +44,8 @@ protected:
 public:
 	virtual void Update(int speedDiv = 1) = 0;
 	virtual void SetAnimSackNumber(int num) = 0;
+	virtual void UpdateAnotherTimeCount(int speedDiv, FbxTime &_timeCount) = 0;
+	virtual void SetAnimSackNumberAnotherTimeCount(int num, FbxTime& _timeCount) = 0;
 
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext);
 	void DrawLineAdjSet(ComPtr<ID3D11DeviceContext> pDeviceContext);

@@ -28,7 +28,9 @@ void GunRun::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 	}
 	
 	if (InputController::getInstance().IsPressKey(DIK_SPACE) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_Y))
+		InputController::getInstance().IsPressKey(DIK_UP) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_Y) ||
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_UP))
 	{
 		NextBehave = GUN_BEHAVE::BehaveName::JUMP;
 	}

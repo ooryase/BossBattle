@@ -16,7 +16,7 @@ BossBeam2::BossBeam2(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 	basePos.y -= 5.0f;
 	position.x = basePos.x;
 	time = 0;
-	chageTime = 1000;
+	chageTime = 2000;
 	endTime = 3000;
 
 	radius = 2.5f;
@@ -48,8 +48,8 @@ void BossBeam2::Update()
 	else
 	{
 		chageLenght = time * 10.0f / chageTime;
-		position.y = basePos.y + sinf(time / 100.0f - directionY * DirectX::XM_PIDIV2) * chageLenght;
-		position.z = basePos.z + cosf(time / 100.0f - directionY * DirectX::XM_PIDIV2) * chageLenght;
+		position.y = basePos.y + sinf(time / 100.0f + directionY * DirectX::XM_PIDIV2) * chageLenght;
+		position.z = basePos.z + cosf(time / 100.0f + directionY * DirectX::XM_PIDIV2) * chageLenght;
 	}
 
 	model->Update();
@@ -91,7 +91,7 @@ void BossBeam2::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(scale, scale, scale);
 	World *= Scale * Rotate * Offset;
 
-	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.2f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR Color = DirectX::XMVectorSet(0.4f, 0.0f, 0.2f, 1.0f);
 	DirectX::XMVECTOR EdgeColor;
 	if (tag == ObjectTag::DAMAGE)
 		EdgeColor = DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
