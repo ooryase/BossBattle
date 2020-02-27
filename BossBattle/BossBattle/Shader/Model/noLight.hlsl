@@ -42,8 +42,7 @@ PS_IN VS(VS_IN input)
 	float4 inPos = float4(input.pos,1.0f);
 	PS_IN output;
 	output.wld = mul(inPos, World);
-	output.pos = mul(output.wld, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = inPos;
 	output.nor = mul(float4(input.nor, 1.0f), World);
 
 	return output;
@@ -55,14 +54,9 @@ void GS(triangle PS_IN input[3],
 	uint primID : SV_PrimitiveID,
 	inout TriangleStream<PS_IN> Stream)
 {
-	float3 edge1 = (input[1].pos.xyz - input[0].pos.xyz);
-	float3 edge2 = (input[2].pos.xyz - input[0].pos.xyz);
-	float3 normal = normalize(cross(edge1, edge2));
-
 	[unroll]
 	for (int i = 0; i < 3; i++)
 	{
-		input[i].nor = float4(normal,1.0f);
 		Stream.Append(input[i]);
 	}
 
@@ -73,23 +67,19 @@ void GS(triangle PS_IN input[3],
 // ピクセルシェーダ
 float4 PS(PS_IN input) : SV_Target
 {
-    float3 dir;
-    float  len;
+    float2 dir;
+    float  lenSquare;
     float  col;
 
-	float3 center = float3(0.5f,0.5f,input.wld.z);
+	float2 center = float2(0.5f,0.5f);
  
-    //点光源の方向
-    dir = center.xyz - input.wld.xyz;
- 
-    //点光源の距離
-    len = length(dir);
- 
-    //点光源の方向をnormalize
-    dir = dir / len;
+    dir = center.xy - input.pos.xy;
+    //中心からの距離
+    lenSquare = dir.x * dir.x + dir.y * dir.y;
  
  
-    col = Power.x - len / 20.0f;
+ 
+    col = Power.x + Power.y * lenSquare * 2.0f;
 
-	return float4(col, col, col, col);
+	return float4(col, col, col, 1.0f);
 }

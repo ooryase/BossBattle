@@ -107,7 +107,7 @@ float4 PS(PS_IN input) : SV_Target
 	int levely = (int)(col.y / 0.2f);
 	int levelz = (int)(col.z / 0.2f);
 
-	float alpha = max(col.x, max(col.y, col.z));
+	int alpha = max(levelx, max(levely, levelz));
 
-	return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, alpha);
+	return float4(1.0f / 4.0f * levelx, 1.0f / 4.0f * levely, 1.0f / 4.0f * levelz, 1.0f / 4.0f * alpha);
 }

@@ -1,5 +1,6 @@
 #include"Battle.h"
 #include"../../System/InputController.h"
+#include"../../System/DeviceManager.h"
 #include <algorithm>
 
 Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
@@ -32,6 +33,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstModelMap(pDevice, "Effects/bullet");
 	objectManager->SstModelMap(pDevice, "Effects/sphere");
 	objectManager->SstModelMap(pDevice, "grid2");
+	objectManager->SstModelMap(pDevice, "plane");
 	objectManager->SstModelShader(pDevice, L"shader");
 	objectManager->SstModelShader(pDevice, L"alpha");
 	objectManager->SstModelShader(pDevice, L"enemy");
@@ -81,7 +83,7 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 
 	proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
 
-	fade = objectManager->GetModel("grid2");
+	fade = objectManager->GetModel("plane");
 	fadeShader = objectManager->GetModelShader(L"noLight");
 
 
@@ -274,55 +276,33 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		bossEnemy->DrawGauge(pDeviceContext);
 	}
 	
+
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ADD);
+
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	MODEL::CONSTANT_BUFFER cb;
+
 	if (phase == Phase::START && phaseTime > 19000)
 	{
-		// パラメータの計算
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-
-		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 35.0f, -20.0f);
-		DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
-
-		world *= scale * rotate * offset;
-
-		// パラメータの受け渡し
-		MODEL::CONSTANT_BUFFER cb;
 		cb.Color.x = (phaseTime - 19000) / 200.0f;
-		DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
-
-		fadeShader->SetConstantBuffer(pDeviceContext, cb);
-
-
-		fade->DrawSet(pDeviceContext);
-		fadeShader->DrawSet(pDeviceContext);
-
-		pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
-
+		cb.Color.y = 0.0f;
 	}
 	else if (phase == Phase::BATTLE && phaseTime < 500)
 	{
-		// パラメータの計算
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-
-		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.0f, 40.0f, -20.0f);
-		DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, -DirectX::XM_PIDIV2);
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(100.0f, 100.0f, 100.0f);
-
-		world *= scale * rotate * offset;
-
-		// パラメータの受け渡し
-		MODEL::CONSTANT_BUFFER cb;
 		cb.Color.x = (500 - phaseTime) / 100.0f;
-		DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
-
-		fadeShader->SetConstantBuffer(pDeviceContext, cb);
-
-
-		fade->DrawSet(pDeviceContext);
-		fadeShader->DrawSet(pDeviceContext);
-
-		pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
+		cb.Color.y = 0.0f;
 	}
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
+	fadeShader->SetConstantBuffer(pDeviceContext, cb);
+
+
+	fade->DrawSet(pDeviceContext);
+	fadeShader->DrawSet(pDeviceContext);
+
+	pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
+
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ALIGMENT);
+
 }
 
 void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
