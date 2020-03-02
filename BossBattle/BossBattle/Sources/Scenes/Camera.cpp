@@ -6,6 +6,17 @@ Camera::Camera(DirectX::XMFLOAT3 _eyeLookAt, DirectX::XMFLOAT3 _eyePos)
 	eyeLookAt = _eyeLookAt;
 	eyePos = _eyePos;
 	state = State::STOP;
+
+	//// 定数バッファの設定
+  //D3D11_BUFFER_DESC cbuffer;
+  //cbuffer.ByteWidth = sizeof(RADIAL_BLUR);
+  //cbuffer.Usage = D3D11_USAGE_DYNAMIC;
+  //cbuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+  //cbuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+  //cbuffer.MiscFlags = 0;
+  //cbuffer.StructureByteStride = 0;
+  //HRESULT hr = pDevice->CreateBuffer(&cbuffer, NULL, pRadialBlurBuffer.GetAddressOf());
+
 }
 
 void Camera::Update()

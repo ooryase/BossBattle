@@ -1,5 +1,6 @@
 cbuffer global3 : register(b2)
 {
+	float2 Center;
 	float Value;
 };
 
@@ -42,5 +43,21 @@ void GS(triangle VS_OUTPUT input[3],
  
 // ピクセルシェーダ
 float4 PS(VS_OUTPUT input) : SV_Target{
-    return gtexture.Sample(SSSampler, input.TEX_UV);
+	float4 col = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	float2 direction = (Center - input.TEX_UV);
+	float distance = length(direction) * Value;
+	int sampleCount = 5;// (int)(distance * 6.0f);
+	
+	for (int i = 0; i < sampleCount; i++)
+	{
+		float2 sampleUv = direction * i / sampleCount * distance + input.TEX_UV;
+		col += gtexture.Sample(SSSampler, sampleUv);
+	}
+	
+	col /= sampleCount;
+
+	//col = gtexture.Sample(SSSampler, input.TEX_UV);
+
+	return col;
 }

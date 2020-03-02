@@ -2,9 +2,9 @@
 
 HRESULT DeviceManager::Init(HWND WHandle)
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
 
-	HRESULT hr = CreateDeviceAndSwapChain(WHandle);
+	hr = CreateDeviceAndSwapChain(WHandle);
 	if(FAILED(hr))
 		return hr;
 
@@ -23,6 +23,11 @@ HRESULT DeviceManager::Init(HWND WHandle)
 	hr = CreateRenderTarget();
 	if (FAILED(hr))
 		return hr;
+
+	CreateRadialBlur();
+
+	radialBlur.Center = DirectX::XMFLOAT3(0.5f,0.5f, 0.3f);
+	radialBlur.Value = 1.0f;
 
 	return S_OK;
 }
@@ -246,45 +251,6 @@ HRESULT DeviceManager::CreateRenderTarget()
 		return hr;// DXTRACE_ERR(L"InitDirect3D g_pD3DDevice->CreateDepthStencilView", hr);  // 失敗
 
 
-		// シェーダの設定
-	ComPtr<ID3DBlob> pCompileVS;
-	ComPtr<ID3DBlob> pCompilePS;
-	ComPtr<ID3DBlob> pCompileGS;
-	D3DCompileFromFile(L"Shader/Sprite/UI.hlsl", NULL, NULL, "VS", "vs_5_0", NULL, 0, pCompileVS.GetAddressOf(), NULL);
-	D3DCompileFromFile(L"Shader/Sprite/UI.hlsl", NULL, NULL, "PS", "ps_5_0", NULL, 0, pCompilePS.GetAddressOf(), NULL);
-	D3DCompileFromFile(L"Shader/Sprite/UI.hlsl", NULL, NULL, "GS", "gs_5_0", NULL, 0, pCompileGS.GetAddressOf(), NULL);
-	pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, pRTVertexShader.GetAddressOf());
-	pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, pRTPixelShader.GetAddressOf());
-	pDevice->CreateGeometryShader(pCompileGS->GetBufferPointer(), pCompileGS->GetBufferSize(), NULL, pRTGeometryShader.GetAddressOf());
-
-	// 頂点レイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",   0, DXGI_FORMAT_R32G32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	pDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), pRTVertexLayout.GetAddressOf());
-	pCompileVS.Reset();
-	pCompilePS.Reset();
-	pCompileGS.Reset();
-
-	// 定数バッファの設定
-	D3D11_BUFFER_DESC cb;
-	cb.ByteWidth = sizeof(float);
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.StructureByteStride = 0;
-	pDevice->CreateBuffer(&cb, NULL, pRTCBuffer.GetAddressOf());
-
-	//サンプラーの設定
-	D3D11_SAMPLER_DESC smpdesc;
-	ZeroMemory(&smpdesc, sizeof(D3D11_SAMPLER_DESC));
-	smpdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	smpdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	smpdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	smpdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	pDevice->CreateSamplerState(&smpdesc, pRTTextureSampler.GetAddressOf());
 
 	{
 		vertices.push_back(VERTEX(DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f), DirectX::XMFLOAT2(0, 1)));
@@ -338,7 +304,54 @@ HRESULT DeviceManager::CreateRenderTarget()
 	return S_OK;
 }
 
+HRESULT DeviceManager::CreateRadialBlur()
+{
 
+	// シェーダの設定
+	ComPtr<ID3DBlob> pCompileVS;
+	ComPtr<ID3DBlob> pCompilePS;
+	ComPtr<ID3DBlob> pCompileGS;
+	D3DCompileFromFile(L"Shader/Sprite/RadialBlur.hlsl", NULL, NULL, "VS", "vs_5_0", NULL, 0, pCompileVS.GetAddressOf(), NULL);
+	D3DCompileFromFile(L"Shader/Sprite/RadialBlur.hlsl", NULL, NULL, "PS", "ps_5_0", NULL, 0, pCompilePS.GetAddressOf(), NULL);
+	D3DCompileFromFile(L"Shader/Sprite/RadialBlur.hlsl", NULL, NULL, "GS", "gs_5_0", NULL, 0, pCompileGS.GetAddressOf(), NULL);
+	pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, pRTVertexShader.GetAddressOf());
+	pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, pRTPixelShader.GetAddressOf());
+	pDevice->CreateGeometryShader(pCompileGS->GetBufferPointer(), pCompileGS->GetBufferSize(), NULL, pRTGeometryShader.GetAddressOf());
+
+	// 頂点レイアウト
+	D3D11_INPUT_ELEMENT_DESC layout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",   0, DXGI_FORMAT_R32G32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	pDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), pRTVertexLayout.GetAddressOf());
+	pCompileVS.Reset();
+	pCompilePS.Reset();
+	pCompileGS.Reset();
+
+
+	//サンプラーの設定
+	D3D11_SAMPLER_DESC smpdesc;
+	ZeroMemory(&smpdesc, sizeof(D3D11_SAMPLER_DESC));
+	smpdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	smpdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	smpdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	smpdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	pDevice->CreateSamplerState(&smpdesc, pRTTextureSampler.GetAddressOf());
+
+	//// 定数バッファの設定
+	D3D11_BUFFER_DESC cbuffer;
+	cbuffer.ByteWidth = sizeof(RADIAL_BLUR);
+	cbuffer.Usage = D3D11_USAGE_DYNAMIC;
+	cbuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbuffer.MiscFlags = 0;
+	cbuffer.StructureByteStride = 0;
+	HRESULT hr = pDevice->CreateBuffer(&cbuffer, NULL, pRadialBlurBuffer.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	return S_OK;
+}
 
 void DeviceManager::RenderBegin()
 {
@@ -428,6 +441,15 @@ void DeviceManager::RenderEnd()
 	pDeviceContext->VSSetShader(pRTVertexShader.Get(), NULL, 0);
 	pDeviceContext->GSSetShader(pRTGeometryShader.Get(), NULL, 0);
 	pDeviceContext->PSSetShader(pRTPixelShader.Get(), NULL, 0);
+
+	pDeviceContext->VSSetConstantBuffers(2, 1, pRadialBlurBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(2, 1, pRadialBlurBuffer.GetAddressOf());
+	
+	D3D11_MAPPED_SUBRESOURCE data;
+	pDeviceContext->Map(pRadialBlurBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	memcpy_s(data.pData, data.RowPitch, (void*)(&radialBlur), sizeof(radialBlur));
+	pDeviceContext->Unmap(pRadialBlurBuffer.Get(), 0);
+
 
 	pDeviceContext->Draw(vertices.size(), 0);
 

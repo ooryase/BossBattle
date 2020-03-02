@@ -103,9 +103,9 @@ float4 PS(PS_IN input) : SV_Target
 	col += saturate(dot(input.nor.xyz, (float3)Directional)) * 0.6f;
 
 	//階調化
-	int levelx = (int)(col.x / 0.2f);
-	int levely = (int)(col.y / 0.2f);
-	int levelz = (int)(col.z / 0.2f);
+	int levelx = (int)(col.x * 5.0f);
+	int levely = (int)(col.y * 5.0f);
+	int levelz = (int)(col.z * 5.0f);
 
 	int alpha = max(levelx, max(levely, levelz));
 

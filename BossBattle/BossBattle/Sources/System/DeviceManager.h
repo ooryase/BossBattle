@@ -40,7 +40,7 @@ class DeviceManager
 	ComPtr<ID3D11VertexShader> pRTVertexShader;   // 頂点シェーダ
 	ComPtr<ID3D11GeometryShader> pRTGeometryShader; // ジオメトリ・シェーダ
 	ComPtr<ID3D11PixelShader> pRTPixelShader;    // ピクセル・シェーダ
-	ComPtr<ID3D11Buffer> pRTCBuffer;		// 定数バッファ
+	ComPtr<ID3D11Buffer> pRadialBlurBuffer;		// 定数バッファ
 	ComPtr<ID3D11SamplerState> pRTTextureSampler; // サンプラー
 
 	ComPtr<ID3D11RasterizerState> pRTRasterizerState;
@@ -60,6 +60,14 @@ class DeviceManager
 	std::vector<VERTEX> vertices;
 	std::vector<UINT> indices;
 
+	struct RADIAL_BLUR
+	{
+		DirectX::XMFLOAT3 Center;
+		float Value;
+	};
+
+	RADIAL_BLUR radialBlur;
+
 
 public:
 	HRESULT Init(HWND WHandle);
@@ -70,6 +78,9 @@ public:
 	HRESULT CreateBlendState();
 	HRESULT CreateAddBlendState();
 	HRESULT CreateRenderTarget();
+
+	HRESULT CreateRadialBlur();
+
 
 	void RenderBegin();
 
