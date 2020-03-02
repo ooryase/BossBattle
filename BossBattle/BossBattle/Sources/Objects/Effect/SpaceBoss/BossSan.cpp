@@ -35,13 +35,15 @@ void BossSan::Update()
 
 	if (fallTime < time)
 	{
-		if (time < endTime)
+		if (tag == ObjectTag::STEALTH)
 		{
 			tag = ObjectTag::DAMAGE;
-			radius = 5.0f + 15.0f *(time - fallTime) / static_cast<float>(endTime - fallTime);
+			DeviceManager::GetInstance().SetRadialBlur(
+				DirectX::XMFLOAT2(position.x / 64.0f + 0.5f, (position.y - 10.0f) / 36.0f + 0.5f),
+				endTime - fallTime, 0.3f);
 		}
-		else
-			tag = ObjectTag::STEALTH;
+
+		radius = 5.0f + 15.0f *(time - fallTime) / static_cast<float>(endTime - fallTime);
 	}
 	else if(time > startTime)
 		position.y -= 0.014f * Timer::GetInstance().GetDeltaTime();

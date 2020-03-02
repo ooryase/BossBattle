@@ -1,5 +1,6 @@
 #include"SpaceBoss.h"
 #include"../../System/InputController.h"
+#include"../../System/DeviceManager.h"
 #include"../../System/Timer.h"
 #include"../Effect/SpaceBoss/BossBeam.h"
 #include"../Effect/SpaceBoss/BossBeam2.h"
@@ -326,7 +327,7 @@ void SpaceBoss::UpdateAwake()
 	}
 	else if (behaveTime < 13000)
 		animSpeedDiv = 3;
-	else if (behaveTime < 20000)
+	else if (behaveTime < 15000)
 	{
 		if (behaveStep == 1)
 		{
@@ -334,14 +335,24 @@ void SpaceBoss::UpdateAwake()
 			animSpeedDiv = 3;
 			model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 			behaveStep++;
-			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000);
-			camera->Quake();
-			//camera->SetCameraPos(Camera::State::CURVE, XMFLOAT3(0.0f, DirectX::XM_PIDIV2, 0.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 7000, 50.0f);
+		}
+	}
+	else if (behaveTime < 19000)
+	{
+		if (behaveStep == 2)
+		{
 			behaveStep++;
+			camera->Quake();
+			
+			camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(-45.0f, 14.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 4000);
+			//camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 4000);
+			camera->Quake();
+			DeviceManager::GetInstance().SetRadialBlur(DirectX::XMFLOAT2(0.5f, 0.5f), 4000, 1.0f);
 		}
 	}
 	else
 	{
+		camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 0);
 		behave = BehaveName::WAIT;
 		animNum = AnimNumber::WAIT;
 		behaveTime = 0;
@@ -373,6 +384,15 @@ void SpaceBoss::UpdateBeam()
 	else
 		animSpeedDiv = 4;
 
+	if (behaveTime < 3000)
+	{
+		float quantity = 2.0f - ((behaveTime < 2000) ? behaveTime / 1000.0f : (3000 - behaveTime) / 500.0f);
+		light->SetPointLight(
+			DirectX::XMFLOAT4(position.x - 10.0f * sin(param->direction.z), position.y - 5.0f, 0.0f, 0.0f),
+			DirectX::XMFLOAT4(1.0f, 0.4f, 0.4f, 0.0f),
+			DirectX::XMFLOAT4(quantity, quantity / 150.0f, quantity / 200.0f, 0.0f)
+		);
+	}
 
 	if (behaveTime > 4500)
 		SetNextBehave();

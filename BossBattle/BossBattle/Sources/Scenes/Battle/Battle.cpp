@@ -132,7 +132,7 @@ void Battle::UpdatePhase()
 {
 	phaseTime += Timer::GetInstance().GetDeltaTime();
 
-	if (phase == Phase::START && phaseTime > 20000)
+	if (phase == Phase::START && phaseTime > 19000)
 	{
 		phase = Phase::BATTLE;
 		phaseTime = 0;
@@ -282,9 +282,9 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	MODEL::CONSTANT_BUFFER cb;
 
-	if (phase == Phase::START && phaseTime > 19000)
+	if (phase == Phase::START && phaseTime > 18000)
 	{
-		cb.Color.x = (phaseTime - 19000) / 200.0f;
+		cb.Color.x = (phaseTime - 18000) / 200.0f;
 		cb.Color.y = 0.0f;
 	}
 	else if (phase == Phase::BATTLE && phaseTime < 500)

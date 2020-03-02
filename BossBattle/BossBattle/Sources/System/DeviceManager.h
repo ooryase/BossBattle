@@ -62,12 +62,13 @@ class DeviceManager
 
 	struct RADIAL_BLUR
 	{
-		DirectX::XMFLOAT3 Center;
-		float Value;
-	};
-
-	RADIAL_BLUR radialBlur;
-
+		DirectX::XMFLOAT2 Center;
+		DirectX::XMFLOAT2 Value;
+	} radialBlur;
+	bool isRadialBlur;
+	int radialBlurTime;
+	int radialBlurMaxTime;
+	float radialBlurStrenght;
 
 public:
 	HRESULT Init(HWND WHandle);
@@ -85,9 +86,14 @@ public:
 	void RenderBegin();
 
 	void SetBerendState(BLEND_STATE blendState);
+	void SetRadialBlur(DirectX::XMFLOAT2 pos, int time, float strenght);
 
 	void RenderEnd();
+private:
+	void RenderToBackBuffer();
+	void UpdateRadialBlur();
 
+public:
 	ComPtr<ID3D11Device> GetDevice() { return pDevice; }
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() { return pDeviceContext; }
 

@@ -30,8 +30,6 @@ private:
 	int quakeTime;
 	DirectX::XMFLOAT3 quakeQuantity;
 
-	ComPtr<ID3D11Buffer> pRadialBlurBuffer;		// 定数バッファ
-
 
 public:
 	Camera(

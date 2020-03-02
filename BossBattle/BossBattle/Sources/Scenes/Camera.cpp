@@ -7,16 +7,7 @@ Camera::Camera(DirectX::XMFLOAT3 _eyeLookAt, DirectX::XMFLOAT3 _eyePos)
 	eyePos = _eyePos;
 	state = State::STOP;
 
-	//// 定数バッファの設定
-  //D3D11_BUFFER_DESC cbuffer;
-  //cbuffer.ByteWidth = sizeof(RADIAL_BLUR);
-  //cbuffer.Usage = D3D11_USAGE_DYNAMIC;
-  //cbuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-  //cbuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-  //cbuffer.MiscFlags = 0;
-  //cbuffer.StructureByteStride = 0;
-  //HRESULT hr = pDevice->CreateBuffer(&cbuffer, NULL, pRadialBlurBuffer.GetAddressOf());
-
+	isQuake = false;
 }
 
 void Camera::Update()
@@ -48,8 +39,8 @@ void Camera::UpdateQuake()
 		float quantityZ = eyeLenghtX / (eyeLenghtX + eyeLenghtZ);
 		float quantityX = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ);
 		float rate = (quakeTime - START_TIME_XZ) / static_cast<float>(QUAKE_TIME - START_TIME_XZ);
-		quakeQuantity.x = cosf(DirectX::XM_PI * 4.0f * rate) * quantityX * (1.0f - rate * rate);
-		quakeQuantity.z = cosf(DirectX::XM_PI * 4.0f * rate) * quantityZ * (1.0f - rate * rate);
+		//quakeQuantity.x = cosf(DirectX::XM_PI * 4.0f * rate) * quantityX * (1.0f - rate * rate);
+		//quakeQuantity.z = cosf(DirectX::XM_PI * 4.0f * rate) * quantityZ * (1.0f - rate * rate);
 	}
 
 	if (quakeTime > QUAKE_TIME)
@@ -66,8 +57,8 @@ void Camera::UpdateMove()
 		eyeLookAt = AddFloat3(MultiFloat3(endLookAt, delta), MultiFloat3(startLookAt, 1.0f - delta));
 		break;
 	case Camera::State::SQUARE:
-		eyePos = AddFloat3(MultiFloat3(endEyePos, delta * delta), MultiFloat3(startEyePos, (1.0f - delta) * (1.0f - delta)));
-		eyeLookAt = AddFloat3(MultiFloat3(endLookAt, delta * delta), MultiFloat3(startLookAt, (1.0f - delta) * (1.0f - delta)));
+		eyePos = AddFloat3(MultiFloat3(endEyePos, 1.0f - (1.0f - delta) * (1.0f - delta)), MultiFloat3(startEyePos, (1.0f - delta) * (1.0f - delta)));
+		eyeLookAt = AddFloat3(MultiFloat3(endLookAt, 1.0f - (1.0f - delta) * (1.0f - delta)), MultiFloat3(startLookAt, (1.0f - delta) * (1.0f - delta)));
 		break;
 	case Camera::State::CURVE:
 		eyeLookAt = AddFloat3(MultiFloat3(endLookAt, delta), MultiFloat3(startLookAt, 1.0f - delta));
@@ -113,6 +104,7 @@ void Camera::SetCameraPos(State _state, DirectX::XMFLOAT3 _endEyePos, DirectX::X
 {
 	if (_moveTime == 0)
 	{
+		state = State::STOP;
 		eyePos = _endEyePos;
 		eyeLookAt = _endLookAt;
 		return;
