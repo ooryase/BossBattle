@@ -89,8 +89,8 @@ public:
 	void SetRadialBlur(DirectX::XMFLOAT2 pos, int time, float strenght);
 
 	void RenderEnd();
-private:
 	void RenderToBackBuffer();
+private:
 	void UpdateRadialBlur();
 
 public:

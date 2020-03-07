@@ -36,7 +36,7 @@ void BaseObject::SetTag(ObjectTag _tag)
 	tag = _tag;
 }
 
-bool BaseObject::IsDead() const
+bool BaseObject::IsToDelete() const
 {
 	return isToDelete;
 }

@@ -32,8 +32,17 @@ class Battle : public BaseScene
 
 	std::unique_ptr<Space> backGround;
 
+	std::shared_ptr<Sprite> uiPause;
+	std::shared_ptr<Sprite> uiClear;
+	std::shared_ptr<Sprite> uiGameOver;
+	std::shared_ptr<Sprite> uiRetry;
+	std::shared_ptr<Sprite> uiTitle;
+	std::shared_ptr<SpriteShader> uiShader;
+	bool isSelectRetry;
+
 	std::shared_ptr<BaseModel> fade;
 	std::shared_ptr<ModelShader> fadeShader;
+
 
 
 	enum class Phase
@@ -43,9 +52,6 @@ class Battle : public BaseScene
 		FINISH,
 	} phase;
 	int phaseTime;
-	DirectX::XMFLOAT3 eyeLookAt;
-	DirectX::XMFLOAT3 eyeDirection;
-	float eyeLenght;
 
 public:
 	Battle(ComPtr<ID3D11Device> pDevice);
@@ -54,6 +60,7 @@ public:
 	void Update();
 	void EndUpdate();
 	void Draw(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawAfterRadialBlur(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 private:
 	void UpdateObjects();
@@ -75,6 +82,14 @@ private:
 
 	void SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext);
 	void SetLight(ComPtr<ID3D11DeviceContext> pDeviceContext);
+
+	void DrawFade(ComPtr<ID3D11DeviceContext> pDeviceContext);
+	void DrawUI(
+		ComPtr<ID3D11DeviceContext> pDeviceContext,
+		DirectX::XMMATRIX _world,
+		DirectX::XMVECTOR _weight,
+		std::shared_ptr<Sprite> _sprite);
+
 
 	DirectX::XMFLOAT3 NormalizeFloat3(DirectX::XMFLOAT3 f3);
 

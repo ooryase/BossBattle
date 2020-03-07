@@ -22,7 +22,7 @@ SpaceBoss::SpaceBoss(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	gauge = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpGauge");
 	frame = objectManager->GetSprite(L"UI/Battle/Gauge/bossHpFrame");
-	gaugeShader = objectManager->GetSpriteShader(L"weight");
+	gaugeShader = objectManager->GetSpriteShader(L"UI");
 
 	position = DirectX::XMFLOAT3(30.0f, 7.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(scaleDefault, scaleDefault, scaleDefault);
@@ -102,12 +102,16 @@ void SpaceBoss::Update()
 	case BehaveName::WAIT:
 		UpdateWait();
 		break;
+	case BehaveName::DEAD:
+		UpdateDead();
+		break;
 	default:
 		break;
 	}
 
 
 	UpdateDamaged();
+
 }
 
 
@@ -298,6 +302,7 @@ void SpaceBoss::SetBehave(BehaveName setBehave)
 	case SpaceBoss::BehaveName::LAND:
 	case SpaceBoss::BehaveName::LEAVE:
 	case SpaceBoss::BehaveName::PHASE3_ATTACK_STEP2:
+	case SpaceBoss::BehaveName::DEAD:
 		animNum = AnimNumber::WAIT;
 		model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 		break;
@@ -313,41 +318,40 @@ void SpaceBoss::UpdateAwake()
 	{
 		if (behaveStep == 0)
 		{
-			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 40.0f, 0.0f), 0);
-			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(-10.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2000);
+			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 40.0f, 0.0f), 0);
+			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2000);
 			model->UpdateAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
 			animSpeedDiv = 0;
 			behaveStep++;
 		}
-		position.y =46.0f - behaveTime / 50.0f;
+		position.y =57.0f - behaveTime / 40.0f;
 	}
 	else if (behaveTime < 3000)
 	{
-		position.y = 6.0f;
+		position.y = 7.0f;
 	}
-	else if (behaveTime < 13000)
-		animSpeedDiv = 3;
-	else if (behaveTime < 15000)
+	else if (behaveTime < 9000)
+		animSpeedDiv = 2;
+	else if (behaveTime < 10500)
 	{
 		if (behaveStep == 1)
 		{
 			animNum = AnimNumber::ROAR2;
-			animSpeedDiv = 3;
+			animSpeedDiv = 2;
 			model->SetAnimSackNumberAnotherTimeCount(animNum, modelAnimTimeCount);
 			behaveStep++;
 		}
 	}
-	else if (behaveTime < 19000)
+	else if (behaveTime < 13000)
 	{
 		if (behaveStep == 2)
 		{
 			behaveStep++;
 			camera->Quake();
 			
-			camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(-45.0f, 14.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 4000);
+			camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(-35.0f, 20.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2500);
 			//camera->SetCameraPos(Camera::State::SQUARE, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 4000);
-			camera->Quake();
-			DeviceManager::GetInstance().SetRadialBlur(DirectX::XMFLOAT2(0.5f, 0.5f), 4000, 1.0f);
+			DeviceManager::GetInstance().SetRadialBlur(DirectX::XMFLOAT2(0.5f, 0.5f), 2500, 1.0f);
 		}
 	}
 	else
@@ -386,7 +390,7 @@ void SpaceBoss::UpdateBeam()
 
 	if (behaveTime < 3000)
 	{
-		float quantity = 2.0f - ((behaveTime < 2000) ? behaveTime / 1000.0f : (3000 - behaveTime) / 500.0f);
+		float quantity = 2.5f - ((behaveTime < 2000) ? behaveTime / 1000.0f : (3000 - behaveTime) / 500.0f);
 		light->SetPointLight(
 			DirectX::XMFLOAT4(position.x - 10.0f * sin(param->direction.z), position.y - 5.0f, 0.0f, 0.0f),
 			DirectX::XMFLOAT4(1.0f, 0.4f, 0.4f, 0.0f),
@@ -496,6 +500,39 @@ void SpaceBoss::UpdatePhase3AttackStep2()
 	}
 }
 
+void SpaceBoss::UpdateDead()
+{
+	auto second = Timer::GetInstance().GetDeltaTime() * 0.001f;
+
+	position = DirectX::XMFLOAT3(
+		position.x * (1.0f - second * 0.1f),
+		position.y * (1.0f - second * 0.1f) + 10.0f * second * 0.1f,
+		position.z + second * 5.0f
+	);
+
+	rotate.x += second;
+	rotate.y -= second * 0.3f;
+	rotate.z += second * 0.6f;
+
+	if (behaveStep == 0)
+	{
+		animSpeedDiv = 0;
+		camera->Quake();
+		camera->SetCameraPos(Camera::State::SQUARE, DirectX::XMFLOAT3(position.x, position.y, position.z - 20.0f), position, 500);
+		behaveStep++;
+	}
+	else if (behaveStep == 1 && behaveTime >= 1000)
+	{
+		camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 3000);
+		behaveStep++;
+	}
+	else if (behaveStep < behaveTime / 1000)
+	{
+		camera->Quake();
+	}
+
+}
+
 
 
 void SpaceBoss::UpdateWait()
@@ -506,14 +543,11 @@ void SpaceBoss::UpdateWait()
 
 void SpaceBoss::EndUpdate()
 {
-	//if (behave->IsNextBehave())
-	//{
-	//	GUN_BEHAVE::BehaveName temp = behave->GetNextBehave();
-	//
-	//	model->SetAnimSackNumber(static_cast<int>(temp));
-	//
-	//	behave.reset();
-	//}
+	if (hp <= 0.0f && !isDead)
+	{
+		isDead = true;
+		SetBehave(BehaveName::DEAD);
+	}
 }
 
 void SpaceBoss::DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext)
@@ -604,22 +638,23 @@ void SpaceBoss::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	gaugeShader->DrawSet(pDeviceContext);
 
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(-20.0f, 25.0f, -2.0f),
-		DirectX::XMFLOAT3(30.0f, 5.0f, 1.6f),
+		DirectX::XMFLOAT3(-0.4f, 0.8f, 0.4f),
+		DirectX::XMFLOAT3(1.02f, 0.17f, 1.0f),
 		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		frame);
 
 	gauge->Scroll(damagedHp / maxHp);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(-34.6f + 14.6f * damagedHp / maxHp, 26.0f, -2.1f),
-		DirectX::XMFLOAT3(29.2f * damagedHp / maxHp, 2.5f, 1.6f),
+		DirectX::XMFLOAT3(-0.9f + 0.5f * damagedHp / maxHp, 0.825f, 0.39f),
+		DirectX::XMFLOAT3(1.0f * damagedHp / maxHp, 0.1f, 1.0f),
 		DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f),
 		gauge);
 
 	gauge->Scroll(hp / maxHp);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(-34.6f + 14.6f * hp / maxHp, 26.0f, -2.12f),
-		DirectX::XMFLOAT3(29.2f * hp / maxHp, 2.5f, 1.6f),
+		DirectX::XMFLOAT3(-0.9f + 0.5f * hp / maxHp, 0.825f, 0.38f),
+		DirectX::XMFLOAT3(1.0f * hp / maxHp, 0.1f, 1.0f),
 		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		gauge);
+
 }

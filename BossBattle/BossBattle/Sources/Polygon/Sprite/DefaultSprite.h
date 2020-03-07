@@ -4,7 +4,8 @@
 class DefaultSprite : public Sprite
 {
 public:
-	DefaultSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
+	DefaultSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[],
+		D3D11_FILTER _filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR);
 	void Scroll(float param) override;
 	void DrawSet(ComPtr<ID3D11DeviceContext> pDeviceContext) override;
 

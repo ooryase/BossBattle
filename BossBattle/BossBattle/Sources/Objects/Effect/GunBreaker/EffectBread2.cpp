@@ -22,7 +22,7 @@ EffectBread2::EffectBread2(std::shared_ptr<ObjectManager> objectManager, std::sh
 
 	radius = 10.0f;
 
-	dParam.damage = 100.0f;
+	dParam.damage = 110.0f;
 	dParam.direction = DirectX::XMFLOAT3(0.2f * direction, 0.2f, 0.0f);
 
 }

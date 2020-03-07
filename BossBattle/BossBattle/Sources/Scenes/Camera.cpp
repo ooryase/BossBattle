@@ -24,23 +24,23 @@ void Camera::UpdateQuake()
 	quakeTime += Timer::GetInstance().GetDeltaTime();
 
 	const int QUAKE_TIME = 500;
-	const int END_TIME_Y = 50;
-	const int START_TIME_XZ = 50;
+	const int END_TIME_Y = 0;
+	const int START_TIME_XZ = 0;
 	if (quakeTime < QUAKE_TIME - END_TIME_Y)
 	{
 		float rate = quakeTime / static_cast<float>(QUAKE_TIME - END_TIME_Y);
-		quakeQuantity.y = sinf( DirectX::XM_PI * 4.0f * rate) * (1.0f - rate * rate);
+		quakeQuantity.y = sinf( DirectX::XM_PI * 4.0f * rate) * (1.0f - rate * rate) * 2.0f;
 	}
 
 	if (quakeTime > START_TIME_XZ)
 	{
 		float eyeLenghtX = abs(eyeLookAt.x - eyePos.x);
 		float eyeLenghtZ = abs(eyeLookAt.z - eyePos.z);
-		float quantityZ = eyeLenghtX / (eyeLenghtX + eyeLenghtZ);
-		float quantityX = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ);
+		float quantityZ = eyeLenghtX / (eyeLenghtX + eyeLenghtZ) * 0.4f;
+		float quantityX = eyeLenghtZ / (eyeLenghtX + eyeLenghtZ) * 0.4f;
 		float rate = (quakeTime - START_TIME_XZ) / static_cast<float>(QUAKE_TIME - START_TIME_XZ);
-		//quakeQuantity.x = cosf(DirectX::XM_PI * 4.0f * rate) * quantityX * (1.0f - rate * rate);
-		//quakeQuantity.z = cosf(DirectX::XM_PI * 4.0f * rate) * quantityZ * (1.0f - rate * rate);
+		quakeQuantity.x = cosf(DirectX::XM_PI * 4.0f * rate) * quantityX * (1.0f - rate * rate);
+		quakeQuantity.z = cosf(DirectX::XM_PI * 4.0f * rate) * quantityZ * (1.0f - rate * rate);
 	}
 
 	if (quakeTime > QUAKE_TIME)

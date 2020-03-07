@@ -1,6 +1,7 @@
 cbuffer global3 : register(b2)
 {
-	float Value;
+	matrix World;
+	float4 Weight;
 };
 
     Texture2D gtexture : register(t0);             // 画像の受け取り
@@ -18,7 +19,7 @@ struct VS_OUTPUT {
 VS_OUTPUT VS(float4 Pos : POSITION, float2 Tex : TEXCOORD) {
  
     VS_OUTPUT output;
-    output.Pos = Pos;
+    output.Pos = mul(Pos, World);;
     output.TEX_UV = Tex;
  
     return output;
@@ -42,5 +43,9 @@ void GS(triangle VS_OUTPUT input[3],
  
 // ピクセルシェーダ
 float4 PS(VS_OUTPUT input) : SV_Target{
-    return gtexture.Sample(SSSampler, input.TEX_UV);
+	float4 texCol = gtexture.Sample(SSSampler, input.TEX_UV);
+
+	texCol.xyzw *= Weight.xyzw;
+
+	return texCol;
 }

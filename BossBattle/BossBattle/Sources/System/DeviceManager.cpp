@@ -314,10 +314,10 @@ HRESULT DeviceManager::CreateRadialBlur()
 
 
 	{
-		vertices.push_back(VERTEX(DirectX::XMFLOAT3(-1.0f, -1.0f, 0.5f), DirectX::XMFLOAT2(0, 1)));
-		vertices.push_back(VERTEX(DirectX::XMFLOAT3(-1.0f, 1.0f, 0.5f), DirectX::XMFLOAT2(0, 0)));
-		vertices.push_back(VERTEX(DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1, 1)));
-		vertices.push_back(VERTEX(DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1, 0)));
+		vertices.push_back(VERTEX(DirectX::XMFLOAT3(-1.0f, -1.0f, 0.9f), DirectX::XMFLOAT2(0, 1)));
+		vertices.push_back(VERTEX(DirectX::XMFLOAT3(-1.0f, 1.0f, 0.9f), DirectX::XMFLOAT2(0, 0)));
+		vertices.push_back(VERTEX(DirectX::XMFLOAT3(1.0f, -1.0f, 0.9f), DirectX::XMFLOAT2(1, 1)));
+		vertices.push_back(VERTEX(DirectX::XMFLOAT3(1.0f, 1.0f, 0.9f), DirectX::XMFLOAT2(1, 0)));
 
 		D3D11_BUFFER_DESC bd;
 		bd.ByteWidth = sizeof(VERTEX) * vertices.size();
@@ -404,8 +404,6 @@ void DeviceManager::SetBerendState(BLEND_STATE blendState)
 
 void DeviceManager::RenderEnd()
 {
-	RenderToBackBuffer();
-
 	pSwapChain->Present(0, 0);
 }
 

@@ -52,6 +52,9 @@ void GunGun2::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 
 	if (time > 900)
 	{
-		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		if (param->ground)
+			NextBehave = GUN_BEHAVE::BehaveName::WAIT;
+		else
+			NextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 }

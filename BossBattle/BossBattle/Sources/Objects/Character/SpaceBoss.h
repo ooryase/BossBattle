@@ -35,6 +35,7 @@ protected:
 		WAIT,
 		LAND,
 		LEAVE,
+		DEAD,
 	} behave;
 	int behaveStep;
 
@@ -80,6 +81,7 @@ protected:
 	void UpdatePhase2Attack();
 	void UpdatePhase3Attack();
 	void UpdatePhase3AttackStep2();
+	void UpdateDead();
 
 
 	virtual void SetColor(DirectX::XMVECTOR* color, DirectX::XMVECTOR* edgeColor);

@@ -52,21 +52,22 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/GunBreFrame");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/BreadGauge");
 	objectManager->SstSpriteMap(pDevice, L"UI/Battle/Gauge/GunGauge");
+	objectManager->SstSpriteMap(pDevice, L"UI/pause", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/clear", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/gameover", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/retry", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/title", D3D11_FILTER_MIN_MAG_MIP_POINT);
+
 	objectManager->SstSpriteShader(pDevice, L"shader");
 	objectManager->SstSpriteShader(pDevice, L"weight");
+	objectManager->SstSpriteShader(pDevice, L"UI");
 
 	light = std::make_shared<Light>();
 	light->Directional = DirectX::XMFLOAT3(0.0f, 0.9f, -0.3f);
-	//light->Player = DirectX::XMFLOAT4(100.1f, 100.0f, 0.0f, 0.0f);
-	//light->PColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//light->PAttenuation = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f);
 	light->PointCount = 0;
-	//for (int i = 0; i < 8; i++)
-	//{
-	//	light->Enemy[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//	light->EColor[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//	light->EAttenuation[i] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//}
+
+	const DirectX::XMFLOAT3 eyeLookAt = DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f);
+	const DirectX::XMFLOAT3 eyePos = DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f);
 	camera = std::make_shared<Camera>(eyeLookAt, DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f));
 
 	player = std::make_shared<GunBreaker>(objectManager, light,playerEffectReserves, enemyReserves);
@@ -77,15 +78,18 @@ Battle::Battle(ComPtr<ID3D11Device> pDevice) : BaseScene()
 	phase = Phase::START;
 	phaseTime = 0;
 
-	eyeDirection = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	eyeLookAt = DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f);
-	eyeLenght = 50.0f;
-
 	proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
+
+	uiPause = objectManager->GetSprite(L"UI/pause");
+	uiClear = objectManager->GetSprite(L"UI/clear");
+	uiGameOver = objectManager->GetSprite(L"UI/gameover");
+	uiRetry = objectManager->GetSprite(L"UI/retry");
+	uiTitle = objectManager->GetSprite(L"UI/title");
+	uiShader = objectManager->GetSpriteShader(L"UI");
+	isSelectRetry = true;
 
 	fade = objectManager->GetModel("plane");
 	fadeShader = objectManager->GetModelShader(L"noLight");
-
 
 }
 
@@ -102,7 +106,8 @@ void Battle::Update()
 void Battle::UpdateObjects()
 {
 	light->PointCount = 0;
-	player->Update();
+	if(phase != Phase::START)
+		player->Update();
 	bossEnemy->Update();
 
 	for (auto&& var : enemies)
@@ -118,24 +123,44 @@ void Battle::UpdateObjects()
 
 void Battle::UpdateCollision()
 {
-	CheckCollision(player, bossEnemy);
-	for (auto&& var : enemies)
-		CheckCollision(player, var);
+	if (phase == Phase::BATTLE)
+	{
+		CheckCollision(player, bossEnemy);
+		for (auto&& var : enemies)
+			CheckCollision(player, var);
+
+		CheckCollisionDamageObjcts(playerEffects, bossEnemy);
+		CheckCollisionDamageObjcts(enemyEffects, player);
+	}
+
 	const float wallPosX = 30.0f;
 	player->CollisionWallUpdate(wallPosX);
 
-	CheckCollisionDamageObjcts(playerEffects, bossEnemy);
-	CheckCollisionDamageObjcts(enemyEffects, player);
 }
 
 void Battle::UpdatePhase()
 {
 	phaseTime += Timer::GetInstance().GetDeltaTime();
 
-	if (phase == Phase::START && phaseTime > 19000)
+	if (phase == Phase::START && phaseTime > 13000)
 	{
 		phase = Phase::BATTLE;
 		phaseTime = 0;
+	}
+	else if (phase == Phase::FINISH && phaseTime > 5000)
+	{
+		if (InputController::getInstance().IsPushKey(DIK_UP) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_UP) ||
+			InputController::getInstance().IsPushKey(DIK_DOWN) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_DOWN))
+		{
+			isSelectRetry = !isSelectRetry;
+		}
+		else if (InputController::getInstance().IsPushKey(DIK_Z) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_A))
+		{
+			nextScene = isSelectRetry ? SceneName::BATTLE : SceneName::TITLE;
+		}
 	}
 }
 
@@ -194,6 +219,12 @@ void Battle::EndUpdate()
 	EndUpdateVector(&playerEffects, &playerEffectReserves);
 	EndUpdateVector(&enemyEffects, &enemyEffectReserves);
 
+	if (phase != Phase::FINISH && 
+		(bossEnemy->IsDead() || player->IsDead()))
+	{
+		phase = Phase::FINISH;
+		phaseTime = 0;
+	}
 }
 
 void Battle::EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector< shared_ptr< BaseEffect>>* effectReserves)
@@ -204,7 +235,7 @@ void Battle::EndUpdateEffects(vector< shared_ptr< BaseEffect>>* effects, vector<
 	}
 	auto itr =
 		std::remove_if(effects->begin(), effects->end(), [](
-			std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
+			std::shared_ptr<BaseObject>am) {return  am->IsToDelete(); });
 	effects->erase(itr, effects->end());
 
 	if (!effectReserves->empty())
@@ -224,7 +255,7 @@ void Battle::EndUpdateVector(vector< shared_ptr< U>>* vectorMain, vector< shared
 	}
 	auto itr =
 		std::remove_if(vectorMain->begin(), vectorMain->end(), [](
-			std::shared_ptr<BaseObject>am) {return  am->IsDead(); });
+			std::shared_ptr<BaseObject>am) {return  am->IsToDelete(); });
 	vectorMain->erase(itr, vectorMain->end());
 
 	if (!vectorReserves->empty())
@@ -251,12 +282,6 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		var->Draw(pDeviceContext);
 	}
 
-
-	///////////////////////////////////////////////////////
-
-
-
-
 	backGround->Draw(pDeviceContext);
 	backGround->DrawBillBoard(pDeviceContext, camera->GetEyeDirection());
 
@@ -275,16 +300,21 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		player->DrawGauge(pDeviceContext);
 		bossEnemy->DrawGauge(pDeviceContext);
 	}
-	
 
+	DrawFade(pDeviceContext);
+}
+
+void Battle::DrawFade(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
 	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ADD);
 
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	MODEL::CONSTANT_BUFFER cb;
+	cb.Color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	if (phase == Phase::START && phaseTime > 18000)
+	if (phase == Phase::START && phaseTime > 12000)
 	{
-		cb.Color.x = (phaseTime - 18000) / 200.0f;
+		cb.Color.x = (phaseTime - 12000) / 200.0f;
 		cb.Color.y = 0.0f;
 	}
 	else if (phase == Phase::BATTLE && phaseTime < 500)
@@ -292,6 +322,9 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 		cb.Color.x = (500 - phaseTime) / 100.0f;
 		cb.Color.y = 0.0f;
 	}
+	else if (phase == Phase::FINISH)
+		cb.Color.x = phaseTime / 5000.0f;
+
 	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
 	fadeShader->SetConstantBuffer(pDeviceContext, cb);
 
@@ -305,18 +338,56 @@ void Battle::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 }
 
+void Battle::DrawAfterRadialBlur(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+
+	if (phase == Phase::FINISH && phaseTime > 5000)
+	{
+		bool win = bossEnemy->IsDead();
+		uiShader->DrawSet(pDeviceContext);
+
+		DirectX::XMMATRIX titleOffset = DirectX::XMMatrixTranslation(0.0f, 0.5f, 0.4f);
+		DirectX::XMMATRIX titleScale = DirectX::XMMatrixScaling(1.2f, 0.34f, 1.0f);
+		DirectX::XMVECTOR titleWeight = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
+		DrawUI(pDeviceContext, titleScale * titleOffset, titleWeight, 
+			win ? uiClear : uiGameOver);
+
+		DirectX::XMMATRIX startOffset = DirectX::XMMatrixTranslation(0.0f, -0.2f, 0.4f);
+		DirectX::XMMATRIX startScale = DirectX::XMMatrixScaling(0.37f, 0.17f, 1.0f);
+		float startCol = isSelectRetry ? sinf(phaseTime / 100.0f) * 0.6f + 0.7f : 0.6f;
+		DirectX::XMVECTOR startWeight = DirectX::XMVectorSet(
+			(0.3f + !win * 0.7f) * startCol, 0.5f * startCol, (0.3f + win * 0.7f) * startCol, 1.0f);
+		DrawUI(pDeviceContext, startScale * startOffset, startWeight, uiRetry);
+
+		DirectX::XMMATRIX quitOffset = DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.4f);
+		DirectX::XMMATRIX quitScale = DirectX::XMMatrixScaling(0.37f, 0.17f, 1.0f);
+		float quitCol = isSelectRetry ? 0.6f : sinf(phaseTime / 100.0f) * 0.7f + 0.6f;
+		DirectX::XMVECTOR quitWeight = DirectX::XMVectorSet(
+			(0.3f + !win * 0.7f) * quitCol, 0.5f * quitCol, (0.3f + win * 0.7f) * quitCol, 1.0f);
+		DrawUI(pDeviceContext, quitScale * quitOffset, quitWeight, uiTitle);
+
+	}
+}
+
+void Battle::DrawUI(
+	ComPtr<ID3D11DeviceContext> pDeviceContext,
+	DirectX::XMMATRIX _world,
+	DirectX::XMVECTOR _weight,
+	std::shared_ptr<Sprite> _sprite)
+{
+	SPRITE::CONSTANT_BUFFER cb;
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(_world));
+	DirectX::XMStoreFloat4(&cb.Weight, _weight);
+	uiShader->SetConstantBuffer(pDeviceContext, cb);
+
+	_sprite->DrawSet(pDeviceContext);
+	pDeviceContext->Draw(_sprite->GetIndexCount(), 0);
+}
+
+
 void Battle::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	pDeviceContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
-
-	DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(
-		eyeDirection.x * eyeLenght + eyeLookAt.x,
-		eyeDirection.y * eyeLenght + eyeLookAt.y,
-		eyeDirection.z * eyeLenght + eyeLookAt.z, 1.0f);
-	DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(eyeLookAt.x, eyeLookAt.y, eyeLookAt.z, 1.0f);
-	DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-	DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);
-	//DirectX::XMMATRIX Proj = DirectX::XMMatrixOrthographicLH(1280.0f * 0.05f, 720.0f * 0.05f, 0.1f, 500.0f);
 
 	D3D11_MAPPED_SUBRESOURCE data;
 	CONSTANT_BUFFER cb;

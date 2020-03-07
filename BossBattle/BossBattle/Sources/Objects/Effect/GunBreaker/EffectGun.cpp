@@ -20,7 +20,7 @@ EffectGun::EffectGun(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	radius = 10.0f;
 
-	dParam.damage = 100.0f;
+	dParam.damage = 1095.0f;
 	if (direction.z == DirectX::XM_PIDIV2)
 		dParam.direction = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
 	else
@@ -32,7 +32,7 @@ void EffectGun::Update()
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
-	position.x += ((direction.z == DirectX::XM_PIDIV2) ? 1.0f : -1.0f);
+	position.x += ((direction.z == DirectX::XM_PIDIV2) ? 1.0f : -1.0f) * Timer::GetInstance().GetDeltaTime() / 16.0f;
 }
 
 void  EffectGun::EndUpdate()

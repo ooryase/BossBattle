@@ -21,7 +21,8 @@ public:
 	~ObjectManager();
 
 	void SstModelMap(ComPtr<ID3D11Device> pDevice, std::string);
-	void SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring);
+	void SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring,
+		D3D11_FILTER _filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR);
 	void SstOctagonSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring);
 	void SstModelShader(ComPtr<ID3D11Device> pDevice, std::wstring);
 	void SstSpriteShader(ComPtr<ID3D11Device> pDevice, std::wstring);

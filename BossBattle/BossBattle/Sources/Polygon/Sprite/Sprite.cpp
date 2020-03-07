@@ -3,9 +3,10 @@
 using SPRITE::VERTEX;
 using namespace DirectX;
 
-Sprite::Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
+Sprite::Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[], D3D11_FILTER _filter)
 {
 	TextureLoad(pDevice, filename);
+	CreateSamplar(pDevice, _filter);
 }
 
 Sprite::~Sprite()
@@ -26,15 +27,6 @@ void Sprite::TextureLoad(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
 	UINT imgWidth;
 	UINT imgHeight;
 	pFormatConverter->GetSize(&imgWidth, &imgHeight);
-
-	//サンプラーの設定
-	D3D11_SAMPLER_DESC smpdesc;
-	ZeroMemory(&smpdesc, sizeof(D3D11_SAMPLER_DESC));
-	smpdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	smpdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	smpdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	smpdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	pDevice->CreateSamplerState(&smpdesc, pSampler.GetAddressOf());
 
 	std::vector<unsigned char> buffer(imgWidth * imgHeight * 4);
 	pFormatConverter->CopyPixels(NULL, imgWidth * 4, imgWidth * imgHeight * 4, &buffer[0]);
@@ -66,6 +58,19 @@ void Sprite::TextureLoad(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
 	srv.Texture2D.MipLevels = 1;
 	pDevice->CreateShaderResourceView(pTexture.Get(), &srv, pSRV.GetAddressOf());
 }
+
+void Sprite::CreateSamplar(ComPtr<ID3D11Device> pDevice, D3D11_FILTER _filter)
+{
+	//サンプラーの設定
+	D3D11_SAMPLER_DESC smpdesc;
+	ZeroMemory(&smpdesc, sizeof(D3D11_SAMPLER_DESC));
+	smpdesc.Filter = _filter;
+	smpdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	smpdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	smpdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	pDevice->CreateSamplerState(&smpdesc, pSampler.GetAddressOf());
+}
+
 
 void Sprite::Scroll(float param)
 {

@@ -16,10 +16,11 @@ void ObjectManager::SstModelMap(ComPtr<ID3D11Device> pDevice,std::string keyName
 	modelMap.insert(make_pair(keyName, std::make_shared<FbxModel>(pDevice, filename.c_str())));
 }
 
-void ObjectManager::SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring keyName)
+void ObjectManager::SstSpriteMap(ComPtr<ID3D11Device> pDevice, std::wstring keyName,
+	D3D11_FILTER _filter)
 {
 	std::wstring filename = L"Assets/Textures/" + keyName + L".png";
-	spriteMap.insert(make_pair(keyName, std::make_shared<DefaultSprite>(pDevice, filename.c_str())));
+	spriteMap.insert(make_pair(keyName, std::make_shared<DefaultSprite>(pDevice, filename.c_str(), _filter)));
 
 }
 

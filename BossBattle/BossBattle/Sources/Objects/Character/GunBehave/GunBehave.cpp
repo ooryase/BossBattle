@@ -47,7 +47,7 @@ void GunBehave::ChackAttack(int level)
 
 void GunBehave::CheckStep()
 {
-	if (InputController::getInstance().IsPushKey(DIK_LSHIFT) ||
+	if (InputController::getInstance().IsPushKey(DIK_A) ||
 		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_X))
 	{
 		if (InputController::getInstance().IsPressKey(DIK_LEFT) ||

@@ -103,3 +103,8 @@ DirectX::XMFLOAT3 BaseCharacter::GetDirection() const
 {
 	return param->direction;
 }
+
+bool BaseCharacter::IsDead() const
+{
+	return isDead;
+}

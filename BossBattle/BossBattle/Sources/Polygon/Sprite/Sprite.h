@@ -30,7 +30,8 @@ protected:
 	std::vector<UINT> indices;
 
 public:
-	Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[]);
+	Sprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[],
+		D3D11_FILTER _filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR);
 	~Sprite();
 
 	int GetIndexCount() { return indices.size(); };
@@ -42,4 +43,6 @@ protected:
 	virtual void CreateVertexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
 	virtual void CreateIndexBuffer(ComPtr<ID3D11Device> pDevice) = 0;
 	virtual void CreateRasterizerState(ComPtr<ID3D11Device> pDevice) = 0;
+
+	void CreateSamplar(ComPtr<ID3D11Device> pDevice, D3D11_FILTER _filter);
 };

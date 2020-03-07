@@ -34,7 +34,7 @@ GunBreaker::GunBreaker(std::shared_ptr<ObjectManager> objectManager, std::shared
 	GBFrame = objectManager->GetSprite(L"UI/Battle/Gauge/GunBreFrame");
 	gunGauge = objectManager->GetSprite(L"UI/Battle/Gauge/GunGauge");
 	breadGauge = objectManager->GetSprite(L"UI/Battle/Gauge/BreadGauge");
-	gaugeShader = objectManager->GetSpriteShader(L"weight");
+	gaugeShader = objectManager->GetSpriteShader(L"UI");
 
 	position = DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(0.95f, 0.95f, 0.95f);
@@ -87,6 +87,14 @@ void GunBreaker::Update()
 
 void GunBreaker::EndUpdate()
 {
+	if (hp <= 0.0f)
+		isDead = true;
+
+	if (behave == nullptr)
+		behave = std::make_shared<GunWait>(param, shared_from_this());
+
+
+
 	if (behave->NextBehave != GUN_BEHAVE::BehaveName::NONE)
 	{
 		GUN_BEHAVE::BehaveName temp = behave->NextBehave;
@@ -234,26 +242,27 @@ void GunBreaker::DrawGauge(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	gaugeShader->DrawSet(pDeviceContext);
 
-
-	DrawSetGauge(pDeviceContext, 
-		DirectX::XMFLOAT3(20.0f, -5.0f, -10.0f),
-		DirectX::XMFLOAT3(14.0f, 2.6f, 1.6f),
-		DirectX::XMVectorSet(1.0f,1.0f,1.0f,1.0f),
+	DrawSetGauge(pDeviceContext,
+		DirectX::XMFLOAT3(0.6f, -0.8f, 0.4f),
+		DirectX::XMFLOAT3(0.51f, 0.17f, 1.0f),
+		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		hpFrame);
+	
 
 	hpGauge->Scroll(damagedHp / maxHp);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(26.8f - 6.8f * damagedHp / maxHp, -4.6f, -10.1f),
-		DirectX::XMFLOAT3(13.6f * damagedHp / maxHp, 1.4f, 1.6f),
+		DirectX::XMFLOAT3(0.349f + 0.25f * damagedHp / maxHp, -0.775f, 0.39f),
+		DirectX::XMFLOAT3(0.5f * damagedHp / maxHp, 0.1f, 1.0f),
 		DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f),
 		hpGauge);
 
 	hpGauge->Scroll(hp / maxHp);
 	DrawSetGauge(pDeviceContext,
-		DirectX::XMFLOAT3(26.8f - 6.8f * hp / maxHp, -4.6f, -10.2f),
-		DirectX::XMFLOAT3(13.6f * hp / maxHp, 1.4f, 1.6f),
+		DirectX::XMFLOAT3(0.349f + 0.25f * hp / maxHp, -0.775f, 0.38f),
+		DirectX::XMFLOAT3(0.5f * hp / maxHp, 0.1f, 1.0f),
 		DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f),
 		hpGauge);
+
 
 	DrawSetGauge(pDeviceContext,
 		DirectX::XMFLOAT3(20.0f, -2.2f, -10.0f),

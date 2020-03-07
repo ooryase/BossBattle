@@ -54,7 +54,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 
 	// メッセージループの実行
 	MSG msg = { 0 };
-	while (msg.message != WM_QUIT)
+	while (msg.message != WM_QUIT &&
+		!sceneController->IsDelete())
 	{
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
@@ -68,6 +69,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 			sceneController->Update();
 			DeviceManager::GetInstance().RenderBegin();
 			sceneController->Draw(DeviceManager::GetInstance().GetDeviceContext());
+			DeviceManager::GetInstance().RenderToBackBuffer();
+			sceneController->DrawAfterRadialBlur(DeviceManager::GetInstance().GetDeviceContext());
 			DeviceManager::GetInstance().RenderEnd();
 			sceneController->EndUpdate(DeviceManager::GetInstance().GetDevice());
 		}

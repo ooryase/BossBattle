@@ -1,152 +1,240 @@
 #include"Title.h"
 #include"../../System/InputController.h"
+#include"../../System/DeviceManager.h"
 
 Title::Title(ComPtr<ID3D11Device> pDevice) : BaseScene()
 {
 
+	// 定数バッファの設定
+	D3D11_BUFFER_DESC cb;
+	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+	pDevice->CreateBuffer(&cb, NULL, pConstantBuffer.GetAddressOf());
 
-	//// 定数バッファの設定
-	//D3D11_BUFFER_DESC cb;
-	//cb.ByteWidth = sizeof(CONSTANT_BUFFER);
-	//cb.Usage = D3D11_USAGE_DYNAMIC;
-	//cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//cb.MiscFlags = 0;
-	//cb.StructureByteStride = 0;
-	//pDevice->CreateBuffer(&cb, NULL, &pConstantBuffer);
-	//
-	//x = 0.0f;
-	//
-	//
-	//objectManager = std::make_shared<ObjectManager>();
-	//objectManager->SstModelMap(pDevice, "Monkey");
-	//objectManager->SstModelMap(pDevice, "gunbreaker");
-	//objectManager->SstModelShader(pDevice, L"shader");
-	//objectManager->SstSpriteMap(pDevice, L"Tex");
-	//objectManager->SstSpriteShader(pDevice, L"shader");
-	//
-	//player = std::make_shared<GunBreaker>(objectManager,light);
-	//
-	//sprite = objectManager->GetSprite(L"Tex");// std::make_unique<Sprite>(pDevice, L"Assets/Textures/Tex.jpg");
-	//spriteShader = objectManager->GetSpriteShader(L"shader"); //std::make_unique<SpriteShader>(pDevice, L"Shader/shader.hlsl");
-	//
-	//model = objectManager->GetModel("Monkey"); //std::make_unique<FbxModel>(pDevice, "Assets/Model/Monkey.fbx");
-	//mShader = objectManager->GetModelShader(L"shader"); //std::make_unique<ModelShader>(pDevice, L"Shader/shaderPoint.hlsl", L"Shader/shaderEdge.hlsl");
-	//
+	D3D11_BUFFER_DESC lcb;
+	lcb.ByteWidth = sizeof(Light);
+	lcb.Usage = D3D11_USAGE_DYNAMIC;
+	lcb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lcb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lcb.MiscFlags = 0;
+	lcb.StructureByteStride = 0;
+	pDevice->CreateBuffer(&lcb, NULL, lightConstantBuffer.GetAddressOf());
+
+	objectManager = std::make_unique<ObjectManager>();
+	objectManager->SstModelMap(pDevice, "grid2");
+	objectManager->SstModelMap(pDevice, "plane");
+	objectManager->SstModelShader(pDevice, L"shader");
+	objectManager->SstModelShader(pDevice, L"alpha");
+	objectManager->SstModelShader(pDevice, L"noLight");
+	objectManager->SstOctagonSpriteMap(pDevice, L"space");
+	objectManager->SstSpriteMap(pDevice, L"slash");
+	objectManager->SstSpriteMap(pDevice, L"kira");
+	objectManager->SstSpriteMap(pDevice, L"black");
+	objectManager->SstSpriteMap(pDevice, L"particle1");
+	objectManager->SstSpriteShader(pDevice, L"shader");
+	objectManager->SstSpriteShader(pDevice, L"weight");
+	objectManager->SstSpriteShader(pDevice, L"UI");
+	objectManager->SstSpriteMap(pDevice, L"UI/theogony", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/start", D3D11_FILTER_MIN_MAG_MIP_POINT);
+	objectManager->SstSpriteMap(pDevice, L"UI/quit", D3D11_FILTER_MIN_MAG_MIP_POINT);
+
+	light = std::make_shared<Light>();
+	light->Directional = DirectX::XMFLOAT3(0.0f, 0.9f, -0.3f);
+	light->PointCount = 0;
+
+	const DirectX::XMFLOAT3 eyeLookAt = DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f);
+	const DirectX::XMFLOAT3 eyePos = DirectX::XMFLOAT3(0.0f, 10.0f, -50.0f);
+	camera = std::make_shared<Camera>(eyeLookAt, eyePos);
+
+	backGround = std::make_unique<Space>(objectManager);
+
+	phase = Phase::START;
+	phaseTime = 0;
+
+	proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
+
+	fade = objectManager->GetModel("plane");
+	fadeShader = objectManager->GetModelShader(L"noLight");
+
+
+	texTitle = objectManager->GetSprite(L"UI/theogony");
+	texStart = objectManager->GetSprite(L"UI/start");
+	texQuit = objectManager->GetSprite(L"UI/quit");
+	texShader = objectManager->GetSpriteShader(L"UI");
+
+	isSelectStart = true;
+
 }
 
 Title::~Title()
-{
-	//SAFE_RELEASE(pConstantBuffer);
-}
+{}
 
 void Title::Update()
 {
+	backGround->Update();
+	camera->Update();
+
+	phaseTime += Timer::GetInstance().GetDeltaTime();
+
+
+
+	UpdatePhase();
+}
+
+void Title::UpdatePhase()
+{
+	switch (phase)
+	{
+	case Title::Phase::START:
+		if (phaseTime > 1000)
+		{
+			phase = Phase::SELECT;
+			phaseTime = 0;
+		}
+		else if (InputController::getInstance().IsPushKey(DIK_Z) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_A))
+		{
+			phase = Phase::FINISH;
+			phaseTime = 0;
+		}
+		break;
+	case Title::Phase::SELECT:
+		if (InputController::getInstance().IsPushKey(DIK_UP) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_UP) ||
+			InputController::getInstance().IsPushKey(DIK_DOWN) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_DOWN))
+		{
+			isSelectStart = !isSelectStart;
+		}
+		else if (InputController::getInstance().IsPushKey(DIK_Z) ||
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_A))
+		{
+			DeviceManager::GetInstance().SetRadialBlur(DirectX::XMFLOAT2(0.5f, 0.5f), 1000, 1.0f);
+			phase = Phase::FINISH;
+			phaseTime = 0;
+		}
+		break;
+	case Title::Phase::FINISH:
+
+		break;
+	default:
+		break;
+	}
+
+}
+
+void Title::EndUpdate()
+{
+	if (phase == Phase::FINISH)
+	{
+		if (!isSelectStart)
+			nextScene = SceneName::QUIT;
+		else if (phaseTime > 1000)
+			nextScene = SceneName::BATTLE;
+	}
 }
 
 void Title::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	//pDeviceContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
-	//
-	//DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 1.0f, -20.0f, 1.0f);
-	//DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	//DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-	//DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);
-	//DirectX::XMMATRIX Proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
-	//
-	//D3D11_MAPPED_SUBRESOURCE data;
-	//CONSTANT_BUFFER cb;
-	//DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
-	//DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(Proj));
-	//pDeviceContext->Map(pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
-	//memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
-	//pDeviceContext->Unmap(pConstantBuffer, 0);
-	//
-	//////////////////////////////////////////////////////////////////////////////////
-	////sprite
-	////sprite->DrawSet(pDeviceContext);
-	//spriteShader->DrawSet(pDeviceContext);
-	//
-	//// パラメータの計算
-	//DirectX::XMMATRIX World = DirectX::XMMatrixRotationY(x += 0.001f);
-	//DirectX::XMMATRIX Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f);
-	//World *= Offset;
-	//
-	//// パラメータの受け渡し
-	//SPRITE::CONSTANT_BUFFER spriteCB;
-	//DirectX::XMStoreFloat4x4(&spriteCB.World, DirectX::XMMatrixTranspose(World));
-	//
-	//spriteShader->SetConstantBuffer(pDeviceContext, spriteCB);
-	//
-	//
-	//// 描画実行
-	//pDeviceContext->Draw(sprite->GetIndexCount(), 0);
-	//
-	///////////////////////////////////////////////////////////////////////////////////////
-	////model
-	////model->DrawSet(pDeviceContext);
-	//mShader->DrawSet(pDeviceContext);
-	//
-	//// パラメータの計算
-	//DirectX::XMMATRIX m_World = DirectX::XMMatrixIdentity();
-	//
-	//DirectX::XMMATRIX m_Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	//DirectX::XMMATRIX m_RotateDef = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
-	//DirectX::XMMATRIX m_Rotate2 = DirectX::XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 3.0f);
-	//DirectX::XMMATRIX m_Rotate = XMMatrixTranspose(m_RotateDef * m_Rotate2);
-	//DirectX::XMMATRIX m_Scale = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
-	//
-	//m_World *= m_Scale * m_Rotate * m_Offset;
-	//
-	//DirectX::XMVECTOR m_Light = DirectX::XMVectorSet(std::cos(x * 4.0f) * 40.1f, -20.0f, std::sin(x * 4.0f) * 40.1f, 0.0f);
-	//DirectX::XMVECTOR m_Attenuation = DirectX::XMVectorSet(1.0f, 0.0005f, 0.0005f, 0.0f);
-	//
-	//// パラメータの受け渡し
-	//MODEL::CONSTANT_BUFFER ccb;
-	//
-	//DirectX::XMStoreFloat4x4(&ccb.World, DirectX::XMMatrixTranspose(m_World));
-	//DirectX::XMStoreFloat4(&ccb.Light, m_Light);
-	//DirectX::XMStoreFloat4(&ccb.Attenuation, m_Attenuation);
-	//
-	//mShader->SetConstantBuffer(pDeviceContext, ccb);
-	//
-	////pDeviceContext->VSSetConstantBuffers(1, 1, &pModelBuffer);
-	////pDeviceContext->GSSetConstantBuffers(1, 1, &pModelBuffer);
-	////pDeviceContext->PSSetConstantBuffers(1, 1, &pModelBuffer);
-	//
-	//
-	////pDeviceContext->UpdateSubresource(pMConstantBuffer, 0, NULL, &ccb, 0, 0);
-	//
-	//
-	//// 描画実行
-	//pDeviceContext->DrawIndexed(model->GetIndexCount(), 0, 0);
-	//
-	////model->DrawLineAdjSet(pDeviceContext);
-	//mShader->DrawLineAdjSet(pDeviceContext);
-	//
-	//// 描画実行
-	//pDeviceContext->DrawIndexed(model->GetLineAdjIndexCount(), 0, 0);
-	//
-	//player->Draw(pDeviceContext);
-	//
+	SetViewProj(pDeviceContext);
+	SetLight(pDeviceContext);
+
+
+	backGround->Draw(pDeviceContext);
+	backGround->DrawBillBoard(pDeviceContext, camera->GetEyeDirection());
+
+
+	texShader->DrawSet(pDeviceContext);		
+
+	DirectX::XMMATRIX titleOffset = DirectX::XMMatrixTranslation(0.0f, 0.5f, 0.4f);
+	DirectX::XMMATRIX titleScale = DirectX::XMMatrixScaling(0.6f, 0.36f, 1.0f);
+	DirectX::XMVECTOR titleWeight = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
+	DrawUI(pDeviceContext, titleScale * titleOffset, titleWeight, texTitle);
+
+	DirectX::XMMATRIX startOffset = DirectX::XMMatrixTranslation(0.0f, -0.2f, 0.4f);
+	DirectX::XMMATRIX startScale = DirectX::XMMatrixScaling(0.37f, 0.17f, 1.0f);
+	float startCol = isSelectStart ? sinf(phaseTime / 100.0f) * 0.6f + 0.7f : 0.6f;
+	DirectX::XMVECTOR startWeight = DirectX::XMVectorSet(
+		startCol, startCol, startCol, 1.0f);
+	DrawUI(pDeviceContext, startScale * startOffset, startWeight, texStart);
+
+	DirectX::XMMATRIX quitOffset = DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.4f);
+	DirectX::XMMATRIX quitScale = DirectX::XMMatrixScaling(0.37f, 0.17f, 1.0f);
+	float quitCol = isSelectStart ? 0.6f : sinf(phaseTime / 100.0f) * 0.7f + 0.6f;
+	DirectX::XMVECTOR quitWeight = DirectX::XMVectorSet(
+		quitCol, quitCol, quitCol, 1.0f);
+	DrawUI(pDeviceContext, quitScale * quitOffset, quitWeight, texQuit);
+
+
+
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ADD);
+
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	MODEL::CONSTANT_BUFFER cb;
+	cb.Color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	if (phase == Phase::START)
+		cb.Color.x = 1.0f -  phaseTime / 1000.0f;
+	else if (phase == Phase::FINISH)
+		cb.Color.x = phaseTime / 500.0f;
+
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(world));
+	fadeShader->SetConstantBuffer(pDeviceContext, cb);
+
+
+	fade->DrawSet(pDeviceContext);
+	fadeShader->DrawSet(pDeviceContext);
+
+	pDeviceContext->DrawIndexed(fade->GetIndexCount(), 0, 0);
+
+	DeviceManager::GetInstance().SetBerendState(BLEND_STATE::ALIGMENT);
+
 }
+
+void Title::DrawUI(
+	ComPtr<ID3D11DeviceContext> pDeviceContext,
+	DirectX::XMMATRIX _world,
+	DirectX::XMVECTOR _weight,
+	std::shared_ptr<Sprite> _sprite)
+{
+	SPRITE::CONSTANT_BUFFER cb;
+	DirectX::XMStoreFloat4x4(&cb.World, DirectX::XMMatrixTranspose(_world));
+	DirectX::XMStoreFloat4(&cb.Weight, _weight);
+	texShader->SetConstantBuffer(pDeviceContext, cb);
+
+	_sprite->DrawSet(pDeviceContext);
+	pDeviceContext->Draw(_sprite->GetIndexCount(), 0);
+}
+
+void Title::DrawAfterRadialBlur(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{}
 
 void Title::SetViewProj(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
-	//pDeviceContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
-	//
-	//DirectX::XMVECTOR eye_pos = DirectX::XMVectorSet(0.0f, 10.0f, -50.0f, 1.0f);
-	//DirectX::XMVECTOR eye_lookat = DirectX::XMVectorSet(0.0f, 10.0f, 0.0f, 1.0f);
-	//DirectX::XMVECTOR eye_up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-	//DirectX::XMMATRIX View = DirectX::XMMatrixLookAtLH(eye_pos, eye_lookat, eye_up);
-	////DirectX::XMMATRIX Proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, (FLOAT)1280 / (FLOAT)720, 0.1f, 500.0f);
-	//DirectX::XMMATRIX Proj = DirectX::XMMatrixOrthographicLH(1280.0f * 0.05f, 720.0f * 0.05f, 0.1f, 500.0f);
-	//
-	//D3D11_MAPPED_SUBRESOURCE data;
-	//CONSTANT_BUFFER cb;
-	//DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(View));
-	//DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(Proj));
-	//pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
-	//memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
-	//pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
+	pDeviceContext->VSSetConstantBuffers(0, 1, pConstantBuffer.GetAddressOf());
+
+	D3D11_MAPPED_SUBRESOURCE data;
+	CONSTANT_BUFFER cb;
+	DirectX::XMStoreFloat4x4(&cb.View, DirectX::XMMatrixTranspose(camera->GetView()));
+	DirectX::XMStoreFloat4x4(&cb.Projection, DirectX::XMMatrixTranspose(proj));
+	pDeviceContext->Map(pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	memcpy_s(data.pData, data.RowPitch, (void*)(&cb), sizeof(cb));
+	pDeviceContext->Unmap(pConstantBuffer.Get(), 0);
+}
+
+
+void Title::SetLight(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	pDeviceContext->VSSetConstantBuffers(1, 1, lightConstantBuffer.GetAddressOf());
+	pDeviceContext->GSSetConstantBuffers(1, 1, lightConstantBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(1, 1, lightConstantBuffer.GetAddressOf());
+
+	D3D11_MAPPED_SUBRESOURCE data;
+	pDeviceContext->Map(lightConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	memcpy_s(data.pData, data.RowPitch, (void*)(light.get()), sizeof(*light));
+	pDeviceContext->Unmap(lightConstantBuffer.Get(), 0);
 }

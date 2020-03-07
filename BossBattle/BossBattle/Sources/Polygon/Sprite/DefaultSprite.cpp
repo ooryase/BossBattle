@@ -3,8 +3,9 @@
 using SPRITE::VERTEX;
 using namespace DirectX;
 
-DefaultSprite::DefaultSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[])
-	: Sprite(pDevice, filename)
+DefaultSprite::DefaultSprite(ComPtr<ID3D11Device> pDevice, const wchar_t filename[],
+	D3D11_FILTER _filter)
+	: Sprite(pDevice, filename, _filter)
 {
 	CreateVertexBuffer(pDevice);
 	CreateIndexBuffer(pDevice);

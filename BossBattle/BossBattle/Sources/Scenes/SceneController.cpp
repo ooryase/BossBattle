@@ -5,9 +5,11 @@
 
 SceneController::SceneController(ComPtr<ID3D11Device> pDevice)
 {
-	scene = std::make_unique<Battle>(pDevice);
+	scene = std::make_unique<Title>(pDevice);
 	Timer::GetInstance().Init();
 	srand((unsigned int)time(NULL));
+
+	isDelete = false;
 }
 
 SceneController::~SceneController()
@@ -24,6 +26,11 @@ void SceneController::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 	scene->Draw(pDeviceContext);
 }
 
+void SceneController::DrawAfterRadialBlur(ComPtr<ID3D11DeviceContext> pDeviceContext)
+{
+	scene->DrawAfterRadialBlur(pDeviceContext);
+}
+
 void SceneController::EndUpdate(ComPtr<ID3D11Device> pDevice)
 {
 	scene->EndUpdate();
@@ -34,7 +41,13 @@ void SceneController::EndUpdate(ComPtr<ID3D11Device> pDevice)
 
 void SceneController::ChackNextScene(ComPtr<ID3D11Device> pDevice)
 {
-	switch (scene->GetNextScene())
+	if (scene->GetNextScene() == SceneName::NONE)
+		return;
+
+	auto nextScene = scene->GetNextScene();
+	scene.reset();
+
+	switch (nextScene)
 	{
 	case SceneName::TITLE:
 		scene = std::make_unique<Title>(pDevice);
@@ -43,12 +56,20 @@ void SceneController::ChackNextScene(ComPtr<ID3D11Device> pDevice)
 		//scene = std::make_unique<>();
 		break;
 	case SceneName::BATTLE:
-		//scene = std::make_unique<>();
+		scene = std::make_unique<Battle>(pDevice);
 		break;
 	case SceneName::CLEAR:
 		//scene = std::make_unique<>();
 		break;
+	case SceneName::QUIT:
+		isDelete = true;
+		break;
 	default:
 		return;
 	}
+}
+
+bool SceneController::IsDelete() const
+{
+	return isDelete;
 }

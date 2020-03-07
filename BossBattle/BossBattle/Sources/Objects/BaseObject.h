@@ -68,5 +68,5 @@ public:
 	ObjectTag GetTag() const;
 	void SetTag(ObjectTag _tag);
 
-	bool IsDead() const;
+	bool IsToDelete() const;
 };

@@ -79,4 +79,6 @@ public:
 	std::shared_ptr<ObjectManager> GetObjectManager() const;
 	std::shared_ptr<Light> GetLight() const;
 	DirectX::XMFLOAT3 GetDirection() const;
+
+	bool IsDead() const;
 };
