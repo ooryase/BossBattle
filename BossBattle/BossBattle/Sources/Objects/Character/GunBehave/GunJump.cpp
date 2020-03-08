@@ -17,13 +17,15 @@ void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		NextBehave = GUN_BEHAVE::BehaveName::WAIT;
 
 	if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT) ||
+		InputController::getInstance().IsPressThumbL(THUMB_LEFT::LEFT))
 	{
 		param->speed.x += -0.0003f;
 		param->direction.z = -DirectX::XM_PIDIV2;
 	}
 	if (InputController::getInstance().IsPressKey(DIK_RIGHT) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT))
+		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT) ||
+		InputController::getInstance().IsPressThumbL(THUMB_LEFT::RIGHT))
 	{
 		param->speed.x += 0.0003f;
 		param->direction.z = DirectX::XM_PIDIV2;
@@ -34,12 +36,7 @@ void GunJump::Update(DirectX::XMFLOAT3 pos, std::shared_ptr<Light> light)
 		NextBehave = GUN_BEHAVE::BehaveName::FALL;
 	}
 
-	if (InputController::getInstance().IsPressKey(DIK_LSHIFT) ||
-		InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_LEFT_SHOULDER))
-	{
-		NextBehave = GUN_BEHAVE::BehaveName::STEP;
-	}
-
+	CheckStep();
 	ChackAttack(0);
 
 }

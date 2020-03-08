@@ -39,6 +39,7 @@ class Battle : public BaseScene
 	std::shared_ptr<Sprite> uiTitle;
 	std::shared_ptr<SpriteShader> uiShader;
 	bool isSelectRetry;
+	bool isPause;
 
 	std::shared_ptr<BaseModel> fade;
 	std::shared_ptr<ModelShader> fadeShader;
@@ -63,6 +64,9 @@ public:
 	void DrawAfterRadialBlur(ComPtr<ID3D11DeviceContext> pDeviceContext);
 
 private:
+	void ChangePause();
+	void UpdateSelect();
+
 	void UpdateObjects();
 	void UpdateCollision();
 	void UpdatePhase();

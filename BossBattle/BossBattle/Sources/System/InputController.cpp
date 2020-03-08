@@ -23,6 +23,11 @@ HRESULT InputController::Init(HINSTANCE hInstance, HWND hWnd)
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_X				, PressData()));
 	pad.insert(std::make_pair(XINPUT_GAMEPAD_Y				, PressData()));
 
+	thumbLeft.insert(std::make_pair(THUMB_LEFT::LEFT, PressData()));
+	thumbLeft.insert(std::make_pair(THUMB_LEFT::RIGHT, PressData()));
+	thumbLeft.insert(std::make_pair(THUMB_LEFT::UP, PressData()));
+	thumbLeft.insert(std::make_pair(THUMB_LEFT::DOWN, PressData()));
+
 	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)lpDI.GetAddressOf(), NULL);
 	if (FAILED(hr))
 		return hr;
@@ -49,6 +54,7 @@ HRESULT InputController::Init(HINSTANCE hInstance, HWND hWnd)
 void InputController::Update()
 {
 	static XINPUT_STATE state;
+
 	XInputGetState(0, &state);
 
 	for (auto&& var : pad)
@@ -65,13 +71,14 @@ void InputController::Update()
 		lpKeyboard->GetDeviceState(sizeof(key), key);
 	}
 
+	thumbLeft.at(THUMB_LEFT::LEFT).Update(state.Gamepad.sThumbLX < -0.5f);
+	thumbLeft.at(THUMB_LEFT::RIGHT).Update(state.Gamepad.sThumbLX > 0.5f);
+	thumbLeft.at(THUMB_LEFT::UP).Update(state.Gamepad.sThumbLY > 0.5f);
+	thumbLeft.at(THUMB_LEFT::DOWN).Update(state.Gamepad.sThumbLY < -0.5f);
 }
 
 void InputController::Release()
 {
-	//SAFE_RELEASE(lpKeyboard);
-	//SAFE_RELEASE(lpDI);
-
 	lpKeyboard.Reset();
 	lpDI.Reset();
 }
@@ -106,6 +113,20 @@ bool InputController::IsReleaseButtom(int Xcode)
 	return pad.at(Xcode).release;
 }
 
+bool InputController::IsPressThumbL(THUMB_LEFT _code)
+{
+	return thumbLeft.at(_code).press;
+}
+
+bool InputController::IsPushThumbL(THUMB_LEFT _code)
+{
+	return thumbLeft.at(_code).push;
+}
+
+bool InputController::IsReleaseThumbL(THUMB_LEFT _code)
+{
+	return thumbLeft.at(_code).release;
+}
 
 void PressData::Update(bool nowPress)
 {

@@ -30,7 +30,8 @@ public:
 	void SetAnimSackNumber(int num);
 
 	void Update(int speedDiv = 1);
-	void UpdateAnotherTimeCount(int speedDiv, FbxTime& _timeCount);
+	void UpdateAnotherTimeCount(FbxTime& _timeCount);
+	void UpdateToAnotherTimeCount(int speedDiv, FbxTime& _timeCount);
 	void SetAnimSackNumberAnotherTimeCount(int num, FbxTime& _timeCount);
 
 };

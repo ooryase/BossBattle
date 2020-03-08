@@ -336,13 +336,20 @@ void FbxModel::Update(int speedDiv)
 
 }
 
-void FbxModel::UpdateAnotherTimeCount(int speedDiv, FbxTime &_timeCount)
+void FbxModel::UpdateToAnotherTimeCount(int speedDiv, FbxTime& _timeCount)
 {
 	if (!anim || speedDiv == 0)
 		return;
 
 	_timeCount += FrameTime * Timer::GetInstance().GetDeltaTime() / 16 / speedDiv;
 	if (_timeCount > stop) _timeCount = start;
+}
+
+
+void FbxModel::UpdateAnotherTimeCount(FbxTime &_timeCount)
+{
+	if (!anim)
+		return;
 
 	//アニメーション処理
 	FbxMatrix globalPosition = fbxMeshNode->EvaluateGlobalTransform(_timeCount);

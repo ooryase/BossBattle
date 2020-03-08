@@ -21,6 +21,14 @@ struct PressData
 	void Update(bool nowPress);
 };
 
+enum class THUMB_LEFT
+{
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+};
+
 class InputController
 {
 private:
@@ -30,9 +38,8 @@ private:
 
 	std::unordered_map<int, PressData>keys;
 	std::unordered_map<int, PressData>pad;
-
-	//LPDIRECTINPUT8 lpDI;
-	//LPDIRECTINPUTDEVICE8 lpKeyboard;
+	std::unordered_map<THUMB_LEFT, PressData>thumbLeft;
+	
 
 	ComPtr<IDirectInput8A> lpDI;
 	ComPtr<IDirectInputDevice8A> lpKeyboard;
@@ -53,5 +60,8 @@ public:
 	bool IsPushButtom(int Xcode);
 	bool IsReleaseKey(int keyCode);
 	bool IsReleaseButtom(int Xcode);
+	bool IsPressThumbL(THUMB_LEFT _code);
+	bool IsPushThumbL(THUMB_LEFT _code);
+	bool IsReleaseThumbL(THUMB_LEFT _code);
 
 };

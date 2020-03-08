@@ -105,8 +105,10 @@ void Title::UpdatePhase()
 	case Title::Phase::SELECT:
 		if (InputController::getInstance().IsPushKey(DIK_UP) ||
 			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_UP) ||
+			InputController::getInstance().IsPushThumbL(THUMB_LEFT::UP) ||
 			InputController::getInstance().IsPushKey(DIK_DOWN) ||
-			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_DOWN))
+			InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_DPAD_DOWN) ||
+			InputController::getInstance().IsPushThumbL(THUMB_LEFT::DOWN))
 		{
 			isSelectStart = !isSelectStart;
 		}

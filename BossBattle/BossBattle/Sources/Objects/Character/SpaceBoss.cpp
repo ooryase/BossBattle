@@ -70,7 +70,6 @@ void SpaceBoss::Update()
 	position.y += param->speed.y;
 	position.z += param->speed.z;
 
-	//model->Update(animSpeedDiv);
 	behaveTime += Timer::GetInstance().GetDeltaTime();
 	switch (behave)
 	{
@@ -112,6 +111,7 @@ void SpaceBoss::Update()
 
 	UpdateDamaged();
 
+	model->UpdateToAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
 }
 
 
@@ -320,7 +320,7 @@ void SpaceBoss::UpdateAwake()
 		{
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 40.0f, 0.0f), 0);
 			camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 6.0f, 0.0f), XMFLOAT3(20.0f, 6.0f, 0.0f), 2000);
-			model->UpdateAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
+			model->UpdateAnotherTimeCount(modelAnimTimeCount);
 			animSpeedDiv = 0;
 			behaveStep++;
 		}
@@ -516,7 +516,8 @@ void SpaceBoss::UpdateDead()
 
 	if (behaveStep == 0)
 	{
-		animSpeedDiv = 0;
+		shaderGSLength = 0.0f;
+		animSpeedDiv = 5;
 		camera->Quake();
 		camera->SetCameraPos(Camera::State::SQUARE, DirectX::XMFLOAT3(position.x, position.y, position.z - 20.0f), position, 500);
 		behaveStep++;
@@ -596,7 +597,7 @@ void SpaceBoss::SetColor(DirectX::XMVECTOR* color, DirectX::XMVECTOR* edgeColor)
 void SpaceBoss::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 {
 	model->SetAnimSackNumber(animNum);
-	model->UpdateAnotherTimeCount(animSpeedDiv, modelAnimTimeCount);
+	model->UpdateAnotherTimeCount(modelAnimTimeCount);
 
 	DrawSet(pDeviceContext);
 

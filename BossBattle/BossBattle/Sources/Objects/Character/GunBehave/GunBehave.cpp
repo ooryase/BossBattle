@@ -17,14 +17,14 @@ GunBehave::~GunBehave()
 
 void GunBehave::ChackAttack(int level)
 {
-	if ((InputController::getInstance().IsPushKey(DIK_C) ||
-		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_LEFT_SHOULDER)) &&
-		//param->typeGauge[GUN_BEHAVE::AttackType::GUN] == 100 &&
-		//param->typeGauge[GUN_BEHAVE::AttackType::BREAD] == 100)
-		true)
-	{
-		NextBehave = GUN_BEHAVE::BehaveName::SPECIAL;
-	}
+	//if ((InputController::getInstance().IsPushKey(DIK_C) ||
+	//	InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_LEFT_SHOULDER)) &&
+	//	//param->typeGauge[GUN_BEHAVE::AttackType::GUN] == 100 &&
+	//	//param->typeGauge[GUN_BEHAVE::AttackType::BREAD] == 100)
+	//	true)
+	//{
+	//	NextBehave = GUN_BEHAVE::BehaveName::SPECIAL;
+	//}
 
 	if (InputController::getInstance().IsPushKey(DIK_Z) ||
 		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_A))
@@ -51,12 +51,14 @@ void GunBehave::CheckStep()
 		InputController::getInstance().IsPushButtom(XINPUT_GAMEPAD_X))
 	{
 		if (InputController::getInstance().IsPressKey(DIK_LEFT) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT))
+			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_LEFT) ||
+			InputController::getInstance().IsPressThumbL(THUMB_LEFT::LEFT))
 		{
 			param->direction.z = -DirectX::XM_PIDIV2;
 		}
 		if (InputController::getInstance().IsPressKey(DIK_RIGHT) ||
-			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT))
+			InputController::getInstance().IsPressButtom(XINPUT_GAMEPAD_DPAD_RIGHT) ||
+			InputController::getInstance().IsPressThumbL(THUMB_LEFT::RIGHT))
 		{
 			param->direction.z = DirectX::XM_PIDIV2;
 		}
