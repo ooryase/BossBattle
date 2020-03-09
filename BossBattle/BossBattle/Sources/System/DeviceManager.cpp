@@ -4,6 +4,7 @@
 HRESULT DeviceManager::Init(HWND WHandle)
 {
 	HRESULT hr = CoInitialize(NULL);
+	//HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	hr = CreateDeviceAndSwapChain(WHandle);
 	if(FAILED(hr))

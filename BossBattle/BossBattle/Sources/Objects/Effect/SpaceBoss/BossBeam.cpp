@@ -36,7 +36,7 @@ void BossBeam::Update()
 	{
 		if (time < endTime)
 		{
-			position.x += ((direction.z == DirectX::XM_PIDIV2) ? -1.0f : 1.0f);
+			position.x += ((direction.z == DirectX::XM_PIDIV2) ? -1.0f : 1.0f) * Timer::GetInstance().GetDeltaTime() * 0.2f;
 			tag = ObjectTag::DAMAGE;
 		}
 		else

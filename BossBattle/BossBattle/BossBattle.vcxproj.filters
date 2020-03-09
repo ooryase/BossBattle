@@ -273,6 +273,9 @@
     <ClCompile Include="Sources\Objects\Character\SpaceBossAvatar.cpp">
       <Filter>ソース ファイル\Objects\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\System\Sound.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\System\DeviceManager.h">
@@ -436,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="Sources\Objects\Character\SpaceBossAvatar.h">
       <Filter>ヘッダー ファイル\Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\System\Sound.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

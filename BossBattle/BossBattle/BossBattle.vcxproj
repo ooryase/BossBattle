@@ -72,6 +72,7 @@
     <ClCompile Include="Sources\System\DeviceManager.cpp" />
     <ClCompile Include="Sources\System\InputController.cpp" />
     <ClCompile Include="Sources\System\Main.cpp" />
+    <ClCompile Include="Sources\System\Sound.cpp" />
     <ClCompile Include="Sources\System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +129,7 @@
     <ClInclude Include="Sources\System\DeviceManager.h" />
     <ClInclude Include="Sources\System\InputController.h" />
     <ClInclude Include="Sources\System\Resource.h" />
+    <ClInclude Include="Sources\System\Sound.h" />
     <ClInclude Include="Sources\System\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

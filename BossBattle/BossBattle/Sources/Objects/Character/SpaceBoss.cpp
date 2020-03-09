@@ -170,7 +170,7 @@ void SpaceBoss::DecisionAttackBehave()
 {
 	decisionBehave = DecisionBehavePhase::ATTACK;
 
-	if (hp / maxHp > 0.5f)
+	if (hp / maxHp > 0.6f)
 		phaseNum = 1;
 	else if (hp / maxHp > 0.2f)
 		phaseNum = 2;
@@ -524,12 +524,14 @@ void SpaceBoss::UpdateDead()
 	}
 	else if (behaveStep == 1 && behaveTime >= 1000)
 	{
+		camera->Quake();
 		camera->SetCameraPos(Camera::State::LINER, XMFLOAT3(0.0f, 10.0f, -50.0f), XMFLOAT3(0.0f, 10.0f, 0.0f), 3000);
 		behaveStep++;
 	}
 	else if (behaveStep < behaveTime / 1000)
 	{
 		camera->Quake();
+		behaveStep++;
 	}
 
 }

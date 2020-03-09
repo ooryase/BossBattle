@@ -1,6 +1,7 @@
 #include"Resource.h"
 #include"DeviceManager.h"
 #include"InputController.h"
+#include"Sound.h"
 #include"../Scenes/SceneController.h"
 
 
@@ -38,6 +39,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 		MessageBox(WHandle, _T("DeviceManager"), _T("Err"), MB_ICONSTOP);
 		return S_FALSE;
 	}
+
+	//if (FAILED(Sound::GetInstance().Init()))
+	//{
+	//	MessageBox(WHandle, _T("Sound"), _T("Err"), MB_ICONSTOP);
+	//	return S_FALSE;
+	//}
 
 	if (FAILED(InputController::getInstance().Init(hInstance, WHandle)))
 	{
@@ -80,6 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR pCmdLine,
 	UnregisterClass(WndClassName, hInstance);
 
 	InputController::getInstance().Release();
+	//Sound::GetInstance().Release();
 	DeviceManager::GetInstance().Release();
 
 	return (int)msg.wParam;

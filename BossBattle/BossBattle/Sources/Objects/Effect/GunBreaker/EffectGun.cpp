@@ -20,7 +20,7 @@ EffectGun::EffectGun(std::shared_ptr<ObjectManager> objectManager, std::shared_p
 
 	radius = 10.0f;
 
-	dParam.damage = 1095.0f;
+	dParam.damage = 95.0f;
 	if (direction.z == DirectX::XM_PIDIV2)
 		dParam.direction = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
 	else
@@ -32,7 +32,7 @@ void EffectGun::Update()
 {
 	time += Timer::GetInstance().GetDeltaTime();
 
-	position.x += ((direction.z == DirectX::XM_PIDIV2) ? 1.0f : -1.0f) * Timer::GetInstance().GetDeltaTime() / 16.0f;
+	position.x += ((direction.z == DirectX::XM_PIDIV2) ? 1.0f : -1.0f) * Timer::GetInstance().GetDeltaTime() * 0.5f;
 }
 
 void  EffectGun::EndUpdate()
@@ -47,8 +47,6 @@ void EffectGun::Draw(ComPtr<ID3D11DeviceContext> pDeviceContext)
 
 	model->DrawSet(pDeviceContext);
 	modelShader->DrawSet(pDeviceContext);
-
-	//pDeviceContext->Draw(sprite->GetIndexCount(), 0);
 
 	pDeviceContext->DrawIndexed(model->GetIndexCount(), 0, 0);
 
